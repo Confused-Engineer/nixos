@@ -203,8 +203,6 @@
     spotify
     plexamp
     coreutils
-    #gnome-terminal
-    #nautilus
     neofetch
     gnome-remote-desktop
     gnome-session
