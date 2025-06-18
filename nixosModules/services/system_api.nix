@@ -21,6 +21,17 @@ in {
   config = mkIf cfg.enable {
 
     networking.firewall.allowedTCPPorts = [ 5002 ]; # Allow TCP port 80
+
+
+    nixpkgs.config.packageOverrides = pkgs: {
+      system_api = pkgs.callPackage /etc/nixos/nixosModules/apps/custom/system_api.nix { };
+    };
+
+      environment.systemPackages = with pkgs; [
+        system_api
+      ];
+
+
     systemd.services.systemapi = {
       enable = true;
       description = "A System API for Home Assistant";
@@ -28,7 +39,7 @@ in {
     # after = [ "network.target" ];
       serviceConfig = {
       # ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
-        ExecStart = "/home/david/.bin/system_api";
+        ExecStart = "${pkgs.system_api}/bin/system_api";
         Restart = "on-failure";
         RestartSec = "5s";
       };

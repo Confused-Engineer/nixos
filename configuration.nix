@@ -16,7 +16,7 @@
     steam.enable = true; # Enable Steam
     steam.systemd.enable = true; # Start Steam on Login
 
-    system_api.enable = false; # Enable System API For Home Assistant
+    system_api.enable = true; # Enable System API For Home Assistant
 
     autoclean.enable = true; # Clean System images greater than 7 days old
 
