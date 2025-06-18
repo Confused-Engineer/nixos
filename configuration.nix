@@ -19,6 +19,13 @@
     system_api.enable = true; # Enable System API For Home Assistant
 
     autoclean.enable = true; # Clean System images greater than 7 days old
+
+    gnome = {
+      enable = true; # Use gnome
+      strip.enable = true;
+      extensions.enable = true;
+    };
+
   };
 
   # Bootloader.
@@ -63,54 +70,16 @@
  # services.xserver.desktopManager.gnome.enable = true;
 
   ############# GNOME CONF ##################
-  services.gnome.gnome-remote-desktop.enable = true;
-  services.xrdp.enable = true;
-  services.xrdp.defaultWindowManager = "${pkgs.gnome-session}/bin/gnome-session";
-  services.xrdp.openFirewall = true;
+ # services.gnome.gnome-remote-desktop.enable = true;
+ # services.xrdp.enable = true;
+ # services.xrdp.defaultWindowManager = "${pkgs.gnome-session}/bin/gnome-session";
+ # services.xrdp.openFirewall = true;
 
-  services.xserver = {
-    # Enable the X11 windowing system.
-    enable = true;
-    # Enable the GNOME Desktop Environment.
-    displayManager.gdm.enable = true;
-    desktopManager.gnome.enable = true;
-    excludePackages = [ pkgs.xterm ];
 
-  };
 
  # services.gnome.core-apps.enable = false; # disable all gnome defaults
 
-  environment.gnome.excludePackages = with pkgs; [
-   # baobab      # disk usage analyzer
-    cheese      # photo booth
-   # eog         # image viewer
-    epiphany    # web browser
-   # gedit       # text editor
-    simple-scan # document scanner
-    totem       # video player
-    yelp        # help viewer
-    evince      # document viewer
-   # file-roller # archive manager
-    geary       # email client
-    seahorse    # password manager
 
-    # these should be self explanatory
-    gnome-calculator
-    gnome-calendar 
-    gnome-characters
-    gnome-clocks
-    gnome-contacts
-    gnome-font-viewer
-    gnome-logs
-    gnome-maps
-    gnome-music 
-    gnome-photos
-   # gnome-screenshot
-   # gnome-system-monitor
-    gnome-weather
-   # gnome-disk-utility
-    gnome-connections
-  ];
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -204,8 +173,6 @@
     git
     bash
 
-    gnomeExtensions.dash-to-dock
-    gnomeExtensions.tray-icons-reloaded
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
