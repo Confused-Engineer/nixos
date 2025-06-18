@@ -8,7 +8,11 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./nixosModules
     ];
+
+  services.steam.enable = true;
+  services.steam.systemd.enable = true;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -164,13 +168,13 @@
   programs.firefox.enable = true;
   #programs.vscode.package = pkgs.vscode.fhsWithPackages (ps: with ps; [ rustup zlib openssl.dev pkg-config ]);
 
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
-   # gamescopeSession.enable = true; # Enable a minimal desktop environment 
-  };
+ # programs.steam = {
+ #   enable = true;
+ #   remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+ #   dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+ #   localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+ #  # gamescopeSession.enable = true; # Enable a minimal desktop environment 
+ # };
 
   programs.gamemode.enable = true;
 
@@ -202,7 +206,6 @@
     mangohud
     spotify
     plexamp
-    coreutils
     neofetch
     gnome-remote-desktop
     gnome-session
@@ -274,18 +277,18 @@ wantedBy = [ "multi-user.target" ];
   };
 
 
-  systemd.user.services.steam = {
-    enable = true;
-    description = "Open Steam in the background at boot";
-    wantedBy = [ "graphical-session.target" ];
-    after = [ "network.target" ];
-    serviceConfig = {
-      ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
-      ExecStart = "${pkgs.steam}/bin/steam -nochatui -nofriendsui -silent %U";
-      Restart = "on-failure";
-      RestartSec = "5s";
-    };
-  };
+#  systemd.user.services.steam = {
+#    enable = true;
+#    description = "Open Steam in the background at boot";
+#    wantedBy = [ "graphical-session.target" ];
+#    after = [ "network.target" ];
+#    serviceConfig = {
+#      ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
+#      ExecStart = "${pkgs.steam}/bin/steam -nochatui -nofriendsui -silent %U";
+#      Restart = "on-failure";
+#      RestartSec = "5s";
+#    };
+#  };
 
 ################ DRIVES ######################
 # last blkid dump
