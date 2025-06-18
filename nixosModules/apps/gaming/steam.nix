@@ -13,6 +13,10 @@ in {
       enable = mkEnableOption "Install Steam";
     };
 
+    steam.systemd = {
+      enable = mkEnableOption "AutoStart Steam";
+    };
+
 
   };
   # Define what other settings, services and resources should be active IF
@@ -26,6 +30,22 @@ in {
         dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
         localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
         # gamescopeSession.enable = true; # Enable a minimal desktop environment 
+    };
+
+
+    environment.systemPackages = mkIf (cfg.systemd.enable == true ) [ pkgs.coreutils ];
+    
+    systemd.user.services.steam = mkIf (cfg.systemd.enable == true ) {
+        enable = true;
+        description = "Open Steam in the background at boot";
+        wantedBy = [ "graphical-session.target" ];
+        after = [ "network.target" ];
+        serviceConfig = {
+            ExecStartPre = "${pkgs.coreutils}/bin/sleep 1";
+            ExecStart = "${pkgs.steam}/bin/steam -nochatui -nofriendsui -silent %U";
+            Restart = "on-failure";
+            RestartSec = "5s";
+        };
     };
   };
 }

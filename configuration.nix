@@ -1,7 +1,7 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
+# nix-build -E 'with import <nixpkgs> { }; callPackage ./system_api.nix { } '
 { config, pkgs, ... }:
 
 {
@@ -16,7 +16,7 @@
     steam.enable = true; # Enable Steam
     steam.systemd.enable = true; # Start Steam on Login
 
-    system_api.enable = true; # Enable System API For Home Assistant
+    system_api.enable = false; # Enable System API For Home Assistant
 
     autoclean.enable = true; # Clean System images greater than 7 days old
 
@@ -172,6 +172,8 @@
     gnome-session
     git
     bash
+    rustc
+    cargo
 
   ];
 
@@ -226,20 +228,6 @@
 
 
 
-
-
-#  systemd.user.services.steam = {
-#    enable = true;
-#    description = "Open Steam in the background at boot";
-#    wantedBy = [ "graphical-session.target" ];
-#    after = [ "network.target" ];
-#    serviceConfig = {
-#      ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
-#      ExecStart = "${pkgs.steam}/bin/steam -nochatui -nofriendsui -silent %U";
-#      Restart = "on-failure";
-#      RestartSec = "5s";
-#    };
-#  };
 
 ################ DRIVES ######################
 # last blkid dump
