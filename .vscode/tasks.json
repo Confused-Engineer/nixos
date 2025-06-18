@@ -1,0 +1,19 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Create Nix Package",
+            "type": "shell",
+            "command": "nix-build -E 'with import <nixpkgs> { }; callPackage ${input:filename} { } '",
+            "problemMatcher": []
+        },
+    ],
+    "inputs": [
+        {
+            "id": "filename",
+            "description": "File Name:",
+            "default": "default.nix",
+            "type": "promptString"
+        },
+    ]
+}
