@@ -4,12 +4,12 @@ let
   # Shorter name to access final settings a 
   # user of hello.nix module HAS ACTUALLY SET.
   # cfg is a typical convention.
-  cfg = config.services.custom.steam;
+  cfg = config.services.custom.autoclean;
 in {
   # Declare what settings a user of this "hello.nix" module CAN SET.
   options.services.custom = {
   
-    steam = {
+    autoclean = {
       enable = mkEnableOption "Install Steam";
     };
 
@@ -20,12 +20,11 @@ in {
   # by setting "services.hello.enable = true;".
   config = mkIf cfg.enable {
 
-    programs.steam = {
-        enable = true;
-        remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-        dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-        localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
-        # gamescopeSession.enable = true; # Enable a minimal desktop environment 
-    };
+    # Auto Clean
+    nix.gc.automatic = true;
+    nix.gc.dates = "daily";
+    nix.gc.options = "--delete-older-than 7d";
+    nix.settings.auto-optimise-store = true;
+    
   };
 }

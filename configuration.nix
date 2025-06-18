@@ -11,21 +11,21 @@
       ./nixosModules
     ];
 
-  services.steam.enable = true;
-  services.steam.systemd.enable = true;
+
+  services.custom = {
+    steam.enable = true; # Enable Steam
+    steam.systemd.enable = true; # Start Steam on Login
+
+    system_api.enable = true; # Enable System API For Home Assistant
+
+    autoclean.enable = true; # Clean System images greater than 7 days old
+  };
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   # Kernel
   boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  # Auto Clean
-  nix.gc.automatic = true;
-  nix.gc.dates = "daily";
-  nix.gc.options = "--delete-older-than 7d";
-  nix.settings.auto-optimise-store = true;
-
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -168,15 +168,7 @@
   programs.firefox.enable = true;
   #programs.vscode.package = pkgs.vscode.fhsWithPackages (ps: with ps; [ rustup zlib openssl.dev pkg-config ]);
 
- # programs.steam = {
- #   enable = true;
- #   remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
- #   dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
- #   localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
- #  # gamescopeSession.enable = true; # Enable a minimal desktop environment 
- # };
-
-  programs.gamemode.enable = true;
+ # programs.gamemode.enable = true;
 
   services.sunshine = {
     enable = true;
@@ -246,35 +238,24 @@
 
 ################ FIREWALL ####################
  # networking.firewall.enable = true; # Ensure the firewall is enabled
-  networking.firewall.allowedTCPPorts = [ 5002 ]; # Allow TCP port 80
+
 
 ################ SERVICES ####################
 
-systemd.services.copyGdmMonitorsXml = {
-description = "Copy monitors.xml to GDM config";
-after = [ "network.target" "systemd-user-sessions.service" "display-manager.service" ];
-
-serviceConfig = {
-  ExecStart = "${pkgs.bash}/bin/bash -c 'echo \"Running copyGdmMonitorsXml service\" && mkdir -p /run/gdm/.config && echo \"Created /run/gdm/.config directory\" && [ \"/home/david/.config/monitors.xml\" -ef \"/run/gdm/.config/monitors.xml\" ] || cp /home/david/.config/monitors.xml /run/gdm/.config/monitors.xml && echo \"Copied monitors.xml to /run/gdm/.config/monitors.xml\" && chown gdm:gdm /run/gdm/.config/monitors.xml && echo \"Changed ownership of monitors.xml to gdm\"'";
-  Type = "oneshot";
-};
-
-wantedBy = [ "multi-user.target" ];
-  };
 
 
-  systemd.services.systemapi = {
-    enable = true;
-    description = "A System API for Home Assistant";
-    wantedBy = [ "network.target" ];
-   # after = [ "network.target" ];
+  systemd.services.copyGdmMonitorsXml = {
+    description = "Copy monitors.xml to GDM config";
+    after = [ "network.target" "systemd-user-sessions.service" "display-manager.service" ];
     serviceConfig = {
-     # ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
-      ExecStart = "/home/david/.bin/system_api";
-      Restart = "on-failure";
-      RestartSec = "5s";
+      ExecStart = "${pkgs.bash}/bin/bash -c 'echo \"Running copyGdmMonitorsXml service\" && mkdir -p /run/gdm/.config && echo \"Created /run/gdm/.config directory\" && [ \"/home/david/.config/monitors.xml\" -ef \"/run/gdm/.config/monitors.xml\" ] || cp /home/david/.config/monitors.xml /run/gdm/.config/monitors.xml && echo \"Copied monitors.xml to /run/gdm/.config/monitors.xml\" && chown gdm:gdm /run/gdm/.config/monitors.xml && echo \"Changed ownership of monitors.xml to gdm\"'";
+      Type = "oneshot";
     };
+    wantedBy = [ "multi-user.target" ];
   };
+
+
+
 
 
 #  systemd.user.services.steam = {

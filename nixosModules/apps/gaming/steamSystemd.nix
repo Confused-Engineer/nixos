@@ -4,10 +4,10 @@ let
   # Shorter name to access final settings a 
   # user of hello.nix module HAS ACTUALLY SET.
   # cfg is a typical convention.
-  cfg = config.services.steam.systemd;
+  cfg = config.services.custom.steam.systemd;
 in {
   # Declare what settings a user of this "hello.nix" module CAN SET.
-  options.services = {
+  options.services.custom = {
   
     steam.systemd = {
       enable = mkEnableOption "AutoStart Steam";
