@@ -203,6 +203,9 @@
     gnome-session
     git
     bash
+
+    gnomeExtensions.dash-to-dock
+    gnomeExtensions.tray-icons-reloaded
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
