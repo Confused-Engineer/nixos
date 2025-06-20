@@ -14,11 +14,15 @@ in {
     };
 
     gnome.extensions = {
-      enable = mkEnableOption "Use gnome";
+      enable = mkEnableOption "Add gnome Extensions";
     };
 
     gnome.strip = {
-      enable = mkEnableOption "Use gnome";
+      enable = mkEnableOption "Strip most default apps";
+    };
+
+    gnome.disable = {
+      hibernate = mkEnableOption "Strip most default apps";
     };
 
 
@@ -38,6 +42,17 @@ in {
 
     };
 
+
+
+
+    systemd.targets = mkIf (cfg.disable.hibernate == true ) {
+
+     # sleep.enable = false;
+      suspend.enable = false;
+      hibernate.enable = false;
+      hybrid-sleep.enable = false;
+
+    };
 
 
     environment.systemPackages = with pkgs.gnomeExtensions; mkIf (cfg.extensions.enable == true ) [
