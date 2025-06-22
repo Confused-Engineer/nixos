@@ -17,6 +17,7 @@
     steam.systemd.enable = true; # Start Steam on Login
 
     system_api.enable = true; # Enable System API For Home Assistant
+    shizukuLinux.enable = true; # Enable starting shizuku on android device plugin
 
     autoClean.enable = true; # Clean System images greater than 7 days old
     autoUpgrade.enable = true;

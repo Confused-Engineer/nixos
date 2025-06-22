@@ -4,13 +4,13 @@ let
   # Shorter name to access final settings a 
   # user of hello.nix module HAS ACTUALLY SET.
   # cfg is a typical convention.
-  cfg = config.services.custom.system_api;
+  cfg = config.services.custom.shizukuLinux;
 in {
   # Declare what settings a user of this "hello.nix" module CAN SET.
   options.services.custom = {
   
-    system_api = {
-      enable = mkEnableOption "Setup System API";
+    shizukuLinux = {
+      enable = mkEnableOption "Setup shizuku_linux on device plugin";
     };
 
 
@@ -24,22 +24,23 @@ in {
 
 
     nixpkgs.config.packageOverrides = pkgs: {
-      system_api = pkgs.callPackage /etc/nixos/nixosModules/apps/custom/system_api.nix { };
+      shizuku_linux = pkgs.callPackage /etc/nixos/nixosModules/apps/custom/shizuku_linux.nix { };
     };
 
     environment.systemPackages = with pkgs; [
-      system_api
+      shizuku_linux
     ];
 
+    programs.adb.enable = true;
 
-    systemd.services.systemapi = {
+    systemd.services.shizuku_linux = {
       enable = true;
-      description = "A System API for Home Assistant";
+      description = "Start Shizuku on Device Plugin";
       wantedBy = [ "network.target" ];
     # after = [ "network.target" ];
       serviceConfig = {
       # ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
-        ExecStart = "${pkgs.system_api}/bin/system_api";
+        ExecStart = "${pkgs.shizuku_linux}/bin/shizuku_linux";
         Restart = "on-failure";
         RestartSec = "5s";
       };
