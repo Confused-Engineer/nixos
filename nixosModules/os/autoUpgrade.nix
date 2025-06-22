@@ -4,13 +4,13 @@ let
   # Shorter name to access final settings a 
   # user of hello.nix module HAS ACTUALLY SET.
   # cfg is a typical convention.
-  cfg = config.services.custom.autoclean;
+  cfg = config.services.custom.autoUpgrade;
 in {
   # Declare what settings a user of this "hello.nix" module CAN SET.
   options.services.custom = {
   
-    autoclean = {
-      enable = mkEnableOption "Install Steam";
+    autoUpgrade = {
+      enable = mkEnableOption "Garbage Collect";
     };
 
 
@@ -20,11 +20,11 @@ in {
   # by setting "services.hello.enable = true;".
   config = mkIf cfg.enable {
 
-    # Auto Clean
-    nix.gc.automatic = true;
-    nix.gc.dates = "daily";
-    nix.gc.options = "--delete-older-than 7d";
-    nix.settings.auto-optimise-store = true;
+    system.autoUpgrade = {
+      enable = true;
+      allowReboot = true;
+      dates = "10:00"; # UTC = 5am EST
+    };
     
   };
 }

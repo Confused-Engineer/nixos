@@ -18,7 +18,8 @@
 
     system_api.enable = true; # Enable System API For Home Assistant
 
-    autoclean.enable = true; # Clean System images greater than 7 days old
+    autoClean.enable = true; # Clean System images greater than 7 days old
+    autoUpgrade.enable = true;
 
     gnome = {
       enable = true; # Use gnome

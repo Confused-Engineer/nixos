@@ -6,7 +6,8 @@
     imports = [
         ./apps/gaming/steam.nix
         ./services/system_api.nix
-        ./os/autoclean.nix
+        ./os/autoClean.nix
+        ./os/autoUpgrade.nix
         ./os/ui/gnome/gnome.nix
         ./hardware/gpu/nvidia.nix
     ];
