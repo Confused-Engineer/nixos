@@ -177,7 +177,9 @@
     bash
     rustc
     cargo
-
+    ansible
+    python312
+    python312Packages.venvShellHook
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

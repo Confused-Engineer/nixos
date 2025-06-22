@@ -41,7 +41,7 @@ in {
         wantedBy = [ "graphical-session.target" ];
         after = [ "network.target" ];
         serviceConfig = {
-            ExecStartPre = "${pkgs.coreutils}/bin/sleep 1";
+            ExecStartPre = "${pkgs.coreutils}/bin/sleep 3";
             ExecStart = "${pkgs.steam}/bin/steam -nochatui -nofriendsui -silent %U";
             Restart = "on-failure";
             RestartSec = "5s";
