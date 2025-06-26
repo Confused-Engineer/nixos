@@ -17,7 +17,7 @@
     steam.systemd.enable = true; # Start Steam on Login
 
     system_api.enable = true; # Enable System API For Home Assistant
-    shizukuLinux.enable = true; # Enable starting shizuku on android device plugin
+    shizukuLinux.enable = false; # Enable starting shizuku on android device plugin
 
     autoClean.enable = true; # Clean System images greater than 7 days old
     autoUpgrade.enable = true;
@@ -38,6 +38,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
   # Kernel
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  # boot.kernelPackages = pkgs.linuxPackages_6_1; Specify specific version
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -211,13 +212,17 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.05"; # Did you read the comment?
   # Enable OpenGL
-  hardware.graphics = {
-    enable = true;
-  };
 
-################ FIREWALL ####################
- # networking.firewall.enable = true; # Ensure the firewall is enabled
 
+################ Hibernation Settings ####################
+  swapDevices = [{
+    device = "/var/lib/swapfile";
+    size = 32 * 1024; # 16GB
+  }];
+
+  boot.kernelParams = ["resume_offset=30719"];
+
+  boot.resumeDevice = "/dev/disk/by-uuid/4b6e5f78-222d-45d3-93fe-9f21b3fdf785";
 
 ################ SERVICES ####################
 

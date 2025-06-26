@@ -22,7 +22,7 @@ in {
 
     system.autoUpgrade = {
       enable = true;
-      allowReboot = true;
+      allowReboot = false;
       dates = "10:00"; # UTC = 5am EST
     };
     
