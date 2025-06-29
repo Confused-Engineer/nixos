@@ -23,6 +23,13 @@
     autoUpgrade.enable = true;
 
     gnome = {
+      enable = false; # Use gnome
+      strip.enable = true;
+      extensions.enable = true;
+      disable.hibernate = false;
+    };
+
+    cosmic = {
       enable = true; # Use gnome
       strip.enable = true;
       extensions.enable = true;

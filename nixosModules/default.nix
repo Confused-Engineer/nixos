@@ -10,6 +10,7 @@
         ./os/autoClean.nix
         ./os/autoUpgrade.nix
         ./os/ui/gnome/gnome.nix
+        ./os/ui/cosmic/cosmic.nix
         ./hardware/gpu/nvidia.nix
     ];
 
