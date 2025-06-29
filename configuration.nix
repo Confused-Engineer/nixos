@@ -183,6 +183,8 @@
     ansible
     python312
     python312Packages.venvShellHook
+    mcpelauncher-ui-qt
+    prismlauncher
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
