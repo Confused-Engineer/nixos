@@ -21,9 +21,11 @@ in {
   config = mkIf cfg.enable {
 
     system.autoUpgrade = {
+      upgrade = true;
       enable = true;
       allowReboot = false;
-      dates = "10:00"; # UTC = 5am EST
+      operation = "boot";
+      dates = "daily"; # UTC = 5am EST
     };
     
   };
