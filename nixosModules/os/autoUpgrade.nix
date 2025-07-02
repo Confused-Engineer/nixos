@@ -21,7 +21,7 @@ in {
   config = mkIf cfg.enable {
 
     system.autoUpgrade = {
-      upgrade = true;
+      #upgrade = true;
       enable = true;
       allowReboot = false;
       operation = "boot";
