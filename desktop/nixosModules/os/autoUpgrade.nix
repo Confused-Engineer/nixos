@@ -20,9 +20,15 @@ in {
   # by setting "services.hello.enable = true;".
   config = mkIf cfg.enable {
 
-    system.autoUpgrade = {
-      #upgrade = true;
+  system.autoUpgrade = {
       enable = true;
+      flake = "/etc/nixos/flake.nix";
+      flags = [
+        "--update-input"
+        "nixpkgs"
+       # "--no-write-lock-file"
+        "-L" # print build logs
+      ];
       allowReboot = false;
       operation = "boot";
       dates = "daily"; # UTC = 5am EST

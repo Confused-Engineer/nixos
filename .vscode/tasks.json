@@ -7,6 +7,18 @@
             "command": "nix-build -E 'with import <nixpkgs> { }; callPackage ${input:filename} { } '",
             "problemMatcher": []
         },
+        {
+            "label": "Update Flake nixpkgs-unstable",
+            "type": "shell",
+            "command": "sudo nix flake update nixpkgs-unstable",
+            "problemMatcher": []
+        },
+        {
+            "label": "Update Flake nixpkgs",
+            "type": "shell",
+            "command": "sudo nix flake update nixpkgs",
+            "problemMatcher": []
+        },
     ],
     "inputs": [
         {
