@@ -24,7 +24,7 @@ in {
 
 
     nixpkgs.config.packageOverrides = pkgs: {
-      shizuku_linux = pkgs.callPackage /etc/nixos/nixosModules/apps/custom/shizuku_linux.nix { };
+      shizuku_linux = pkgs.callPackage ./../apps/custom/shizuku_linux.nix { };
     };
 
     environment.systemPackages = with pkgs; [

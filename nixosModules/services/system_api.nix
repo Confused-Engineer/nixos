@@ -24,7 +24,7 @@ in {
 
 
     nixpkgs.config.packageOverrides = pkgs: {
-      system_api = pkgs.callPackage /etc/nixos/nixosModules/apps/custom/system_api.nix { };
+      system_api = pkgs.callPackage ./../apps/custom/system_api.nix { };
     };
 
     environment.systemPackages = with pkgs; [
