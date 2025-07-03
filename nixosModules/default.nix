@@ -5,6 +5,7 @@
 
     imports = [
         ./apps/gaming/steam.nix
+        ./apps/flatpak.nix
         ./services/system_api.nix
         ./services/shizuku_linux.nix
         ./os/autoClean.nix

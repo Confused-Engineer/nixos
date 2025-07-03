@@ -150,6 +150,7 @@
   programs.firefox.enable = true;
   #programs.vscode.package = pkgs.vscode.fhsWithPackages (ps: with ps; [ rustup zlib openssl.dev pkg-config ]);
 
+  services.flatpak.enable = false;
  # programs.gamemode.enable = true;
 
   services.sunshine = {
@@ -226,7 +227,7 @@
 ################ Hibernation Settings ####################
   swapDevices = [{
     device = "/var/lib/swapfile";
-    size = 32 * 1024; # 16GB
+    size = 38 * 1024; # 16GB
   }];
 
   boot.kernelParams = ["resume_offset=30719"];
