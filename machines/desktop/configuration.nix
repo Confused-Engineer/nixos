@@ -187,8 +187,6 @@
     pavucontrol
     bottles
     vscode
-   # rustup
-   # gcc
     mangohud
     spotify
     plexamp
