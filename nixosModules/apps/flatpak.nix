@@ -1,4 +1,5 @@
 { lib, config, pkgs, ... }:
+with lib;
 let
   # We point directly to 'gnugrep' instead of 'grep'
   grep = pkgs.gnugrep;
@@ -15,7 +16,7 @@ in {
     enable = mkEnableOption "Enable Flatpacks";
     desiredFlatpaks = pkgs.lib.mkOption {
       description = "list of flatpaks";
-      type = lib.types.str;
+      type = lib.types.listOf types.str;
 
     };
 
