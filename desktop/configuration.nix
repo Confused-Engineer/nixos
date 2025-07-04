@@ -43,7 +43,6 @@
       desiredFlatpaks = [
         "org.onlyoffice.desktopeditors"
         "com.github.tchx84.Flatseal"
-        "com.bambulab.BambuStudio"
       ];
     };
 
@@ -183,19 +182,17 @@
     discord
     heroic
     freecad
-   # bambu-studio
+    bambu-studio
     unstable.r2modman
     pavucontrol
     bottles
     vscode
-    rustup
-    gcc
+   # rustup
+   # gcc
     mangohud
     spotify
     plexamp
     neofetch
-    gnome-remote-desktop
-    gnome-session
     git
     bash
     rustc
