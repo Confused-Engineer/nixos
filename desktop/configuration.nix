@@ -175,7 +175,7 @@
     heroic
     freecad
    # bambu-studio
-    r2modman
+    unstable.r2modman
     pavucontrol
     bottles
     vscode

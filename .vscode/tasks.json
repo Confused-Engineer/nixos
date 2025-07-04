@@ -19,6 +19,12 @@
             "command": "sudo nix flake update nixpkgs",
             "problemMatcher": []
         },
+        {
+            "label": "Nixos Rebuild boot",
+            "type": "shell",
+            "command": "sudo nixos-rebuild boot --flake .",
+            "problemMatcher": []
+        },
     ],
     "inputs": [
         {
