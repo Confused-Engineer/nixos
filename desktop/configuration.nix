@@ -38,6 +38,14 @@
 
     gpu.nvidia.enable = true;
 
+    flatpaks = {
+      enable = true;
+      desiredFlatpaks = [
+        "org.onlyoffice.desktopeditors"
+        "com.github.tchx84.Flatseal"
+      ];
+    };
+
   };
 
   # Flakes
@@ -153,7 +161,7 @@
   programs.firefox.enable = true;
   #programs.vscode.package = pkgs.vscode.fhsWithPackages (ps: with ps; [ rustup zlib openssl.dev pkg-config ]);
 
-  services.flatpak.enable = false;
+
  # programs.gamemode.enable = true;
 
   services.sunshine = {
