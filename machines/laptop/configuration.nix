@@ -12,10 +12,44 @@
     ];
 
   
+  services.custom = {
+    steam.enable = false; # Enable Steam
+    steam.systemd.enable = true; # Start Steam on Login
 
+    system_api.enable = false; # Enable System API For Home Assistant
+    shizukuLinux.enable = false; # Enable starting shizuku on android device plugin
+
+    autoClean.enable = true; # Clean System images greater than 7 days old
+    autoUpgrade.enable = true;
+
+    gnome = {
+      enable = true; # Use gnome
+      strip.enable = true;
+      extensions.enable = true;
+      disable.hibernate = false;
+    };
+
+    cosmic = {
+      enable = false; # Use gnome
+      strip.enable = true;
+      extensions.enable = true;
+      disable.hibernate = false;
+    };
+
+    gpu.nvidia.enable = false;
+
+    flatpaks = {
+      enable = false;
+      desiredFlatpaks = [
+        "org.onlyoffice.desktopeditors"
+        "com.github.tchx84.Flatseal"
+      ];
+    };
+
+  };
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
-
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -88,7 +122,7 @@
   users.users.david = {
     isNormalUser = true;
     description = "David Pierce";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "audio"];
     packages = with pkgs; [
     #  thunderbird
     ];
