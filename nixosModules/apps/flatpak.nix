@@ -25,7 +25,8 @@ in {
   config = mkIf cfg.enable {
     
     services.flatpak.enable = true;
-    
+    environment.systemPackages = [ pkgs.gnugrep ];
+
     system.userActivationScripts.flatpakManagement = {
       text = ''
         # 2. Ensure the Flathub repo is added
