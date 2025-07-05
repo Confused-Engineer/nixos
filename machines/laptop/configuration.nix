@@ -140,6 +140,7 @@
     pavucontrol
   ];
 
+  services.power-profiles-daemon.enable = false;
   powerManagement.enable = true;
   services.tlp = {
     enable = true;
