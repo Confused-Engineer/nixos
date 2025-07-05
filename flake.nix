@@ -12,7 +12,6 @@
       modules = [
         ({ pkgs, ... }: {
           nixpkgs = { overlays = [(self: super: { unstable = import nixpkgs-unstable { system = "x86_64-linux"; }; }) ]; };
-          nixpkgs.config.allowUnfree = true;
         })
         ./machines/desktop/configuration.nix
       ];

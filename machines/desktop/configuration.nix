@@ -43,6 +43,7 @@
       desiredFlatpaks = [
         "org.onlyoffice.desktopeditors"
         "com.github.tchx84.Flatseal"
+        "at.vintagestory.VintageStory"
       ];
     };
 
@@ -200,15 +201,9 @@
     python312Packages.venvShellHook
     mcpelauncher-ui-qt
     prismlauncher
-    unstable.vintagestory
   ];
 
-  nixpkgs.config.permittedInsecurePackages = [
-                "dotnet-runtime-7.0.20"
-  ];
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-             "vintagestory"
-           ];
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
