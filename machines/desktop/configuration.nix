@@ -200,8 +200,6 @@
     python312Packages.venvShellHook
     mcpelauncher-ui-qt
     prismlauncher
-    dotnetCorePackages.runtime_8_0-bin
-    pciutils
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
