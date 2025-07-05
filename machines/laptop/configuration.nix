@@ -140,6 +140,10 @@
     pavucontrol
   ];
 
+  services.logind.lidSwitch = "hibernate";
+  # Optional settings:
+  # services.logind.lidSwitchExternalPower = "hibernate"; # Hibernate when on external power
+  # services.logind.lidSwitchDocked = "ignore"; # Don't hibernate when docked
   services.power-profiles-daemon.enable = false;
   powerManagement.enable = true;
   services.tlp = {
