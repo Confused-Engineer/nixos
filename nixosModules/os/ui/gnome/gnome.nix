@@ -94,6 +94,7 @@ in {
       gnome-weather
     # gnome-disk-utility
       gnome-connections
+      gnome-software
     ];
 
   };

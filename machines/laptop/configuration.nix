@@ -40,6 +40,7 @@
 
     flatpaks = {
       enable = false;
+      update = true;
       desiredFlatpaks = [
         "org.onlyoffice.desktopeditors"
         "com.github.tchx84.Flatseal"

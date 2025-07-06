@@ -13,12 +13,15 @@ let
 in {
 
   options.services.custom.flatpaks = {
+
     enable = mkEnableOption "Enable Flatpacks";
+
     desiredFlatpaks = pkgs.lib.mkOption {
       description = "list of flatpaks";
       type = lib.types.listOf types.str;
-
     };
+
+    update = mkEnableOption "Updates flatpaks on rebuild";
 
   };
 
@@ -52,7 +55,11 @@ in {
 
         # 6. Remove unused Flatpaks
         ${pkgs.flatpak}/bin/flatpak uninstall --unused -y
+      '';
+    };
 
+    system.userActivationScripts.flatpakUpdate = mkIf cfg.update {
+      text = ''
         # 7. Update all installed Flatpaks
         ${pkgs.flatpak}/bin/flatpak update -y
       '';
