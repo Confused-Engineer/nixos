@@ -50,8 +50,6 @@
 
   };
 
-  hardware.openrazer.enable = true;  
-
   # Flakes
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
@@ -141,7 +139,7 @@
   users.users.david = {
     isNormalUser = true;
     description = "david";
-    extraGroups = [ "networkmanager" "wheel" "audio" "openrazer"];
+    extraGroups = [ "networkmanager" "wheel" "audio"];
     packages = with pkgs; [
     #  thunderbird
     ];
@@ -204,8 +202,6 @@
     python312Packages.venvShellHook
     mcpelauncher-ui-qt
     prismlauncher
-    polychromatic
-    openrazer-daemon
   ];
 
 
