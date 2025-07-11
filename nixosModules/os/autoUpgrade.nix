@@ -22,7 +22,7 @@ in {
 
   system.autoUpgrade = {
       enable = true;
-      flake = "/etc/nixos/flake.nix";
+      flake = "/etc/nixos";
       flags = [
         "--update-input"
         "nixpkgs"
