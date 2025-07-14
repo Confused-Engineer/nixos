@@ -202,6 +202,7 @@
     python312Packages.venvShellHook
     mcpelauncher-ui-qt
     prismlauncher
+    remmina
   ];
 
 
