@@ -139,6 +139,7 @@
     spotify
     neofetch
     pavucontrol
+    moonlight-qt
   ];
 
   services.logind.lidSwitch = "hibernate";
