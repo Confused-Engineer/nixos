@@ -12,41 +12,48 @@
     ];
 
   
-  services.custom = {
-    steam.enable = false; # Enable Steam
-    steam.systemd.enable = true; # Start Steam on Login
-
-    system_api.enable = false; # Enable System API For Home Assistant
-    shizukuLinux.enable = false; # Enable starting shizuku on android device plugin
-
-    autoClean.enable = true; # Clean System images greater than 7 days old
-    autoUpgrade.enable = true;
-
-    gnome = {
-      enable = true; # Use gnome
-      strip.enable = true;
-      extensions.enable = true;
-      disable.hibernate = false;
+  custom = {
+    apps = {
+      steam.enable = false; # Enable Steam
+      steam.systemd.enable = true; # Start Steam on Login
+      flatpaks = {
+        enable = false;
+        update = true;
+        desiredFlatpaks = [
+          "org.onlyoffice.desktopeditors"
+          "com.github.tchx84.Flatseal"
+        ];
+      };
     };
 
-    cosmic = {
-      enable = false; # Use gnome
-      strip.enable = true;
-      extensions.enable = true;
-      disable.hibernate = false;
+    hardware.gpu.nvidia.enable = false;
+
+    os = {
+      autoClean.enable = true; # Clean System images greater than 7 days old
+      autoUpgrade.enable = true;
+
+      ui = {
+        gnome = {
+          enable = true; # Use gnome
+          strip.enable = true;
+          extensions.enable = true;
+          disable.hibernate = false;
+        };
+
+        cosmic = {
+          enable = false; # Use gnome
+          strip.enable = true;
+          extensions.enable = true;
+          disable.hibernate = false;
+        };
+      };
     };
 
-    gpu.nvidia.enable = false;
-
-    flatpaks = {
-      enable = false;
-      update = true;
-      desiredFlatpaks = [
-        "org.onlyoffice.desktopeditors"
-        "com.github.tchx84.Flatseal"
-      ];
+    systemd = {
+      system_api.enable = false; # Enable System API For Home Assistant
+      shizukuLinux.enable = false; # Enable starting shizuku on android device plugin
     };
-
+    
   };
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
