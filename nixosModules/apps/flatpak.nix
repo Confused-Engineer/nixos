@@ -8,11 +8,11 @@ let
 #  #  "org.onlyoffice.desktopeditors"
 #  ];
 
-  cfg = config.services.custom.flatpaks;
+  cfg = config.custom.apps.flatpaks;
 
 in {
 
-  options.services.custom.flatpaks = {
+  options.custom.apps.flatpaks = {
 
     enable = mkEnableOption "Enable Flatpacks";
 

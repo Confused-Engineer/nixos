@@ -12,42 +12,50 @@
     ];
 
 
-  services.custom = {
-    steam.enable = true; # Enable Steam
-    steam.systemd.enable = true; # Start Steam on Login
 
-    system_api.enable = true; # Enable System API For Home Assistant
-    shizukuLinux.enable = false; # Enable starting shizuku on android device plugin
-
-    autoClean.enable = true; # Clean System images greater than 7 days old
-    autoUpgrade.enable = true;
-
-    gnome = {
-      enable = true; # Use gnome
-      strip.enable = true;
-      extensions.enable = true;
-      disable.hibernate = false;
+  custom = {
+    apps = {
+      steam.enable = true; # Enable Steam
+      steam.systemd.enable = true; # Start Steam on Login
+      flatpaks = {
+        enable = false;
+        update = false;
+        desiredFlatpaks = [
+          "org.onlyoffice.desktopeditors"
+          "com.github.tchx84.Flatseal"
+          "at.vintagestory.VintageStory"
+        ];
+      };
     };
 
-    cosmic = {
-      enable = false; # Use gnome
-      strip.enable = true;
-      extensions.enable = true;
-      disable.hibernate = false;
+    hardware.gpu.nvidia.enable = true;
+
+    os = {
+      autoClean.enable = true; # Clean System images greater than 7 days old
+      autoUpgrade.enable = true;
+
+      ui = {
+        gnome = {
+          enable = true; # Use gnome
+          strip.enable = true;
+          extensions.enable = true;
+          disable.hibernate = false;
+        };
+
+        cosmic = {
+          enable = false; # Use gnome
+          strip.enable = true;
+          extensions.enable = true;
+          disable.hibernate = false;
+        };
+      };
     };
 
-    gpu.nvidia.enable = true;
-
-    flatpaks = {
-      enable = true;
-      update = false;
-      desiredFlatpaks = [
-        "org.onlyoffice.desktopeditors"
-        "com.github.tchx84.Flatseal"
-        "at.vintagestory.VintageStory"
-      ];
+    systemd = {
+      system_api.enable = true; # Enable System API For Home Assistant
+      shizukuLinux.enable = false; # Enable starting shizuku on android device plugin
     };
-
+    
   };
 
   # Flakes

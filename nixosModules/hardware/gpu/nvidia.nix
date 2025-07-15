@@ -4,10 +4,10 @@ let
   # Shorter name to access final settings a 
   # user of hello.nix module HAS ACTUALLY SET.
   # cfg is a typical convention.
-  cfg = config.services.custom.gpu;
+  cfg = config.custom.hardware.gpu;
 in {
   # Declare what settings a user of this "hello.nix" module CAN SET.
-  options.services.custom.gpu = {
+  options.custom.hardware.gpu = {
   
     nvidia = {
       enable = mkEnableOption "Use nvidia GPU";
