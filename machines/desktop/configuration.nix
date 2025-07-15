@@ -18,7 +18,7 @@
       steam.enable = true; # Enable Steam
       steam.systemd.enable = true; # Start Steam on Login
       flatpaks = {
-        enable = false;
+        enable = true;
         update = false;
         desiredFlatpaks = [
           "org.onlyoffice.desktopeditors"
