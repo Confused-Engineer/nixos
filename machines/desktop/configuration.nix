@@ -165,6 +165,9 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+
+ # hardware.openrazer.enable = true;
+  
 ########## PROGRAMS ###########
 
   # Install firefox.
@@ -211,6 +214,9 @@
     mcpelauncher-ui-qt
     prismlauncher
     remmina
+    polychromatic
+    unstable.openrazer-daemon
+    unstable.linuxKernel.packages.linux_6_15.openrazer
   ];
 
 
