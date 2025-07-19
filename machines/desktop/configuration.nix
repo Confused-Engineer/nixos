@@ -147,7 +147,7 @@
   users.users.david = {
     isNormalUser = true;
     description = "david";
-    extraGroups = [ "networkmanager" "wheel" "audio"];
+    extraGroups = [ "networkmanager" "wheel" "audio" "openrazer"];
     packages = with pkgs; [
     #  thunderbird
     ];
@@ -166,7 +166,7 @@
   nixpkgs.config.allowUnfree = true;
 
 
- # hardware.openrazer.enable = true;
+  #hardware.openrazer.enable = true;
   
 ########## PROGRAMS ###########
 
@@ -213,10 +213,8 @@
     python312Packages.venvShellHook
     mcpelauncher-ui-qt
     prismlauncher
-    remmina
-    polychromatic
-    unstable.openrazer-daemon
-    unstable.linuxKernel.packages.linux_6_15.openrazer
+   # polychromatic
+   # openrazer-daemon
   ];
 
 
