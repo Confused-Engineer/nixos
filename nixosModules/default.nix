@@ -13,6 +13,7 @@
         ./os/ui/gnome/gnome.nix
         ./os/ui/cosmic/cosmic.nix
         ./hardware/gpu/nvidia.nix
+        ./hardware/controllers/xbox.nix
     ];
 
 }
