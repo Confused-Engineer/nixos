@@ -10,9 +10,9 @@
   
     firefox = {
       enable = lib.mkEnableOption "Enable Firefox";
-      privacy = {
+      privacy = lib.mkOption {
         type = lib.types.enum [ "strict" "moderate" "permissive" ];
-        default = "strict";
+        default = "permissive";
         description = "Controls privacy settings of Firefox.";
         # lib.mkIf ( cfg.privacy == "strict" || cfg.privacy == "moderate" )
       };
