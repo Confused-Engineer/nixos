@@ -9,7 +9,7 @@
   options.custom.apps.browsers = {
   
     firefox = {
-      enable = mkEnableOption "Enable Firefox";
+      enable = lib.mkEnableOption "Enable Firefox";
       privacy = {
         type = lib.types.enum [ "strict" "moderate" "permissive" ];
         default = "strict";

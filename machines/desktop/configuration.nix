@@ -26,6 +26,11 @@
           "at.vintagestory.VintageStory"
         ];
       };
+
+      browsers.firefox = {
+        enable = true;
+        privacy = "permissive";
+      };
     };
 
     hardware.gpu.nvidia.enable = true;
@@ -173,7 +178,7 @@
 ########## PROGRAMS ###########
 
   # Install firefox.
-  programs.firefox.enable = true;
+ # programs.firefox.enable = true;
   #programs.vscode.package = pkgs.vscode.fhsWithPackages (ps: with ps; [ rustup zlib openssl.dev pkg-config ]);
 
 
