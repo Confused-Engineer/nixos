@@ -214,7 +214,7 @@
     python312
     python312Packages.venvShellHook
    # mcpelauncher-ui-qt
-   # prismlauncher
+    prismlauncher
    # polychromatic
    # openrazer-daemon
   ];
