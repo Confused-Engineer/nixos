@@ -179,13 +179,13 @@
 
  # programs.gamemode.enable = true;
 
-  services.sunshine = {
-    enable = true;
-    autoStart = true;
-    capSysAdmin = true;
-    openFirewall = true;
-    
-  };
+ # services.sunshine = {
+ #   enable = true;
+ #   autoStart = true;
+ #   capSysAdmin = true;
+ #   openFirewall = true;
+ #   
+ # };
 
 ########## PACKAGES ##############
 
@@ -213,8 +213,8 @@
     ansible
     python312
     python312Packages.venvShellHook
-    mcpelauncher-ui-qt
-    prismlauncher
+   # mcpelauncher-ui-qt
+   # prismlauncher
    # polychromatic
    # openrazer-daemon
   ];
