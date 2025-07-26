@@ -24,6 +24,12 @@
           "com.github.tchx84.Flatseal"
         ];
       };
+
+      browsers.firefox = {
+        enable = true;
+        privacy = "strict";
+        homepage = "https://hp.a5f.org/";
+      };
     };
 
     hardware.gpu.nvidia.enable = false;
@@ -130,7 +136,7 @@
   };
 
   # Install firefox.
-  programs.firefox.enable = true;
+  # programs.firefox.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
