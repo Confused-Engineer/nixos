@@ -10,6 +10,7 @@
   
     firefox = {
       enable = lib.mkEnableOption "Enable Firefox";
+
       privacy = lib.mkOption {
         type = lib.types.enum [ "strict" "moderate" "permissive" ];
         default = "permissive";
@@ -17,12 +18,16 @@
         # lib.mkIf ( cfg.privacy == "strict" || cfg.privacy == "moderate" )
       };
 
+      homepage = lib.mkOption {
+        type = lib.types.str;
+        default = "https://www.google.com";
+        description = "Firefox Home Page.";
+        # lib.mkIf ( cfg.privacy == "strict" || cfg.privacy == "moderate" )
+      };
+
     };
 
-
-
   };
-
 
   config = lib.mkIf cfg.enable {
     programs = {
@@ -96,6 +101,8 @@
             "browser.newtabpage.activity-stream.showSponsored" = (cfg.privacy == "permissive");
             "browser.newtabpage.activity-stream.system.showSponsored" = (cfg.privacy == "permissive");
             "browser.newtabpage.activity-stream.showSponsoredTopSites" = (cfg.privacy == "permissive");
+            "browser.startup.homepage" = cfg.homepage;
+            "browser.startup.homepage.abouthome_cache.enabled" = true;
           };
         };
       };
