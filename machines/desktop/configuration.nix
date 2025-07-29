@@ -24,6 +24,7 @@
           "org.onlyoffice.desktopeditors"
           "com.github.tchx84.Flatseal"
           "at.vintagestory.VintageStory"
+          "com.usebottles.bottles"
         ];
       };
 
@@ -206,7 +207,6 @@
     bambu-studio
     unstable.r2modman
     pavucontrol
-    bottles
     vscode
     mangohud
     spotify
