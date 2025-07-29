@@ -1,7 +1,7 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-# nix-build -E 'with import <nixpkgs> { }; callPackage ./system_api.nix { } '
+
 { config, lib, pkgs, ... }:
 
 {
@@ -10,7 +10,6 @@
       ./hardware-configuration.nix
       ./../../nixosModules
     ];
-
 
 
   custom = {
@@ -66,16 +65,18 @@
     
   };
 
-
   # Flakes
   nix.settings.experimental-features = ["nix-command" "flakes"];
+
+
+
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  # Kernel
+
+  # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  # boot.kernelPackages = pkgs.linuxPackages_6_1; Specify specific version
 
   networking.hostName = "desktop"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -104,24 +105,6 @@
     LC_TELEPHONE = "en_US.UTF-8";
     LC_TIME = "en_US.UTF-8";
   };
-
-  # Enable the X11 windowing system.
- # services.xserver.enable = true;
-
-  # Enable the GNOME Desktop Environment.
- # services.xserver.displayManager.gdm.enable = true;
- # services.xserver.desktopManager.gnome.enable = true;
-
-  ############# GNOME CONF ##################
- # services.gnome.gnome-remote-desktop.enable = true;
- # services.xrdp.enable = true;
- # services.xrdp.defaultWindowManager = "${pkgs.gnome-session}/bin/gnome-session";
- # services.xrdp.openFirewall = true;
-
-
-
- # services.gnome.core-apps.enable = false; # disable all gnome defaults
-
 
 
   # Configure keymap in X11
@@ -162,39 +145,9 @@
     ];
   };
 
-  # Enable automatic login for the user.
- # services.displayManager.autoLogin.enable = true;
- # services.displayManager.autoLogin.user = "david";
-
-  # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
- # systemd.services."getty@tty1".enable = false;
- # systemd.services."autovt@tty1".enable = false;
-
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
-
-  #hardware.openrazer.enable = true;
-  
-########## PROGRAMS ###########
-
-  # Install firefox.
- # programs.firefox.enable = true;
-  #programs.vscode.package = pkgs.vscode.fhsWithPackages (ps: with ps; [ rustup zlib openssl.dev pkg-config ]);
-
-
- # programs.gamemode.enable = true;
-
- # services.sunshine = {
- #   enable = true;
- #   autoStart = true;
- #   capSysAdmin = true;
- #   openFirewall = true;
- #   
- # };
-
-########## PACKAGES ##############
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -226,14 +179,13 @@
     brave
   ];
 
-
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
   # programs.gnupg.agent = {
   #   enable = true;
   #   enableSSHSupport = true;
-  # };S
+  # };
 
   # List services that you want to enable:
 
@@ -253,19 +205,6 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.05"; # Did you read the comment?
-  # Enable OpenGL
-
-
-################ Hibernation Settings ####################
-  swapDevices = [{
-    device = "/var/lib/swapfile";
-    size = 38 * 1024; # 16GB
-  }];
-
-  boot.kernelParams = ["resume_offset=30719"];
-
-  boot.resumeDevice = "/dev/disk/by-uuid/4b6e5f78-222d-45d3-93fe-9f21b3fdf785";
-
 ################ SERVICES ####################
 
 
@@ -279,9 +218,6 @@
     };
     wantedBy = [ "multi-user.target" ];
   };
-
-
-
 
 ################ DRIVES ######################
 # last blkid dump
@@ -304,6 +240,4 @@
       "exec"
     ];
   };
-
-
 }
