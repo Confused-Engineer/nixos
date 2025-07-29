@@ -63,7 +63,7 @@
   };
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.unstable.linuxPackages;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -129,7 +129,7 @@
   users.users.david = {
     isNormalUser = true;
     description = "David Pierce";
-    extraGroups = [ "networkmanager" "wheel" "audio"];
+    extraGroups = [ "networkmanager" "wheel" "audio" "openrazer"];
     packages = with pkgs; [
     #  thunderbird
     ];
@@ -153,8 +153,11 @@
     neofetch
     pavucontrol
     moonlight-qt
+    openrazer-daemon
+    polychromatic
   ];
-
+  hardware.openrazer.enable = true;
+  
   services.logind.lidSwitch = "hibernate";
   # Optional settings:
   # services.logind.lidSwitchExternalPower = "hibernate"; # Hibernate when on external power
