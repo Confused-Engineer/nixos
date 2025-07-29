@@ -223,6 +223,7 @@
     prismlauncher
    # polychromatic
    # openrazer-daemon
+    brave
   ];
 
 
