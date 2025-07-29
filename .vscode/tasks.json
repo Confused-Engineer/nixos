@@ -25,6 +25,12 @@
             "command": "sudo nixos-rebuild boot --flake .",
             "problemMatcher": []
         },
+        {
+            "label": "Nixos Clean",
+            "type": "shell",
+            "command": "sudo nix-collect-garbage; sudo nix-collect-garbage -d; sudo nixos-rebuild boot --flake .",
+            "problemMatcher": []
+        },
     ],
     "inputs": [
         {

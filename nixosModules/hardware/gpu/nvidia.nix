@@ -21,15 +21,6 @@ in {
   # by setting "services.hello.enable = true;".
   config = mkIf cfg.nvidia.enable {
 
-    services.xserver = {
-      # Enable the X11 windowing system.
-      enable = true;
-      # Enable the GNOME Desktop Environment.
-      displayManager.gdm.enable = true;
-      desktopManager.gnome.enable = true;
-      excludePackages = [ pkgs.xterm ];
-
-    };
 
     hardware.graphics = {
       enable = true;
