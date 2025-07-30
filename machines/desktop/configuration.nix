@@ -29,6 +29,7 @@
 
       browsers.firefox = {
         enable = true;
+        DisableFirefoxAccounts = false;
         privacy = "strict";
         homepage = "https://hp.a5f.org/";
       };

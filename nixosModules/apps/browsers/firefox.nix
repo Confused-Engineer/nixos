@@ -11,6 +11,8 @@
     firefox = {
       enable = lib.mkEnableOption "Enable Firefox";
 
+      DisableFirefoxAccounts = lib.mkEnableOption "Enable Firefox Accouts";
+
       privacy = lib.mkOption {
         type = lib.types.enum [ "strict" "moderate" "permissive" ];
         default = "permissive";
@@ -47,8 +49,8 @@
             Fingerprinting = true;
           };
           DisablePocket = true;
-          DisableFirefoxAccounts = true;
-          DisableAccounts = true;
+          DisableFirefoxAccounts = cfg.DisableFirefoxAccounts;
+          DisableAccounts = cfg.DisableFirefoxAccounts;
           DisableFirefoxScreenshots = true;
           OverrideFirstRunPage = "";
           OverridePostUpdatePage = "";
