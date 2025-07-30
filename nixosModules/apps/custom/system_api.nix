@@ -6,16 +6,16 @@
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "system_api";
-  version = "dev";
+  version = "v0.1.1";
 
   src = fetchFromGitHub {
     owner = "Confused-Engineer";
     repo = "system_api";
     tag = finalAttrs.version;
-    hash = "sha256-tQTNKBDs90WbBtEwnTfQdnBFyz1y6R1Im2gYxerAbQw=";
+    hash = "sha256-3/S5V36lNix3iF+7DI6F/pVFhpzUbO9Gi1c9T1CEqGc=";
   };
 
-  cargoHash = "sha256-5QgGQrjHhtdhFDmdl/R8HExObUfGJyZ7oNEK/lVkJAY=";
+  cargoHash = "sha256-76S9hrMuc2YlrgzuKYR7AohH+rTxo4727tw0QfS6rBo=";
 
   meta = {
     description = "System API for basic Home Assistant Commands";

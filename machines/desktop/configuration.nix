@@ -168,8 +168,8 @@
     neofetch
     git
     bash
-    rustc
-    cargo
+    rustup
+    gcc
     ansible
     python312
     python312Packages.venvShellHook
