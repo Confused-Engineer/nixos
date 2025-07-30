@@ -37,6 +37,7 @@ in {
       enable = true;
       # Enable the GNOME Desktop Environment.
       displayManager.gdm.enable = true;
+      displayManager.gdm.autoSuspend = true;
       desktopManager.gnome.enable = true;
       excludePackages = [ pkgs.xterm ];
 
