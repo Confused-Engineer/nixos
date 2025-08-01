@@ -2,6 +2,17 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
+# Notes:
+# On Wayland with Bambu
+# Use the flatpak and flatseal to se environment variables as such if you have nvidia and encounter errors:
+# __EGL_VENDOR_LIBRARY_FILENAMES=/usr/lib/x86_64-linux-gnu/GL/default/share/glvnd/egl_vendor.d/50_mesa.json
+# WEBKIT_DISABLE_DMABUF_RENDERER=1
+# GALLIUM_DRIVER=zink
+# MESA_LOADER_DRIVER_OVERRIDE=zink
+# __GLX_VENDOR_LIBRARY_NAME=mesa
+# 
+
+
 { config, lib, pkgs, ... }:
 
 {
@@ -180,7 +191,7 @@
    # openrazer-daemon
     brave
     procps
-    orca-slicer
+   # orca-slicer
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
