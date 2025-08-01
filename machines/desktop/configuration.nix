@@ -158,7 +158,7 @@
     discord
     heroic
     freecad
-    unstable.bambu-studio
+    bambu-studio
     unstable.r2modman
     pavucontrol
     vscode
@@ -179,6 +179,7 @@
    # openrazer-daemon
     brave
     procps
+    orca-slicer
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
