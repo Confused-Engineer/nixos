@@ -24,6 +24,7 @@
           "com.github.tchx84.Flatseal"
           "at.vintagestory.VintageStory"
           "com.usebottles.bottles"
+          "com.bambulab.BambuStudio"
         ];
       };
 
@@ -158,7 +159,7 @@
     discord
     heroic
     freecad
-    bambu-studio
+   # bambu-studio
     unstable.r2modman
     pavucontrol
     vscode
