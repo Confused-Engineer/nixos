@@ -78,6 +78,16 @@
     
   };
 
+
+  services.sunshine = {
+    enable = true;
+    autoStart = true;
+    capSysAdmin = true;
+    openFirewall = true;
+    
+  };
+
+  
   # Flakes
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
