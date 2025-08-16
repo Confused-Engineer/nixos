@@ -49,6 +49,21 @@
       ];
     };
 
+    nixosConfigurations.vacation = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        ({ pkgs, ... }: {
+          nixpkgs = { overlays = [
+            
+            (self: super: { unstable = import nixpkgs-unstable { system = "x86_64-linux"; }; }) 
+
+
+          ];};
+        })
+        ./machines/vacation/configuration.nix
+      ];
+    };
+
     nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
