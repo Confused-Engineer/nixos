@@ -170,6 +170,9 @@
     openrazer-daemon
     polychromatic
     jellyfin-media-player
+    (pkgs.kodi.withPackages (kodiPkgs: with kodiPkgs; [
+		  jellyfin
+	]))
   ];
   hardware.openrazer.enable = true;
   
