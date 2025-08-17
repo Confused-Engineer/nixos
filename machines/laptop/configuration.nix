@@ -169,6 +169,7 @@
     moonlight-qt
     openrazer-daemon
     polychromatic
+    jellyfin-media-player
   ];
   hardware.openrazer.enable = true;
   
