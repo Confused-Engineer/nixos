@@ -176,7 +176,7 @@
   ];
   hardware.openrazer.enable = true;
   
-  services.logind.lidSwitch = "hibernate";
+  services.logind.lidSwitch = "ignore";
   # Optional settings:
   # services.logind.lidSwitchExternalPower = "hibernate"; # Hibernate when on external power
   # services.logind.lidSwitchDocked = "ignore"; # Don't hibernate when docked
@@ -219,6 +219,10 @@
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
+  networking.firewall = {
+    allowedTCPPorts = [ 8080 ];
+    allowedUDPPorts = [ 8080 ];
+  };
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
