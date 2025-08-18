@@ -172,6 +172,7 @@
     jellyfin-media-player
     (pkgs.kodi.withPackages (kodiPkgs: with kodiPkgs; [
 		  jellyfin
+      inputstream-adaptive
 	]))
   ];
   hardware.openrazer.enable = true;
