@@ -15,6 +15,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "kodi"; # Define your hostname.
+  nix.settings.trusted-users = [ "root" "david" ];
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -52,8 +53,9 @@
 
   services.openssh = {
     enable = true;
-    settings.PasswordAuthentication = true;
+    settings.PasswordAuthentication = false;
     settings.AllowUsers = [ "david" ];
+    settings.PermitRootLogin = "yes";
   };
 
   networking.firewall = {
@@ -61,11 +63,11 @@
     allowedUDPPorts = [ 8080 ];
   };
 
-services.xserver.desktopManager.kodi.package = (pkgs.kodi.withPackages (kodiPkgs: with kodiPkgs; [
-  jellyfin
-  inputstream-adaptive
-  pvr-iptvsimple
-]));
+  services.xserver.desktopManager.kodi.package = (pkgs.kodi.withPackages (kodiPkgs: with kodiPkgs; [
+    jellyfin
+    inputstream-adaptive
+    pvr-iptvsimple
+  ]));
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -74,7 +76,7 @@ services.xserver.desktopManager.kodi.package = (pkgs.kodi.withPackages (kodiPkgs
   };
 
   # Enable CUPS to print documents.
-  services.printing.enable = true;
+  services.printing.enable = false;
 
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
