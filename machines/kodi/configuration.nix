@@ -55,7 +55,7 @@
     enable = true;
     settings.PasswordAuthentication = false;
     settings.AllowUsers = [ "david" ];
-    settings.PermitRootLogin = "yes";
+    settings.PermitRootLogin = "prohibit-password"
   };
 
   networking.firewall = {
