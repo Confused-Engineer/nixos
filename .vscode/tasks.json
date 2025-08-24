@@ -34,7 +34,7 @@
                 {
             "label": "Nixos Target Build",
             "type": "shell",
-            "command": "nixos-rebuild --flake .#${input:flake} --target-host ${input:remoteIp} --use-remote-sudo switch",
+            "command": "nixos-rebuild --flake .#${input:flake} --target-host ${input:remoteIp} --use-remote-sudo boot",
             "problemMatcher": []
         },
     ],
