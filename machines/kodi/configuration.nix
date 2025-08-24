@@ -53,7 +53,7 @@
 
   services.openssh = {
     enable = true;
-    settings.PasswordAuthentication = false;
+    settings.PasswordAuthentication = true;
     settings.AllowUsers = [ "david" ];
     settings.PermitRootLogin = "prohibit-password"
   };
