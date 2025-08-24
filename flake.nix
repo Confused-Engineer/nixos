@@ -74,5 +74,15 @@
       ];
     };
 
+    nixosConfigurations.kodi = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        ({ pkgs, ... }: {
+          nixpkgs = { overlays = [(self: super: { unstable = import nixpkgs-unstable { system = "x86_64-linux"; }; }) ]; };
+        })
+        ./machines/kodi/configuration.nix
+      ];
+    };
+
   };
 }
