@@ -69,6 +69,11 @@
     pvr-iptvsimple
   ]));
 
+  systemd.targets.sleep.enable = false;
+  systemd.targets.suspend.enable = false;
+  systemd.targets.hibernate.enable = false;
+  systemd.targets.hybridSleep.enable = false;
+
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";

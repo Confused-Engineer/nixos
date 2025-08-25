@@ -162,7 +162,7 @@
   users.users.david = {
     isNormalUser = true;
     description = "david";
-    extraGroups = [ "networkmanager" "wheel" "audio" "openrazer"];
+    extraGroups = [ "networkmanager" "wheel" "audio" "openrazer" "dialout"];
     packages = with pkgs; [
     #  thunderbird
     ];
