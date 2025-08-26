@@ -175,12 +175,9 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
     discord
     heroic
     freecad
-   # bambu-studio
     unstable.r2modman
     pavucontrol
     vscode
@@ -195,13 +192,12 @@
     ansible
     python312
     python312Packages.venvShellHook
-   # mcpelauncher-ui-qt
     prismlauncher
    # polychromatic
    # openrazer-daemon
     brave
     procps
-   # orca-slicer
+    gparted
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
