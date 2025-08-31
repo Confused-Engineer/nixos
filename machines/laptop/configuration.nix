@@ -177,7 +177,7 @@
   ];
   hardware.openrazer.enable = true;
   
-  services.logind.lidSwitch = "ignore";
+  services.logind.lidSwitch = "hibernate";
   # Optional settings:
   # services.logind.lidSwitchExternalPower = "hibernate"; # Hibernate when on external power
   # services.logind.lidSwitchDocked = "ignore"; # Don't hibernate when docked
