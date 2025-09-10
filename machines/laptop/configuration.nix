@@ -167,15 +167,13 @@
     neofetch
     pavucontrol
     moonlight-qt
-    openrazer-daemon
-    polychromatic
     jellyfin-media-player
     (pkgs.kodi.withPackages (kodiPkgs: with kodiPkgs; [
 		  jellyfin
       inputstream-adaptive
 	]))
   ];
-  hardware.openrazer.enable = true;
+
   
   services.logind.lidSwitch = "hibernate";
   # Optional settings:
