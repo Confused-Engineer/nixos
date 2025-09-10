@@ -77,7 +77,7 @@
  # };
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
-  boot.kernelPackages = pkgs.unstable.linuxPackages;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
