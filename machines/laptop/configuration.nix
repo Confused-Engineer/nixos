@@ -77,7 +77,7 @@
  # };
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
-  boot.kernelPackages = pkgs.unstable.linuxPackages;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -167,15 +167,13 @@
     neofetch
     pavucontrol
     moonlight-qt
-    openrazer-daemon
-    polychromatic
     jellyfin-media-player
     (pkgs.kodi.withPackages (kodiPkgs: with kodiPkgs; [
 		  jellyfin
       inputstream-adaptive
 	]))
   ];
-  hardware.openrazer.enable = true;
+
   
   services.logind.lidSwitch = "hibernate";
   # Optional settings:
