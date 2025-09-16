@@ -198,6 +198,7 @@
     brave
     procps
     gparted
+    audacity
   ];
 
   hardware.openrazer.enable = true;
