@@ -13,7 +13,7 @@
         ({ pkgs, ... }: {
           nixpkgs = { overlays = [
             
-            (self: super: { unstable = import nixpkgs-unstable { system = "x86_64-linux"; }; }) 
+            (self: super: { unstable = import nixpkgs-unstable { system = "x86_64-linux"; config.allowUnfree = true; }; }) 
 
             (final: prev: {
               bambu-studio = prev.bambu-studio.overrideAttrs (oldAttrs: {
