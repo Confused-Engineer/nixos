@@ -199,6 +199,7 @@
     procps
     gparted
     audacity
+    dolphin-emu
   ];
 
   hardware.openrazer.enable = true;
