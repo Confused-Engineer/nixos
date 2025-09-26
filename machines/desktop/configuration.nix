@@ -190,8 +190,6 @@
     rustup
     gcc
     ansible
-    python312
-    python312Packages.venvShellHook
     prismlauncher
     polychromatic
     openrazer-daemon
@@ -200,8 +198,18 @@
     gparted
     audacity
     dolphin-emu
+    unstable.lact
   ];
-
+  
+  systemd.services.lact = {
+    description = "AMDGPU Control Daemon";
+    after = ["multi-user.target"];
+    wantedBy = ["multi-user.target"];
+    serviceConfig = {
+      ExecStart = "${pkgs.unstable.lact}/bin/lact daemon";
+    };
+    enable = true;
+  };
   hardware.openrazer.enable = true;
 
 
