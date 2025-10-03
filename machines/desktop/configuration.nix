@@ -29,7 +29,7 @@
       steam.systemd.enable = true; # Start Steam on Login
       flatpaks = {
         enable = true;
-        update = false;
+        update = true;
         desiredFlatpaks = [
           "org.onlyoffice.desktopeditors"
           "com.github.tchx84.Flatseal"
