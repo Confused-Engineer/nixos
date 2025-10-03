@@ -172,6 +172,7 @@
     (pkgs.kodi.withPackages (kodiPkgs: with kodiPkgs; [
 		  jellyfin
       inputstream-adaptive
+      pvr-iptvsimple
 	  ]))
   ];
 
