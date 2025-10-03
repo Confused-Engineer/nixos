@@ -199,6 +199,7 @@
     audacity
     dolphin-emu
     unstable.lact
+    vlc
   ];
   
   systemd.services.lact = {
