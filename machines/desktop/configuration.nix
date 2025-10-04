@@ -29,7 +29,7 @@
       steam.systemd.enable = true; # Start Steam on Login
       flatpaks = {
         enable = true;
-        update = true;
+        update = false;
         desiredFlatpaks = [
           "org.onlyoffice.desktopeditors"
           "com.github.tchx84.Flatseal"
@@ -99,7 +99,12 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Use latest kernel.
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # boot.kernelPackages = pkgs.linuxPackages_latest;
+  ### ZFS SUPPORT ###
+  boot.supportedFilesystems = [ "zfs" ];
+  boot.zfs.forceImportRoot = false;
+  networking.hostId = "93d0703e";
+
 
   networking.hostName = "desktop"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
