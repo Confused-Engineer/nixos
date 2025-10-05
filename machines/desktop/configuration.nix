@@ -105,6 +105,8 @@
   boot.zfs.forceImportRoot = false;
   networking.hostId = "93d0703e";
   boot.zfs.extraPools = [ "gamepool" ];
+  services.zfs.autoScrub.enable = true;
+
   # boot.postBootCommands = ''
   #   ${pkgs.zfs}/bin/zpool import -a
   #   ${pkgs.zfs}/bin/zfs mount -a
