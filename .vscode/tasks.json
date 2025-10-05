@@ -8,15 +8,9 @@
             "problemMatcher": []
         },
         {
-            "label": "Update Flake nixpkgs-unstable",
-            "type": "shell",
-            "command": "sudo nix flake update nixpkgs-unstable",
-            "problemMatcher": []
-        },
-        {
             "label": "Update Flake nixpkgs",
             "type": "shell",
-            "command": "sudo nix flake update nixpkgs",
+            "command": "nix flake update nixpkgs nixpkgs-unstable",
             "problemMatcher": []
         },
         {
