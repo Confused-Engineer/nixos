@@ -8,7 +8,69 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./../../nixosModules
     ];
+
+  specialisation = {
+    kodi.configuration = {
+
+      custom = {
+
+        os = {
+          autoClean.enable = true; # Clean System images greater than 7 days old
+          autoUpgrade.enable = true;
+          ui.kodi.enable = true;
+        };    
+      };
+
+      services.xserver.desktopManager.kodi.package = (pkgs.kodi.withPackages (kodiPkgs: with kodiPkgs; [
+        jellyfin
+        inputstream-adaptive
+        pvr-iptvsimple
+      ]));
+    };
+
+    david.configuration = {
+
+      custom = {
+        apps = {
+          browsers.firefox = {
+            enable = true;
+            privacy = "strict";
+            homepage = "https://hp.a5f.org/";
+          };
+        };
+
+        os = {
+          autoClean.enable = true; # Clean System images greater than 7 days old
+          autoUpgrade.enable = true;
+
+          ui = {
+            gnome = {
+              enable = true; # Use gnome
+              strip.enable = true;
+              extensions.enable = true;
+              disable.hibernate = false;
+            };
+          };
+        };    
+      };
+
+      environment.systemPackages = with pkgs; [
+      #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+      #  wget
+        vscode
+        git
+      ];
+    };
+
+  };
+
+
+
+
+
+
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -43,13 +105,8 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  services.xserver.enable = true;
-  services.xserver.desktopManager.kodi.enable = true;
-  services.displayManager.autoLogin.user = "kodi";
-  services.xserver.displayManager.lightdm.greeter.enable = false;
 
-  # Define a user account
-  users.extraUsers.kodi.isNormalUser = true;
+
 
   services.openssh = {
     enable = true;
@@ -58,21 +115,11 @@
     settings.PermitRootLogin = "prohibit-password";
   };
 
-  networking.firewall = {
-    allowedTCPPorts = [ 22 8080 ];
-    allowedUDPPorts = [ 8080 ];
-  };
 
-  services.xserver.desktopManager.kodi.package = (pkgs.kodi.withPackages (kodiPkgs: with kodiPkgs; [
-    jellyfin
-    inputstream-adaptive
-    pvr-iptvsimple
-  ]));
 
-  systemd.targets.sleep.enable = false;
-  systemd.targets.suspend.enable = false;
-  systemd.targets.hibernate.enable = false;
-  systemd.targets.hybridSleep.enable = false;
+
+
+
 
   # Configure keymap in X11
   services.xserver.xkb = {

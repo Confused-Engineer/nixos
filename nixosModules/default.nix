@@ -13,6 +13,7 @@
         ./os/autoUpgrade.nix
         ./os/ui/gnome/gnome.nix
         ./os/ui/cosmic/cosmic.nix
+        ./os/ui/kodi/kodi.nix
         ./hardware/gpu/nvidia.nix
         ./hardware/controllers/xbox.nix
     ];
