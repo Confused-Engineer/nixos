@@ -10,7 +10,7 @@
         {
             "label": "Update Flake nixpkgs",
             "type": "shell",
-            "command": "nix flake update nixpkgs nixpkgs-unstable",
+            "command": "nix flake update",
             "problemMatcher": []
         },
         {
