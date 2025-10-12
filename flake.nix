@@ -3,9 +3,13 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    home-manager = {
+      url = "github:nix-community/home-manager/release-25.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, ... }: {
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, ... }: {
 
     nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
@@ -69,11 +73,24 @@
     nixosConfigurations.lat9430 = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
+        ./machines/lat9430/configuration.nix
+
         ({ pkgs, ... }: {
           nixpkgs = { overlays = [(self: super: { unstable = import nixpkgs-unstable { system = "x86_64-linux"; }; }) ]; };
         })
-        ./machines/lat9430/configuration.nix
+        
+
+        home-manager.nixosModules.home-manager {
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            users.david = import ./machines/lat9430/home.nix;
+            backupFileExtension = "backup";
+          };
+        }
       ];
+
+
     };
 
     nixosConfigurations.kodi = nixpkgs.lib.nixosSystem {
