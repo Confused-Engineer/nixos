@@ -39,7 +39,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-#  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   networking.hostName = "lat9430";
   networking.networkmanager.enable = true;
 
@@ -75,7 +75,6 @@
     # no need to redefine it in your config for now)
     #media-session.enable = true;
   };
-
 
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [

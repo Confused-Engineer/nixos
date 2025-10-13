@@ -54,6 +54,7 @@ in
     plexamp
     discord
     vscode
+    vlc
     (pkgs.kodi.withPackages (kodiPkgs: with kodiPkgs; [
       jellyfin
       inputstream-adaptive
