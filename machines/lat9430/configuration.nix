@@ -16,9 +16,9 @@
         desiredFlatpaks = [
           "org.onlyoffice.desktopeditors"
           "com.github.tchx84.Flatseal"
-          "at.vintagestory.VintageStory"
           "com.usebottles.bottles"
           "com.bambulab.BambuStudio"
+          "com.ml4w.dotfilesinstaller"
         ];
       };
 
