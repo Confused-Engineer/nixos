@@ -1,8 +1,7 @@
 { config, pkgs, ... }:
 let
-  dotfiles = "${config.home.homeDirectory}/nixos-dotfiles/config";
+  dotfiles = "${config.home.homeDirectory}/Documents/nixos-reset/machines/lat9430/dotfiles/config";
   create_symlink = path: config.lib.file.mkOutOfStoreSymlink path;
-
   configs = {
     hypr = "hypr";
     nvim = "nvim";
@@ -10,6 +9,10 @@ let
     rofi = "rofi";
     foot = "foot";
     waybar = "waybar";
+    nwg-look = "nwg-look";
+    nwg-dock-hyprland = "nwg-dock-hyprland";
+    wlogout = "wlogout";
+    wallpaper = "wallpaper";
   };
 in
 {
@@ -40,21 +43,18 @@ in
   };
 
   home.packages = with pkgs; [
-    neovim
-    ripgrep
-    nil
-    nixpkgs-fmt
-    nodejs
-    gcc
-    wofi
+  #  ripgrep
+  #  nil
+  #  nixpkgs-fmt
+  #  nodejs
+  #  gcc
+  #  wofi
     nitch
     rofi
-    pcmanfm
-    kdePackages.dolphin
     plexamp
     discord
     vscode
-    vlc
+    obsidian
     (pkgs.kodi.withPackages (kodiPkgs: with kodiPkgs; [
       jellyfin
       inputstream-adaptive
