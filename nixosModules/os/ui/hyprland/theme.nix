@@ -42,20 +42,19 @@
 #          size = "compact";
 #        };
 #    };
-    colorScheme = "dark";
+    
     gtk2.extraConfig = ''
       gtk-cursor-theme-size = 12
       gtk-cursor-theme-name = "capitaine-cursors"
     '';
     gtk3.extraConfig = {
-      gtk-application-prefer-dark-theme = 1;
+      gtk-application-prefer-dark-theme = true;
       gtk-cursor-theme-size = 12;
       gtk-cursor-theme-name = "capitaine-cursors";
     };
     gtk4.extraConfig = {
-      Settings = ''
-        gtk-application-prefer-dark-theme=1
-      '';
+
+      gtk-application-prefer-dark-theme = true;
     };
   };
 }

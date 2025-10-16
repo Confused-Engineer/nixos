@@ -130,6 +130,8 @@
 
     # Desktop Portal so apps can use filepickers, etc
     xdg-desktop-portal-hyprland
+    xdg-desktop-portal
+
 
     # dock and appearance
     nwg-dock-hyprland

@@ -23,6 +23,7 @@ in
   home.username = "david";
   home.homeDirectory = "/home/david";
   home.stateVersion = "25.05";
+  home.sessionVariables.GTK_THEME = "gruvbox-dark";
   programs.bash = {
     enable = true;
     shellAliases = {
