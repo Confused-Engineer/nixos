@@ -17,7 +17,7 @@
 }
 
 window#waybar {
-    background-color: @bg;
+    background: rgba(49, 49, 49, 0.7);
     color: @fg;
 }
 
@@ -66,39 +66,34 @@ button:hover {
 
 #clock {
     color: @cyn;
-    border-bottom: 4px solid @cyn;
+    border-bottom: 0px solid @cyn;
 }
 
 #battery {
     color: @mag;
-    border-bottom: 4px solid @mag;
+    border-bottom: 0px solid @mag;
 }
 
 #disk {
     color: @ylw;
-    border-bottom: 4px solid @ylw;
+    border-bottom: 0px solid @ylw;
 }
 
 #memory {
     color: @mag;
-    border-bottom: 4px solid @mag;
+    border-bottom: 0px solid @mag;
 }
 
 #cpu {
     color: @grn;
-    border-bottom: 4px solid @grn;
+    border-bottom: 0px solid @grn;
 }
 
 #network {
     color: @blu;
-    border-bottom: 4px solid @blu;
+    border-bottom: 0px solid @blu;
 }
 
 #network.disconnected {
     background-color: @red;
 }
-
-#tray {
-    background-color: #2980b9;
-}
-

@@ -27,6 +27,7 @@
         "battery",
         "custom/sep",
         "tray",
+        "custom/sep",
         "custom/power"
     ],
 
@@ -45,7 +46,7 @@
         "seperate-outputs": false
     },
     "tray": {
-        // "icon-size": 21,
+        "icon-size": 21,
         "spacing": 10
         // "icons": {
         //   "blueman": "bluetooth",
@@ -53,19 +54,20 @@
         // }
     },
     "clock": {
-        "format": "{:%Y-%m-%d %H:%M}"
+      "format": "{:%A, %B %d, %H:%M %p}",
+      "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
     },
     "cpu": {
-        "format": "CPU: {usage}%",
+        "format": " {usage}%",
         "tooltip": false
     },
     "memory": {
-        "format": "Mem: {used}GiB"
+        "format": " {used}GiB"
     },
     "disk": {
         "interval": 60,
         "path": "/",
-        "format": "Disk: {free}"
+        "format": " {free}"
     },
     "group/hardware": {
 		"modules": [
@@ -76,7 +78,7 @@
         "orientation": "inherit",
         "drawer": {
             "transition-duration": 500,
-            "children-class": "not-power",
+            "children-class": "system-resources",
             "transition-left-to-right": false
         }
 	},
