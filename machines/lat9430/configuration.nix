@@ -134,7 +134,6 @@
 
     # dock and appearance
     nwg-dock-hyprland
-    nwg-look
   ];
 
   #  services.logind.settings.Login.HandleLidSwitch = "hibernate";
