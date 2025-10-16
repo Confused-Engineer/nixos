@@ -1,52 +1,61 @@
-{ config, pkgs, ... }:
-
-{
-  home.packages = with pkgs; [
-    adwaita-icon-theme
-    gnome-themes-extra
-  ];
-
-
+{ pkgs, ... }: {
   dconf = {
     settings = {
       "org/gnome/desktop/interface" = {
-  	color-scheme = "prefer-dark";
+        gtk-theme = "gruvbox-dark";
+        color-scheme = "prefer-dark";
       };
     };
   };
-
-
-
+  qt = {
+      enable = true;
+      platformTheme.name = "gtk";
+  };
+  home.pointerCursor = {
+    gtk.enable = true;
+    package = pkgs.bibata-cursors;
+    name = "Bibata-Modern-Classic";
+    size = 12;
+  };
   gtk = {
     enable = true;
-    theme.name = "Adwaita";
-    iconTheme.name = "Adwaita";
-    cursorTheme = {
-      name = "Adwaita";
-      package = pkgs.adwaita-icon-theme;
-      size = 24;
+#    iconTheme = {
+#      package = pkgs.gruvbox-dark-icons-gtk;
+#      name = "gruvbox-dark";
+#    };
+    iconTheme = {
+      package = pkgs.catppuccin-papirus-folders.override {
+        flavor = "macchiato";
+        accent = "maroon";
+      };
+      name = "Papirus-Dark";
+    };
+    theme = {
+      package = pkgs.gruvbox-dark-gtk;
+      name = "gruvbox-dark";
+    };
+#    theme = {
+#        name = "catppuccin-macchiato-mauve-compact";
+#        package = pkgs.catppuccin-gtk.override {
+#          accents = ["mauve"];
+#          variant = "macchiato";
+#          size = "compact";
+#        };
+#    };
+    colorScheme = "dark";
+    gtk2.extraConfig = ''
+      gtk-cursor-theme-size = 12
+      gtk-cursor-theme-name = "capitaine-cursors"
+    '';
+    gtk3.extraConfig = {
+      gtk-application-prefer-dark-theme = 1;
+      gtk-cursor-theme-size = 12;
+      gtk-cursor-theme-name = "capitaine-cursors";
+    };
+    gtk4.extraConfig = {
+      Settings = ''
+        gtk-application-prefer-dark-theme=1
+      '';
     };
   };
-
-  xdg.configFile."gtk-3.0/settings.ini".text = ''
-    [Settings]
-    gtk-theme-name=Adwaita
-    gtk-icon-theme-name=Adwaita
-    gtk-cursor-theme-name=Adwaita
-    gtk-cursor-theme-size=24
-  '';
-
-  xdg.configFile."gtk-4.0/settings.ini".text = ''
-    [Settings]
-    gtk-theme-name=Adwaita
-    gtk-icon-theme-name=Adwaita
-    gtk-cursor-theme-name=Adwaita
-    gtk-cursor-theme-size=24
-  '';
-
-  home.sessionVariables = {
-    XCURSOR_THEME = "Adwaita";
-    XCURSOR_SIZE = "24";
-  };
 }
-

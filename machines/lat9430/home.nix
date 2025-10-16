@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 let
-  dotfiles = "${config.home.homeDirectory}/Documents/nixos-reset/machines/lat9430/dotfiles/config";
+  dotfiles = "/etc/nixos/machines/lat9430/dotfiles/config";
   create_symlink = path: config.lib.file.mkOutOfStoreSymlink path;
   configs = {
     hypr = "hypr";
@@ -43,6 +43,8 @@ in
   };
 
   home.packages = with pkgs; [
+    adwaita-icon-theme
+    gnome-themes-extra
   #  ripgrep
   #  nil
   #  nixpkgs-fmt

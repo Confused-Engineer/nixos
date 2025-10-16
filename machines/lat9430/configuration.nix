@@ -143,19 +143,19 @@
 
 #  programs.dconf.enable = true;
 
-  programs.dconf.profiles.david = {
-    databases = [{
-      lockAll = true;
-      settings = {
-        "org/gnome/desktop/interface" = {
-          color-scheme = "prefer-dark";
-          gtk-theme = "adw-gtk";
-          clock-format = "12h";
-          clock-show-weekday = true;
-        };
-      };
-    }];
-  };
+  #programs.dconf.profiles.david = {
+  #  databases = [{
+  #    lockAll = true;
+  #    settings = {
+  #      "org/gnome/desktop/interface" = {
+  #        color-scheme = "prefer-dark";
+  #        gtk-theme = "adw-gtk";
+  #        clock-format = "12h";
+  #        clock-show-weekday = true;
+  #      };
+  #    };
+  #  }];
+  #};
 
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
