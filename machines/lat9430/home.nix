@@ -13,9 +13,12 @@ let
     nwg-dock-hyprland = "nwg-dock-hyprland";
     wlogout = "wlogout";
     wallpaper = "wallpaper";
+    kitty = "kitty";
   };
 in
 {
+
+  
   imports = [
     ./../../nixosModules/os/ui/hyprland/theme.nix
   ];
@@ -23,7 +26,7 @@ in
   home.username = "david";
   home.homeDirectory = "/home/david";
   home.stateVersion = "25.05";
-  home.sessionVariables.GTK_THEME = "gruvbox-dark";
+  #home.sessionVariables.GTK_THEME = "gruvbox-dark";
   programs.bash = {
     enable = true;
     shellAliases = {
@@ -44,8 +47,9 @@ in
   };
 
   home.packages = with pkgs; [
-    adwaita-icon-theme
-    gnome-themes-extra
+    adwaita-icon-theme          # icon theme
+             # Adwaita dark theme for GTK 3
+    libadwaita         # Adwaita dark theme for GTK 4
   #  ripgrep
   #  nil
   #  nixpkgs-fmt

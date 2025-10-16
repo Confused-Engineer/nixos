@@ -130,7 +130,6 @@
 
     # Desktop Portal so apps can use filepickers, etc
     xdg-desktop-portal-hyprland
-    xdg-desktop-portal
 
 
     # dock and appearance
@@ -141,23 +140,7 @@
   #  services.logind.settings.Login.HandleLidSwitch = "hibernate";
   services.logind.lidSwitch = "hibernate";
 
-   hardware.sensor.iio.enable = true;
-
-#  programs.dconf.enable = true;
-
-  #programs.dconf.profiles.david = {
-  #  databases = [{
-  #    lockAll = true;
-  #    settings = {
-  #      "org/gnome/desktop/interface" = {
-  #        color-scheme = "prefer-dark";
-  #        gtk-theme = "adw-gtk";
-  #        clock-format = "12h";
-  #        clock-show-weekday = true;
-  #      };
-  #    };
-  #  }];
-  #};
+  hardware.sensor.iio.enable = true;
 
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
