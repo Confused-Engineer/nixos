@@ -41,7 +41,7 @@
 
       ui = {
         gnome = {
-          enable = true; # Use gnome
+          enable = false; # Use gnome
           strip.enable = true;
           extensions.enable = true;
           disable.hibernate = false;
@@ -61,6 +61,12 @@
       shizukuLinux.enable = false; # Enable starting shizuku on android device plugin
     };
     
+  };
+
+  programs.hyprland = {
+    enable = true;
+    xwayland.enable = true;
+    withUWSM = true;
   };
 
   services.mullvad-vpn.enable = true;
@@ -143,9 +149,9 @@
   users.users.david = {
     isNormalUser = true;
     description = "David Pierce";
-    extraGroups = [ "networkmanager" "wheel" "audio" "openrazer"];
+    extraGroups = [ "networkmanager" "wheel" "audio" "openrazer" "power"];
     packages = with pkgs; [
-    #  thunderbird
+      tree
     ];
   };
 
@@ -158,24 +164,69 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    vscode
-    git
-    discord
-    bambu-studio
-    plexamp
-    spotify
-    neofetch
+    # Git tracking
+    git 
+
+    # Better CLI
+    zsh
+    zsh-completions
+    kitty
+
+    # Top Bar
+    waybar
+
+    # Network Applet
+    networkmanagerapplet
+
+    # Logout Menu
+    wlogout
+
+    # Hyprland idle and lock tools
+    hypridle
+    hyprlock
+    
+    # Brightness control
+    brightnessctl
+
+   # # Orientation and Hardware support
+   # iio-hyprland
+   # jq
+
+    #Volume Controller
     pavucontrol
-    moonlight-qt
-    jellyfin-media-player
-    (pkgs.kodi.withPackages (kodiPkgs: with kodiPkgs; [
-		  jellyfin
-      inputstream-adaptive
-	]))
+
+    # Wallpaper: waypaper frontend, hyprpaper backend
+    hyprpaper
+    waypaper
+
+    # hyprland color picker
+    hyprpicker
+
+    # File Manager, allow openening any terminal, mounting network shares
+    nautilus
+    nautilus-open-any-terminal
+    gnome.gvfs
+
+    # Desktop Portal so apps can use filepickers, etc
+    xdg-desktop-portal-hyprland
+
+
+    # dock and appearance
+    nwg-dock-hyprland
   ];
 
-  
+  #  services.logind.settings.Login.HandleLidSwitch = "hibernate";
   services.logind.lidSwitch = "hibernate";
+
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.symbols-only
+    fira-sans
+    fira-code
+    nerd-fonts.fira-code
+    font-awesome
+    material-design-icons
+  ];
   # Optional settings:
   # services.logind.lidSwitchExternalPower = "hibernate"; # Hibernate when on external power
   # services.logind.lidSwitchDocked = "ignore"; # Don't hibernate when docked

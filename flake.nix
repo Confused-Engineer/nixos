@@ -4,8 +4,8 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
-      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
 
@@ -60,12 +60,22 @@
       ];
     };
 
-    nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.laptop = nixpkgs-unstable.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
         ({ pkgs, ... }: {
-          nixpkgs = { overlays = [(self: super: { unstable = import nixpkgs-unstable { system = "x86_64-linux"; }; }) ]; };
+          nixpkgs = { overlays = [(self: super: { stable = import nixpkgs { system = "x86_64-linux"; }; }) ]; };
         })
+        
+        home-manager.nixosModules.home-manager {
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            users.david = import ./machines/laptop/home.nix;
+            backupFileExtension = "backup";
+          };
+        }
+
         ./machines/laptop/configuration.nix
       ];
     };
