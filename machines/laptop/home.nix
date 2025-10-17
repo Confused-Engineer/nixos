@@ -67,7 +67,6 @@ in
     neofetch
     pavucontrol
     moonlight-qt
-    jellyfin-media-player
     (pkgs.kodi.withPackages (kodiPkgs: with kodiPkgs; [
 		  jellyfin
       inputstream-adaptive
