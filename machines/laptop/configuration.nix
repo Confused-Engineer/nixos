@@ -215,8 +215,8 @@
     nwg-dock-hyprland
   ];
 
-  #  services.logind.settings.Login.HandleLidSwitch = "hibernate";
-  services.logind.lidSwitch = "hibernate";
+  services.logind.settings.Login.HandleLidSwitch = "hibernate";
+  # services.logind.lidSwitch = "hibernate";
 
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
