@@ -57,6 +57,7 @@ in
     spotify
     pavucontrol
     moonlight-qt
+    gimp
     (pkgs.kodi.withPackages (
       kodiPkgs: with kodiPkgs; [
         jellyfin
