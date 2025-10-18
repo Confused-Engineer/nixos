@@ -15,11 +15,7 @@
       system = "x86_64-linux";
       modules = [
         ({ pkgs, ... }: {
-          nixpkgs = { overlays = [
-            
-            (self: super: { unstable = import nixpkgs-unstable { system = "x86_64-linux"; config.allowUnfree = true; }; }) 
-
-          ];};
+          nixpkgs = { overlays = [ (self: super: { unstable = import nixpkgs-unstable { system = "x86_64-linux"; config.allowUnfree = true; }; }) ];};
         })
 
         ({ pkgs, config, lib, ... }: 
@@ -49,12 +45,7 @@
       system = "x86_64-linux";
       modules = [
         ({ pkgs, ... }: {
-          nixpkgs = { overlays = [
-            
-            (self: super: { unstable = import nixpkgs-unstable { system = "x86_64-linux"; }; }) 
-
-
-          ];};
+          nixpkgs = { overlays = [ (self: super: { unstable = import nixpkgs-unstable { system = "x86_64-linux"; }; }) ];};
         })
         ./machines/vacation/configuration.nix
       ];
@@ -89,7 +80,6 @@
           nixpkgs = { overlays = [(self: super: { unstable = import nixpkgs-unstable { system = "x86_64-linux"; }; }) ]; };
         })
         
-
         home-manager.nixosModules.home-manager {
           home-manager = {
             useGlobalPkgs = true;
@@ -99,8 +89,6 @@
           };
         }
       ];
-
-
     };
 
     nixosConfigurations.kodi = nixpkgs.lib.nixosSystem {
@@ -112,6 +100,5 @@
         ./machines/kodi/configuration.nix
       ];
     };
-
   };
 }
