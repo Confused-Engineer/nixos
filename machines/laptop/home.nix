@@ -25,7 +25,6 @@ in
   home.username = "david";
   home.homeDirectory = "/home/david";
   home.stateVersion = "25.05";
-  #home.sessionVariables.GTK_THEME = "gruvbox-dark";
   programs.bash = {
     enable = true;
     shellAliases = {
@@ -58,18 +57,17 @@ in
     spotify
     pavucontrol
     moonlight-qt
-    (pkgs.kodi.withPackages (kodiPkgs: with kodiPkgs; [
-		  jellyfin
-      inputstream-adaptive
-	]))
+    (pkgs.kodi.withPackages (
+      kodiPkgs: with kodiPkgs; [
+        jellyfin
+        inputstream-adaptive
+      ]
+    ))
   ];
 
-
-  xdg.configFile = builtins.mapAttrs
-    (name: subpath: {
-      source = create_symlink "${dotfiles}/${subpath}";
-      recursive = true;
-    })
-    configs;
+  xdg.configFile = builtins.mapAttrs (name: subpath: {
+    source = create_symlink "${dotfiles}/${subpath}";
+    recursive = true;
+  }) configs;
 
 }
