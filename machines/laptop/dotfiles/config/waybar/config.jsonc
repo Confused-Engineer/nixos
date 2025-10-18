@@ -103,10 +103,10 @@
         "interval" : 0
     },
    "custom/power": {
-        "format": "⏻ ",
+        "format": "⏻  ",
         "on-click": "wlogout",
         "tooltip": "false",
-        "min-length": 4
+        "min-length": 3
     },
     "pulseaudio": {
     // "scroll-step": 1, // %, can be a float

@@ -18,7 +18,6 @@ let
 in
 {
 
-  
   imports = [
     ./../../nixosModules/os/ui/hyprland/theme.nix
   ];
@@ -30,7 +29,6 @@ in
   programs.bash = {
     enable = true;
     shellAliases = {
-      btw = "echo i use hyprland btw";
       nrs = "sudo nixos-rebuild switch --flake /etc/nixos";
       ncs = "sudo nix-collect-garbage; sudo nix-collect-garbage -d; sudo nixos-rebuild switch --flake /etc/nixos";
       vim = "nano";
@@ -47,24 +45,17 @@ in
   };
 
   home.packages = with pkgs; [
-    adwaita-icon-theme          # icon theme
-             # Adwaita dark theme for GTK 3
-    libadwaita         # Adwaita dark theme for GTK 4
-  #  ripgrep
-  #  nil
-  #  nixpkgs-fmt
-  #  nodejs
-  #  gcc
-  #  wofi
+    adwaita-icon-theme
+    libadwaita
     nitch
     rofi
     obsidian
     vscode
+    nixfmt-rfc-style
     git
     discord
     plexamp
     spotify
-    neofetch
     pavucontrol
     moonlight-qt
     (pkgs.kodi.withPackages (kodiPkgs: with kodiPkgs; [
