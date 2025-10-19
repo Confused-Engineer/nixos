@@ -26,7 +26,7 @@
   custom = {
     apps = {
       steam.enable = true; # Enable Steam
-      steam.systemd.enable = true; # Start Steam on Login
+      steam.systemd.enable = false; # Start Steam on Login
       flatpaks = {
         enable = true;
         update = false;
