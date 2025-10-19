@@ -23,6 +23,11 @@
     ];
 
 
+  programs.gamescope = {
+      enable = true;
+      capSysNice = true;
+  };
+
   custom = {
     apps = {
       steam.enable = true; # Enable Steam
@@ -56,10 +61,15 @@
 
       ui = {
         gnome = {
-          enable = true; # Use gnome
+          enable = false; # Use gnome
           strip.enable = true;
           extensions.enable = true;
           disable.hibernate = false;
+        };
+
+        kde = {
+          enable = true; # Use gnome
+          strip.enable = true;
         };
 
         cosmic = {

@@ -30,6 +30,26 @@ in {
         dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
         localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
         # gamescopeSession.enable = true; # Enable a minimal desktop environment 
+        gamescopeSession.enable = true;
+        package = pkgs.steam.override {
+          extraLibraries = pkgs: [ pkgs.xorg.libxcb ];
+          extraPkgs =
+            pkgs: with pkgs; [
+              xorg.libxcb
+              xorg.libXcursor
+              xorg.libXi
+              xorg.libXinerama
+              xorg.libXScrnSaver
+              libpng
+              libpulseaudio
+              libvorbis
+              stdenv.cc.cc.lib
+              libkrb5
+              keyutils
+              gamemode
+            ];
+        };
+        extraCompatPackages = [ pkgs.proton-ge-bin ];
     };
 
 
