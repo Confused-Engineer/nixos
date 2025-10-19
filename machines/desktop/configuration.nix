@@ -223,6 +223,8 @@
     dolphin-emu
     unstable.lact
     vlc
+
+    gamescope-wsi
   ];
   
   systemd.services.lact = {
