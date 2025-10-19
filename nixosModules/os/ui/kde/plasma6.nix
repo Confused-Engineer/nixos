@@ -28,7 +28,6 @@ in {
     services.displayManager.sddm.enable = true;
     services.displayManager.sddm.wayland.enable = true;
     services.desktopManager.plasma6.enable = true;
-    excludePackages = [ pkgs.xterm ];
 
     environment.plasma6.excludePackages = with pkgs; mkIf (cfg.strip.enable == true ) [
       kdePackages.elisa # Simple music player aiming to provide a nice experience for its users
