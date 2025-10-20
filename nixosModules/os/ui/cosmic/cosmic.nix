@@ -13,10 +13,6 @@ in {
       enable = mkEnableOption "Use gnome";
     };
 
-    cosmic.extensions = {
-      enable = mkEnableOption "Add gnome Extensions";
-    };
-
     cosmic.strip = {
       enable = mkEnableOption "Strip most default apps";
     };

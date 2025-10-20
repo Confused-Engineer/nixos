@@ -11,7 +11,7 @@
 
   outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, ... }: {
 
-    nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.desktop = nixpkgs-unstable.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
         ({ pkgs, ... }: {

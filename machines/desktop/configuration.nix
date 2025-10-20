@@ -63,14 +63,13 @@
         };
 
         kde = {
-          enable = true; # Use gnome
+          enable = false; # Use gnome
           strip.enable = true;
         };
 
         cosmic = {
-          enable = false; # Use gnome
+          enable = true; # Use gnome
           strip.enable = true;
-          extensions.enable = true;
           disable.hibernate = false;
         };
       };
