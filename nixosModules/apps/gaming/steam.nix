@@ -30,7 +30,7 @@ in {
         dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
         localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
         # gamescopeSession.enable = true; # Enable a minimal desktop environment 
-        gamescopeSession.enable = true;
+        # gamescopeSession.enable = true;
         package = pkgs.steam.override {
           extraLibraries = pkgs: [ pkgs.xorg.libxcb ];
           extraPkgs =

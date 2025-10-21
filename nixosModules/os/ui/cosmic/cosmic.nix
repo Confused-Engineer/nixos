@@ -47,36 +47,9 @@ in {
 
 
 
- #   environment.cosmic.excludePackages = with pkgs; mkIf (cfg.strip.enable == true ) [
- #     adwaita-icon-theme
- #     alsa-utils
- #     cosmic-applets
- #     cosmic-applibrary
- #     cosmic-bg
- #     cosmic-edit
- #     cosmic-files
- #     config.services.displayManager.cosmic-greeter.package
- #     cosmic-icons
- #     cosmic-idle
- #     cosmic-launcher
- #     cosmic-notifications
- #     cosmic-osd
- #     cosmic-panel
- #     cosmic-player
- #     cosmic-randr
- #     cosmic-screenshot
- #     cosmic-session
- #     cosmic-settings
- #     cosmic-settings-daemon
- #     cosmic-term
- #     cosmic-wallpapers
- #     cosmic-workspaces-epoch
- #     hicolor-icon-theme
- #     playerctl
- #     pop-icon-theme
- #     pop-launcher
- #     xdg-user-dirs
- # ];
+    environment.cosmic.excludePackages = with pkgs; mkIf (cfg.strip.enable == true ) [
+      cosmic-store
+    ];
 
 
 
