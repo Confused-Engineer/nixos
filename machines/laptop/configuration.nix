@@ -50,8 +50,6 @@
         cosmic = {
           enable = false; # Use gnome
           strip.enable = true;
-          extensions.enable = true;
-          disable.hibernate = false;
         };
       };
     };
@@ -253,6 +251,7 @@
     };
   };
 
+  hardware.graphics.extraPackages = with pkgs; [ vaapiIntel intel-media-driver ];
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
