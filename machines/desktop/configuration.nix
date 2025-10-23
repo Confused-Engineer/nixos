@@ -217,6 +217,9 @@
     dolphin-emu
     unstable.lact
     vlc
+    pcsx2
+    rpcs3
+    sm64coopdx
 
     gamescope-wsi
     gamescope
