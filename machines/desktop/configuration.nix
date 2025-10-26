@@ -192,34 +192,16 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    discord
     heroic
     freecad
-    unstable.r2modman
+    r2modman
     pavucontrol
-    vscode
     mangohud
-    spotify
-    plexamp
-    neofetch
-    git
-    bash
-    rustup
-    gcc
-    ansible
-    prismlauncher
     polychromatic
     openrazer-daemon
-    brave
-    procps
+    # procps
     gparted
-    audacity
-    dolphin-emu
-    unstable.lact
-    vlc
-    pcsx2
-    rpcs3
-    sm64coopdx
+    lact
 
     gamescope-wsi
     gamescope
@@ -230,7 +212,7 @@
     after = ["multi-user.target"];
     wantedBy = ["multi-user.target"];
     serviceConfig = {
-      ExecStart = "${pkgs.unstable.lact}/bin/lact daemon";
+      ExecStart = "${pkgs.lact}/bin/lact daemon";
     };
     enable = true;
   };

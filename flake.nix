@@ -37,6 +37,16 @@
             boot.kernelPackages = latestKernelPackage;
           }
         )
+
+        home-manager.nixosModules.home-manager {
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            users.david = import ./machines/desktop/home.nix;
+            backupFileExtension = "backup";
+          };
+        }
+
         ./machines/desktop/configuration.nix
       ];
     };
