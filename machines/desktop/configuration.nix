@@ -203,6 +203,7 @@
     gparted
     lact
 
+    bash
     pcsx2
     dolphin-emu
     winboat
