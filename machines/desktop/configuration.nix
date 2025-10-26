@@ -203,7 +203,11 @@
     lact
 
     
-
+    stable.pcsx2
+    stable.rpcs3
+    # dolphin-emu
+    winboat
+  
 
     gamescope-wsi
     gamescope
