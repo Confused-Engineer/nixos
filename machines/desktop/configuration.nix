@@ -199,12 +199,12 @@
     mangohud
     polychromatic
     openrazer-daemon
-    # procps
+    
     gparted
     lact
 
-    bash
-    pcsx2
+    
+    stable.pcsx2
     dolphin-emu
     winboat
     
