@@ -22,7 +22,7 @@
       ./../../nixosModules
     ];
 
-permittedInsecurePackages = [
+              nixpkgs.config.permittedInsecurePackages = [
                 "mbedtls-2.28.10"
               ];
 
