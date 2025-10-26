@@ -38,6 +38,15 @@
           }
         )
 
+        ({ config, pkgs, ... }: {
+          nixpkgs.config = {
+            permittedInsecurePackages = [
+              "mbedtls-2.28.10"
+            ];
+          };
+          # ... other configuration
+        })
+
         home-manager.nixosModules.home-manager {
           home-manager = {
             useGlobalPkgs = true;
