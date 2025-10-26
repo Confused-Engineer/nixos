@@ -203,6 +203,14 @@
     gparted
     lact
 
+    pcsx2
+    dolphin-emu
+    winboat
+    
+    
+    rpcs3
+    sm64coopdx
+
     gamescope-wsi
     gamescope
   ];

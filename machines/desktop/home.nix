@@ -31,12 +31,7 @@
     ansible
     prismlauncher
     brave
-    dolphin-emu
-    winboat
     vlc
-    pcsx2
-    rpcs3
-    sm64coopdx
   ];
 
 }
