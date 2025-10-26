@@ -203,14 +203,7 @@
     lact
 
     
-    stable.pcsx2
-    stable.rpcs3
-    stable.dolphin-emu
-    winboat
-    
-    
-    
-    sm64coopdx
+
 
     gamescope-wsi
     gamescope
