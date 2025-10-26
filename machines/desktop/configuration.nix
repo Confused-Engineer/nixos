@@ -205,11 +205,12 @@
 
     
     stable.pcsx2
+    stable.rpcs3
     dolphin-emu
     winboat
     
     
-    rpcs3
+    
     sm64coopdx
 
     gamescope-wsi
