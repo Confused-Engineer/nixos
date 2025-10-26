@@ -178,13 +178,13 @@
   users.users.david = {
     isNormalUser = true;
     description = "david";
-    extraGroups = [ "networkmanager" "wheel" "audio" "openrazer" "dialout"];
+    extraGroups = [ "networkmanager" "wheel" "audio" "openrazer" "dialout" "docker"];
     packages = with pkgs; [
     #  thunderbird
     ];
   };
 
-
+  virtualisation.docker.enable = true;
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
