@@ -192,7 +192,7 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     heroic
-    freecad
+    
     r2modman
     pavucontrol
     mangohud
