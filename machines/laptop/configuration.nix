@@ -22,6 +22,7 @@
         desiredFlatpaks = [
           "org.onlyoffice.desktopeditors"
           "com.github.tchx84.Flatseal"
+          "com.bambulab.BambuStudio"
         ];
       };
 
