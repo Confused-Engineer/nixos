@@ -169,7 +169,7 @@
     # Better CLI
     zsh
     zsh-completions
-    kitty
+    cosmic-term
 
     # Top Bar
     waybar
