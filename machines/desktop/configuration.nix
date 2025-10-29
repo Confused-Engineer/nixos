@@ -225,6 +225,16 @@
   hardware.openrazer.enable = true;
 
 
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
+   # nerd-fonts.symbols-only
+   # fira-sans
+   # fira-code
+   # nerd-fonts.fira-code
+   # font-awesome
+   # material-design-icons
+  ];
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
