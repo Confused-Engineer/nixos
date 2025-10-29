@@ -17,11 +17,12 @@
       steam.enable = false; # Enable Steam
       steam.systemd.enable = true; # Start Steam on Login
       flatpaks = {
-        enable = false;
+        enable = true;
         update = true;
         desiredFlatpaks = [
           "org.onlyoffice.desktopeditors"
           "com.github.tchx84.Flatseal"
+          "com.bambulab.BambuStudio"
         ];
       };
 
@@ -168,7 +169,7 @@
     # Better CLI
     zsh
     zsh-completions
-    kitty
+    cosmic-term
 
     # Top Bar
     waybar
