@@ -18,25 +18,25 @@
           nixpkgs = { overlays = [ (self: super: { stable = import nixpkgs { system = "x86_64-linux"; config.allowUnfree = true; }; }) ];};
         })
 
-        ({ pkgs, config, lib, ... }: 
-          let
-            zfsCompatibleKernelPackages = lib.filterAttrs (
-              name: kernelPackages:
-              (builtins.match "linux_[0-9]+_[0-9]+" name) != null
-              && (builtins.tryEval kernelPackages).success
-              && (!kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}.meta.broken)
-            ) pkgs.linuxKernel.packages;
-            latestKernelPackage = lib.last (
-              lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
-                builtins.attrValues zfsCompatibleKernelPackages
-              )
-            );
-          in
-          {
-            # Note this might jump back and forth as kernels are added or removed.
-            boot.kernelPackages = latestKernelPackage;
-          }
-        )
+        #({ pkgs, config, lib, ... }: 
+        #  let
+        #    zfsCompatibleKernelPackages = lib.filterAttrs (
+        #      name: kernelPackages:
+        #      (builtins.match "linux_[0-9]+_[0-9]+" name) != null
+        #      && (builtins.tryEval kernelPackages).success
+        #      && (!kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}.meta.broken)
+        #    ) pkgs.linuxKernel.packages;
+        #    latestKernelPackage = lib.last (
+        #      lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
+        #        builtins.attrValues zfsCompatibleKernelPackages
+        #      )
+        #    );
+        #  in
+        #  {
+        #    # Note this might jump back and forth as kernels are added or removed.
+        #    boot.kernelPackages = latestKernelPackage;
+        #  }
+        #)
 
         home-manager.nixosModules.home-manager {
           home-manager = {

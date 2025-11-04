@@ -102,13 +102,13 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Use latest kernel.
-  # boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   ### ZFS SUPPORT ###
-  boot.supportedFilesystems = [ "zfs" ];
-  boot.zfs.forceImportRoot = false;
-  networking.hostId = "93d0703e";
-  boot.zfs.extraPools = [ "gamepool" ];
-  services.zfs.autoScrub.enable = true;
+  #boot.supportedFilesystems = [ "zfs" ];
+  #boot.zfs.forceImportRoot = false;
+  #networking.hostId = "93d0703e";
+  #boot.zfs.extraPools = [ "gamepool" ];
+  #services.zfs.autoScrub.enable = true;
 
   # boot.postBootCommands = ''
   #   ${pkgs.zfs}/bin/zpool import -a
@@ -325,6 +325,28 @@
 
   fileSystems."/media/Games" = {
     device = "/dev/disk/by-uuid/1c39032b-b81a-410d-9d7f-4a9ae60073d4";
+    fsType = "ext4";
+    options = [ # If you don't have this options attribute, it'll default to "defaults" 
+     # boot options for fstab. Search up fstab mount options you can use
+      "defaults"
+      "users" # Allows any user to mount and unmount
+      "nofail" # Prevent system from failing if this drive doesn't mount
+      "exec"
+    ];
+  };
+  fileSystems."/media/Extra01" = {
+    device = "/dev/disk/by-uuid/8c36d5a0-4afc-4bea-95be-6da718b570f8";
+    fsType = "ext4";
+    options = [ # If you don't have this options attribute, it'll default to "defaults" 
+     # boot options for fstab. Search up fstab mount options you can use
+      "defaults"
+      "users" # Allows any user to mount and unmount
+      "nofail" # Prevent system from failing if this drive doesn't mount
+      "exec"
+    ];
+  };
+  fileSystems."/media/Extra02" = {
+    device = "/dev/disk/by-uuid/c3c0b3cb-2f63-47aa-b388-362bac34c7fa";
     fsType = "ext4";
     options = [ # If you don't have this options attribute, it'll default to "defaults" 
      # boot options for fstab. Search up fstab mount options you can use
