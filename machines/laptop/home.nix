@@ -58,6 +58,7 @@ in
     pavucontrol
     moonlight-qt
     gimp
+    cosmic-edit
     (pkgs.kodi.withPackages (
       kodiPkgs: with kodiPkgs; [
         jellyfin
