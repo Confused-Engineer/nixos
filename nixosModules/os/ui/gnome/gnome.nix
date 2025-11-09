@@ -43,14 +43,27 @@ in {
     };
 
 
+
+
+
     environment.systemPackages = with pkgs.gnomeExtensions; mkIf (cfg.extensions.enable == true ) [
       dash-to-dock
       tray-icons-reloaded
     ];
 
 
-    systemd = mkIf (cfg.nvidiaFix.hibernate == true ) {
-      services."gnome-suspend" = {
+    systemd = {
+      services.copyGdmMonitorsXml = {
+        description = "Copy monitors.xml to GDM config";
+        after = [ "network.target" "systemd-user-sessions.service" "display-manager.service" ];
+        serviceConfig = {
+          ExecStart = "${pkgs.bash}/bin/bash -c 'echo \"Running copyGdmMonitorsXml service\" && mkdir -p /run/gdm/.config && echo \"Created /run/gdm/.config directory\" && [ \"/home/david/.config/monitors.xml\" -ef \"/run/gdm/.config/monitors.xml\" ] || cp /home/david/.config/monitors.xml /run/gdm/.config/monitors.xml && echo \"Copied monitors.xml to /run/gdm/.config/monitors.xml\" && chown gdm:gdm /run/gdm/.config/monitors.xml && echo \"Changed ownership of monitors.xml to gdm\"'";
+          Type = "oneshot";
+        };
+        wantedBy = [ "multi-user.target" ];
+      };
+
+      services."gnome-suspend" = mkIf (cfg.nvidiaFix.hibernate == true ) {
         description = "suspend gnome shell";
         before = [
           "systemd-suspend.service" 
@@ -67,7 +80,7 @@ in {
           ExecStart = ''${pkgs.procps}/bin/pkill -f -STOP ${pkgs.gnome-shell}/bin/gnome-shell'';
         };
       };
-      services."gnome-resume" = {
+      services."gnome-resume" = mkIf (cfg.nvidiaFix.hibernate == true ) {
         description = "resume gnome shell";
         after = [
           "systemd-suspend.service" 
