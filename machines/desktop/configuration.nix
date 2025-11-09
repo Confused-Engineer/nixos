@@ -205,7 +205,7 @@
     
     stable.pcsx2
     stable.rpcs3
-    # dolphin-emu
+    stable.dolphin-emu
     winboat
   
 

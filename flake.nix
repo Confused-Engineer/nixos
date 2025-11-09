@@ -15,7 +15,17 @@
       system = "x86_64-linux";
       modules = [
         ({ pkgs, ... }: {
-          nixpkgs = { overlays = [ (self: super: { stable = import nixpkgs { system = "x86_64-linux"; config.allowUnfree = true; }; }) ];};
+          nixpkgs = { overlays = [ 
+            (self: super: { stable = import nixpkgs {
+              system = "x86_64-linux";
+              config= {
+                allowUnfree = true;
+                permittedInsecurePackages = [
+                  "mbedtls-2.28.10"
+                ];
+              };
+            };})
+          ];};
         })
 
         #({ pkgs, config, lib, ... }: 
