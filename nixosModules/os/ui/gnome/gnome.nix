@@ -21,14 +21,9 @@ in {
       enable = mkEnableOption "Strip most default apps";
     };
 
-    gnome.disable = {
-      hibernate = mkEnableOption "Strip most default apps";
-    };
-
     gnome.nvidiaFix = {
-      enable = mkEnableOption "Add Hibernate fix for nvidia gpus";
+      hibernate = mkEnableOption "Fix Hibernate with Nvidia GPU";
     };
-
 
   };
   # Define what other settings, services and resources should be active IF
@@ -48,25 +43,13 @@ in {
     };
 
 
-
-
-    #systemd.targets = mkIf (cfg.disable.hibernate == true ) {
-#
-    # # sleep.enable = false;
-    #  suspend.enable = false;
-    #  hibernate.enable = false;
-    #  hybrid-sleep.enable = false;
-#
-    #};
-
-
     environment.systemPackages = with pkgs.gnomeExtensions; mkIf (cfg.extensions.enable == true ) [
       dash-to-dock
       tray-icons-reloaded
     ];
 
 
-    systemd = mkIf (cfg.nvidiaFix.enable == true ) {
+    systemd = mkIf (cfg.nvidiaFix.hibernate == true ) {
       services."gnome-suspend" = {
         description = "suspend gnome shell";
         before = [
