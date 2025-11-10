@@ -58,7 +58,7 @@
           enable = false; # Use gnome
           strip.enable = true;
           extensions.enable = true;
-          disable.hibernate = false;
+          nvidiaFix.hibernate = true;
         };
 
         kde = {
@@ -69,7 +69,7 @@
         cosmic = {
           enable = true; # Use gnome
           strip.enable = true;
-          disable.hibernate = false;
+          nvidiaFix.hibernate = true;
         };
       };
     };
@@ -205,7 +205,7 @@
     
     stable.pcsx2
     stable.rpcs3
-    # dolphin-emu
+    stable.dolphin-emu
     winboat
   
 
@@ -265,53 +265,6 @@
 
 
 
- # systemd.services.copyGdmMonitorsXml = {
- #   description = "Copy monitors.xml to GDM config";
- #   after = [ "network.target" "systemd-user-sessions.service" "display-manager.service" ];
- #   serviceConfig = {
- #     ExecStart = "${pkgs.bash}/bin/bash -c 'echo \"Running copyGdmMonitorsXml service\" && mkdir -p /run/gdm/.config && echo \"Created /run/gdm/.config directory\" && [ \"/home/david/.config/monitors.xml\" -ef \"/run/gdm/.config/monitors.xml\" ] || cp /home/david/.config/monitors.xml /run/gdm/.config/monitors.xml && echo \"Copied monitors.xml to /run/gdm/.config/monitors.xml\" && chown gdm:gdm /run/gdm/.config/monitors.xml && echo \"Changed ownership of monitors.xml to gdm\"'";
- #     Type = "oneshot";
- #   };
- #   wantedBy = [ "multi-user.target" ];
- # };
-
-
-
- # systemd = {
- #    services."gnome-suspend" = {
- #     description = "suspend gnome shell";
- #     before = [
- #       "systemd-suspend.service" 
- #       "systemd-hibernate.service"
- #       "nvidia-suspend.service"
- #       "nvidia-hibernate.service"
- #     ];
- #     wantedBy = [
- #       "systemd-suspend.service"
- #       "systemd-hibernate.service"
- #     ];
- #     serviceConfig = {
- #       Type = "oneshot";
- #       ExecStart = ''${pkgs.procps}/bin/pkill -f -STOP ${pkgs.gnome-shell}/bin/gnome-shell'';
- #     };
- #   };
- #   services."gnome-resume" = {
- #     description = "resume gnome shell";
- #     after = [
- #       "systemd-suspend.service" 
- #       "systemd-hibernate.service"
- #       "nvidia-resume.service"
- #     ];
- #     wantedBy = [
- #       "systemd-suspend.service"
- #       "systemd-hibernate.service"
- #     ];
- #     serviceConfig = {
- #       Type = "oneshot";
- #       ExecStart = ''${pkgs.procps}/bin/pkill -f -CONT ${pkgs.gnome-shell}/bin/gnome-shell'';
- #     };
- #   };
- # };
 
 ################ DRIVES ######################
 # last blkid dump

@@ -30,7 +30,7 @@ in
     shellAliases = {
       nrs = "sudo nixos-rebuild switch --flake /etc/nixos";
       ncs = "sudo nix-collect-garbage; sudo nix-collect-garbage -d; sudo nixos-rebuild switch --flake /etc/nixos";
-      vim = "nano";
+      nix-upgrade = "sudo nix flake update --flake /etc/nixos && sudo nixos-rebuild boot --flake /etc/nixos";
     };
     initExtra = ''
       export PS1='\[\e[38;5;76m\]\u\[\e[0m\] in \[\e[38;5;32m\]\w\[\e[0m\] \\$ '

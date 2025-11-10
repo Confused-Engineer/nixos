@@ -17,8 +17,8 @@ in {
       enable = mkEnableOption "Strip most default apps";
     };
 
-    cosmic.disable = {
-      hibernate = mkEnableOption "Strip most default apps";
+    cosmic.nvidiaFix = {
+      hibernate = mkEnableOption "Fix Hibernate with Nvidia GPU";
     };
 
 
@@ -34,17 +34,41 @@ in {
     # Enable the COSMIC desktop environment
     services.desktopManager.cosmic.enable = true;
 
-
-    systemd.targets = mkIf (cfg.disable.hibernate == true ) {
-
-     # sleep.enable = false;
-      suspend.enable = false;
-      hibernate.enable = false;
-      hybrid-sleep.enable = false;
-
+    systemd = mkIf (cfg.nvidiaFix.hibernate == true ) {
+      services."cosmic-suspend" = {
+        description = "suspend cosmic desktop";
+        before = [
+          "systemd-suspend.service" 
+          "systemd-hibernate.service"
+          "nvidia-suspend.service"
+          "nvidia-hibernate.service"
+        ];
+        wantedBy = [
+          "systemd-suspend.service"
+          "systemd-hibernate.service"
+        ];
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = ''${pkgs.procps}/bin/pkill -f -STOP ${pkgs.cosmic-osd}/bin/cosmic-osd'';
+        };
+      };
+      services."cosmic-resume" = {
+        description = "resume cosmic desktop";
+        after = [
+          "systemd-suspend.service" 
+          "systemd-hibernate.service"
+          "nvidia-resume.service"
+        ];
+        wantedBy = [
+          "systemd-suspend.service"
+          "systemd-hibernate.service"
+        ];
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = ''${pkgs.procps}/bin/pkill -f -CONT ${pkgs.cosmic-osd}/bin/cosmic-osd'';
+        };
+      };
     };
-
-
 
 
     environment.cosmic.excludePackages = with pkgs; mkIf (cfg.strip.enable == true ) [
