@@ -27,7 +27,6 @@
     plexamp
     spotify
     gimp
-    stable.freecad
     ansible
     prismlauncher
     brave

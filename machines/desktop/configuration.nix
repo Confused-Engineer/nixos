@@ -35,6 +35,7 @@
           "at.vintagestory.VintageStory"
           "com.usebottles.bottles"
           "com.bambulab.BambuStudio"
+          "org.freecad.FreeCAD"
         ];
       };
 
