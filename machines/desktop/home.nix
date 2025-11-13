@@ -27,7 +27,7 @@
     plexamp
     spotify
     gimp
-    ansible
+    
     prismlauncher
     brave
     vlc
