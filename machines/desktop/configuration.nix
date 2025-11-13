@@ -202,6 +202,7 @@
     
     gparted
     lact
+    gnome-system-monitor
 
     stable.pcsx2
     stable.rpcs3
