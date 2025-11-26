@@ -59,6 +59,7 @@ in
     moonlight-qt
     gimp
     cosmic-edit
+    vlc
     (pkgs.kodi.withPackages (
       kodiPkgs: with kodiPkgs; [
         jellyfin
