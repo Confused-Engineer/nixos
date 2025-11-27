@@ -207,7 +207,7 @@
     stable.pcsx2
     stable.rpcs3
     stable.dolphin-emu
-    #(stable.winboat.override {nodejs_24 = pkgs.nodejs_24;})
+    stable.winboat
   
     gamescope-wsi
     gamescope
