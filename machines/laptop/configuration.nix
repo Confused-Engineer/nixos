@@ -40,19 +40,6 @@
       autoClean.enable = true; # Clean System images greater than 7 days old
       autoUpgrade.enable = true;
 
-      ui = {
-        gnome = {
-          enable = false; # Use gnome
-          strip.enable = true;
-          extensions.enable = true;
-          disable.hibernate = false;
-        };
-
-        cosmic = {
-          enable = false; # Use gnome
-          strip.enable = true;
-        };
-      };
     };
 
     systemd = {
@@ -252,7 +239,7 @@
     };
   };
 
-  hardware.graphics.extraPackages = with pkgs; [ vaapiIntel intel-media-driver ];
+  # hardware.graphics.extraPackages = with pkgs; [ vaapiIntel intel-media-driver ];
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
