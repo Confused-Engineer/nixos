@@ -178,6 +178,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.david = {
     isNormalUser = true;
+    initialPassword = "vmtest";
     description = "david";
     extraGroups = [ "networkmanager" "wheel" "audio" "openrazer" "dialout" "docker"];
     packages = with pkgs; [
@@ -207,7 +208,7 @@
     stable.pcsx2
     stable.rpcs3
     stable.dolphin-emu
-    winboat
+    #winboat
   
     gamescope-wsi
     gamescope
