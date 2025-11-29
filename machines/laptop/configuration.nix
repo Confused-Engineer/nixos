@@ -135,6 +135,7 @@
   users.users.david = {
     isNormalUser = true;
     description = "David Pierce";
+    initialPassword = "vmtest";
     extraGroups = [ "networkmanager" "wheel" "audio" "openrazer" "power"];
     packages = with pkgs; [
       tree
