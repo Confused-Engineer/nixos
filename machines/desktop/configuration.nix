@@ -82,14 +82,20 @@
     
   };
 
-
-  services.sunshine = {
-    enable = false;
-    autoStart = true;
-    capSysAdmin = true;
-    openFirewall = true;
-    
+  specialisation = {
+    sunshine = {
+      inheritParentConfig = true;
+      configuration = {
+        services.sunshine = {
+          enable = true;
+          autoStart = true;
+          capSysAdmin = true;
+          openFirewall = true;
+        };
+      };
+    };
   };
+
 
   
   # Flakes
