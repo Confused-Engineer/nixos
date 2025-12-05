@@ -36,18 +36,18 @@ in
       export PS1='\[\e[38;5;76m\]\u\[\e[0m\] in \[\e[38;5;32m\]\w\[\e[0m\] \\$ '
       nitch
     '';
-    profileExtra = ''
-      if [ -z "$WAYLAND_DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
-        exec uwsm start hyprland-uwsm.desktop
-      fi
-    '';
+    #profileExtra = ''
+    #  if [ -z "$WAYLAND_DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
+    #    exec uwsm start hyprland-uwsm.desktop
+    #  fi
+    #'';
   };
 
   home.packages = with pkgs; [
     adwaita-icon-theme
     libadwaita
-    nitch
-    rofi
+    #nitch
+    #rofi
     obsidian
     vscode
     nixfmt-rfc-style
@@ -55,10 +55,10 @@ in
     discord
     plexamp
     spotify
-    pavucontrol
+    
     moonlight-qt
     gimp
-    cosmic-edit
+    #cosmic-edit
     vlc
     (pkgs.kodi.withPackages (
       kodiPkgs: with kodiPkgs; [
@@ -68,9 +68,9 @@ in
     ))
   ];
 
-  xdg.configFile = builtins.mapAttrs (name: subpath: {
-    source = create_symlink "${dotfiles}/${subpath}";
-    recursive = true;
-  }) configs;
+  #xdg.configFile = builtins.mapAttrs (name: subpath: {
+  #  source = create_symlink "${dotfiles}/${subpath}";
+  #  recursive = true;
+  #}) configs;
 
 }

@@ -40,20 +40,41 @@
       autoClean.enable = true; # Clean System images greater than 7 days old
       autoUpgrade.enable = true;
 
+      ui = {
+        gnome = {
+          enable = false; # Use gnome
+          strip.enable = true;
+          extensions.enable = true;
+          nvidiaFix.hibernate = true;
+        };
+
+        kde = {
+          enable = false; # Use gnome
+          strip.enable = true;
+        };
+
+        cosmic = {
+          enable = true; # Use gnome
+          strip.enable = true;
+          nvidiaFix.hibernate = false;
+        };
+      };
     };
 
     systemd = {
       system_api.enable = false; # Enable System API For Home Assistant
       shizukuLinux.enable = false; # Enable starting shizuku on android device plugin
     };
+
+    
     
   };
 
-  programs.hyprland = {
-    enable = true;
-    xwayland.enable = true;
-    withUWSM = true;
-  };
+  #programs.hyprland = {
+  #  enable = true;
+  #  xwayland.enable = true;
+  #  withUWSM = true;
+  #};
 
   services.mullvad-vpn.enable = true;
   services.mullvad-vpn.package = pkgs.mullvad-vpn;
@@ -160,20 +181,20 @@
     cosmic-term
 
     # Top Bar
-    waybar
+    # waybar
 
     # Network Applet
-    networkmanagerapplet
+    # networkmanagerapplet
 
     # Logout Menu
-    wlogout
+    # wlogout
 
     # Hyprland idle and lock tools
-    hypridle
-    hyprlock
+    # hypridle
+    # hyprlock
     
     # Brightness control
-    brightnessctl
+    # brightnessctl
 
    # # Orientation and Hardware support
    # iio-hyprland
@@ -183,23 +204,23 @@
     pavucontrol
 
     # Wallpaper: waypaper frontend, hyprpaper backend
-    hyprpaper
-    waypaper
+    # hyprpaper
+    # waypaper
 
     # hyprland color picker
-    hyprpicker
+    # hyprpicker
 
     # File Manager, allow openening any terminal, mounting network shares
-    nautilus
-    nautilus-open-any-terminal
-    gnome.gvfs
-
-    # Desktop Portal so apps can use filepickers, etc
-    xdg-desktop-portal-hyprland
-
-
-    # dock and appearance
-    nwg-dock-hyprland
+    #nautilus
+    #nautilus-open-any-terminal
+    #gnome.gvfs
+#
+    ## Desktop Portal so apps can use filepickers, etc
+    #xdg-desktop-portal-hyprland
+#
+#
+    ## dock and appearance
+    #nwg-dock-hyprland
   ];
 
   services.logind.settings.Login.HandleLidSwitch = "hibernate";
