@@ -157,12 +157,15 @@
     isNormalUser = true;
     description = "David Pierce";
     initialPassword = "vmtest";
-    extraGroups = [ "networkmanager" "wheel" "audio" "openrazer" "power"];
+    extraGroups = [ "networkmanager" "wheel" "audio" "openrazer" "power" "docker"];
     packages = with pkgs; [
       tree
     ];
   };
 
+  virtualisation.docker = {
+    enable = true;
+  };
   # Install firefox.
   # programs.firefox.enable = true;
 
@@ -178,7 +181,6 @@
     # Better CLI
     zsh
     zsh-completions
-    cosmic-term
 
     # Top Bar
     # waybar
@@ -238,28 +240,28 @@
   # Optional settings:
   # services.logind.lidSwitchExternalPower = "hibernate"; # Hibernate when on external power
   # services.logind.lidSwitchDocked = "ignore"; # Don't hibernate when docked
-  services.power-profiles-daemon.enable = false;
+  services.power-profiles-daemon.enable = true;
   powerManagement.enable = true;
-  services.tlp = {
-    enable = true;
-    settings = {
-      CPU_SCALING_GOVERNOR_ON_AC = "performance";
-      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-
-      CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
-      CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
-
-      CPU_MIN_PERF_ON_AC = 0;
-      CPU_MAX_PERF_ON_AC = 100;
-      CPU_MIN_PERF_ON_BAT = 0;
-      CPU_MAX_PERF_ON_BAT = 20;
-
-      #Optional helps save long term battery health
-      START_CHARGE_THRESH_BAT0 = 50; # 40 and below it starts to charge
-      STOP_CHARGE_THRESH_BAT0 = 85; # 80 and above it stops charging
-
-    };
-  };
+  #services.tlp = {
+  #  enable = true;
+  #  settings = {
+  #    CPU_SCALING_GOVERNOR_ON_AC = "performance";
+  #    CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+#
+  #    CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+  #    CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
+#
+  #    CPU_MIN_PERF_ON_AC = 0;
+  #    CPU_MAX_PERF_ON_AC = 100;
+  #    CPU_MIN_PERF_ON_BAT = 0;
+  #    CPU_MAX_PERF_ON_BAT = 20;
+#
+  #    #Optional helps save long term battery health
+  #    START_CHARGE_THRESH_BAT0 = 50; # 40 and below it starts to charge
+  #    STOP_CHARGE_THRESH_BAT0 = 85; # 80 and above it stops charging
+#
+  #  };
+  #};
 
   hardware.graphics.extraPackages = with pkgs; [ intel-vaapi-driver intel-media-driver ];
   # Some programs need SUID wrappers, can be configured further or are
