@@ -175,54 +175,11 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    # Git tracking
     git 
-
-    # Better CLI
     zsh
     zsh-completions
-
-    # Top Bar
-    # waybar
-
-    # Network Applet
-    # networkmanagerapplet
-
-    # Logout Menu
-    # wlogout
-
-    # Hyprland idle and lock tools
-    # hypridle
-    # hyprlock
-    
-    # Brightness control
-    # brightnessctl
-
-   # # Orientation and Hardware support
-   # iio-hyprland
-   # jq
-
-    #Volume Controller
     pavucontrol
-
-    # Wallpaper: waypaper frontend, hyprpaper backend
-    # hyprpaper
-    # waypaper
-
-    # hyprland color picker
-    # hyprpicker
-
-    # File Manager, allow openening any terminal, mounting network shares
-    #nautilus
-    #nautilus-open-any-terminal
-    #gnome.gvfs
-#
-    ## Desktop Portal so apps can use filepickers, etc
-    #xdg-desktop-portal-hyprland
-#
-#
-    ## dock and appearance
-    #nwg-dock-hyprland
+    # (winboat.override { electron = pkgs.electron_37; })
   ];
 
   services.logind.settings.Login.HandleLidSwitch = "hibernate";
