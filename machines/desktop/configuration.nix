@@ -19,6 +19,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./default-only.nix
       ./../../nixosModules
     ];
 
@@ -83,11 +84,11 @@
   };
 
   specialisation = {
-    sunshine = {
+    no-sunshine = {
       inheritParentConfig = true;
       configuration = {
         services.sunshine = {
-          enable = true;
+          enable = false;
           autoStart = true;
           capSysAdmin = true;
           openFirewall = true;
