@@ -87,12 +87,7 @@
     no-sunshine = {
       inheritParentConfig = true;
       configuration = {
-        services.sunshine = {
-          enable = false;
-          autoStart = true;
-          capSysAdmin = true;
-          openFirewall = true;
-        };
+
       };
     };
   };
