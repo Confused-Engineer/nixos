@@ -157,7 +157,7 @@
     isNormalUser = true;
     description = "David Pierce";
     initialPassword = "vmtest";
-    extraGroups = [ "networkmanager" "wheel" "audio" "openrazer" "power" "docker"];
+    extraGroups = [ "networkmanager" "dialout" "wheel" "audio" "openrazer" "power" "docker"];
     packages = with pkgs; [
       tree
     ];
