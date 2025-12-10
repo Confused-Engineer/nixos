@@ -18,9 +18,9 @@ let
 in
 {
 
-  imports = [
-    ./../../nixosModules/os/ui/hyprland/theme.nix
-  ];
+  #imports = [
+  #  ./../../nixosModules/os/ui/hyprland/theme.nix
+  #];
 
   home.username = "david";
   home.homeDirectory = "/home/david";
