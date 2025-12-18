@@ -211,7 +211,7 @@
     stable.pcsx2
     stable.rpcs3
     stable.dolphin-emu
-    #winboat
+    winboat
   
     gamescope-wsi
     gamescope
