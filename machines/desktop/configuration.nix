@@ -215,6 +215,8 @@
   
     gamescope-wsi
     gamescope
+
+    (nexusmods-app.override { _7zz = pkgs._7zz-rar; })
   ];
   
   systemd.services.lact = {
