@@ -56,6 +56,7 @@ in
     discord
     plexamp
     spotify
+    nitch
     
     moonlight-qt
     gimp
