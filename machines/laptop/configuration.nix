@@ -180,7 +180,8 @@
     zsh
     zsh-completions
     pavucontrol
-    # (winboat.override { electron = pkgs.electron_37; })
+    gparted
+    # winboat
   ];
 
   services.logind.settings.Login.HandleLidSwitch = "hibernate";
