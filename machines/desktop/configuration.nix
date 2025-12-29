@@ -27,6 +27,7 @@
     apps = {
       steam.enable = true; # Enable Steam
       steam.systemd.enable = false; # Start Steam on Login
+      lact.enable = true;
       flatpaks = {
         enable = true;
         update = false;
@@ -206,7 +207,6 @@
     openrazer-daemon
     
     gparted
-    lact
     gnome-system-monitor
 
     stable.pcsx2
@@ -220,15 +220,6 @@
     (nexusmods-app.override { _7zz = pkgs._7zz-rar; })
   ];
   
-  systemd.services.lact = {
-    description = "AMDGPU Control Daemon";
-    after = ["multi-user.target"];
-    wantedBy = ["multi-user.target"];
-    serviceConfig = {
-      ExecStart = "${pkgs.lact}/bin/lact daemon";
-    };
-    enable = true;
-  };
   services.fwupd.enable = true;
   hardware.openrazer.enable = true;
 
