@@ -229,6 +229,7 @@
     };
     enable = true;
   };
+  services.fwupd.enable = true;
   hardware.openrazer.enable = true;
 
 
