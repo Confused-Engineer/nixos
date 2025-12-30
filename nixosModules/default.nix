@@ -6,6 +6,7 @@
     imports = [
         ./apps/gaming/steam.nix
         ./apps/flatpak.nix
+        ./apps/lact.nix
         ./apps/browsers/firefox.nix
         ./systemd/system_api.nix
         ./systemd/shizuku_linux.nix
