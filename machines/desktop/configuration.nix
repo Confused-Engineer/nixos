@@ -38,6 +38,7 @@
           "com.usebottles.bottles"
           "com.bambulab.BambuStudio"
           "org.freecad.FreeCAD"
+          "com.core447.StreamController"
         ];
       };
 
