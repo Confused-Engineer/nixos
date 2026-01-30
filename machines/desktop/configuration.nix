@@ -38,7 +38,6 @@
           "com.usebottles.bottles"
           "com.bambulab.BambuStudio"
           "org.freecad.FreeCAD"
-          "com.core447.StreamController"
         ];
       };
 
@@ -215,10 +214,7 @@
     stable.dolphin-emu
     winboat
   
-    gamescope-wsi
-    gamescope
-
-    (nexusmods-app.override { _7zz = pkgs._7zz-rar; })
+    streamcontroller
   ];
   
   services.fwupd.enable = true;
