@@ -38,6 +38,7 @@
           "com.usebottles.bottles"
           "com.bambulab.BambuStudio"
           "org.freecad.FreeCAD"
+          "com.plexamp.Plexamp"
         ];
       };
 
@@ -215,6 +216,8 @@
     winboat
   
     streamcontroller
+
+    discord
   ];
   
   services.fwupd.enable = true;

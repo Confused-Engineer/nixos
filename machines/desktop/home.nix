@@ -25,8 +25,8 @@
     vscode
     # nixfmt-rfc-style
     git
-    discord
-    plexamp
+    
+    
     spotify
     gimp
     
