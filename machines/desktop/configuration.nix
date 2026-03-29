@@ -46,7 +46,7 @@
         enable = true;
         DisableFirefoxAccounts = false;
         privacy = "strict";
-        homepage = "https://hp.a5f.org/";
+        homepage = "https://hp.int.a5f.org/";
       };
     };
 
@@ -191,11 +191,13 @@
     ];
   };
 
-  virtualisation.docker.enable = true;
+  #virtualisation.docker.enable = true;
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
   programs.kdeconnect.enable = true;
+  programs.streamcontroller.enable = true;
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -213,9 +215,9 @@
     stable.pcsx2
     stable.rpcs3
     stable.dolphin-emu
-    winboat
+    #winboat
   
-    streamcontroller
+    #streamcontroller
 
     discord
   ];
@@ -259,7 +261,7 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.05"; # Did you read the comment?
+  system.stateVersion = "25.11"; # Did you read the comment?
 ################ SERVICES ####################
 
 

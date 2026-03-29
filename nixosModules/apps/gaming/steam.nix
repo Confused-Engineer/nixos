@@ -32,14 +32,14 @@ in {
         # gamescopeSession.enable = true; # Enable a minimal desktop environment 
         # gamescopeSession.enable = true;
         package = pkgs.steam.override {
-          extraLibraries = pkgs: [ pkgs.xorg.libxcb ];
+          extraLibraries = pkgs: [ pkgs.libxcb ];
           extraPkgs =
             pkgs: with pkgs; [
-              xorg.libxcb
-              xorg.libXcursor
-              xorg.libXi
-              xorg.libXinerama
-              xorg.libXScrnSaver
+              libxcb
+              libXcursor
+              libXi
+              libXinerama
+              libXScrnSaver
               libpng
               libpulseaudio
               libvorbis
