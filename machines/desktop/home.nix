@@ -3,7 +3,7 @@
 {
   home.username = "david";
   home.homeDirectory = "/home/david";
-  home.stateVersion = "25.05";
+  home.stateVersion = "25.11";
   programs.bash = {
     enable = true;
     shellAliases = {
@@ -23,7 +23,6 @@
     nitch
     obsidian
     vscode
-    # nixfmt-rfc-style
     git
     
     

@@ -39,6 +39,7 @@
           "com.bambulab.BambuStudio"
           "org.freecad.FreeCAD"
           "com.plexamp.Plexamp"
+          "com.core447.StreamController"
         ];
       };
 
