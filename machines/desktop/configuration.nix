@@ -196,7 +196,6 @@
   nixpkgs.config.allowUnfree = true;
 
   programs.kdeconnect.enable = true;
-  programs.streamcontroller.enable = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -216,8 +215,6 @@
     stable.rpcs3
     stable.dolphin-emu
     #winboat
-  
-    #streamcontroller
 
     discord
   ];
