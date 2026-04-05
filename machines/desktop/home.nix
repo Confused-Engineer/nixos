@@ -34,4 +34,10 @@
     vlc
   ];
 
+  # In your configuration.nix or home-manager config
+  home.file.".local/share/flatpak/overrides/com.core447.StreamController".text = ''
+    [Context]
+    filesystems=/run/user/1000;
+  '';
+
 }

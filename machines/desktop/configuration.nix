@@ -30,9 +30,8 @@
       lact.enable = true;
       flatpaks = {
         enable = true;
-        update = false;
+        update = true;
         desiredFlatpaks = [
-          "org.onlyoffice.desktopeditors"
           "com.github.tchx84.Flatseal"
           "at.vintagestory.VintageStory"
           "com.usebottles.bottles"
@@ -97,7 +96,7 @@
   };
 
 
-  
+
   # Flakes
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
