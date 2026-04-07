@@ -1,135 +1,203 @@
-{ lib
-, stdenv
-, fetchFromGitHub
-, dotnet-sdk_8
-, patchelf
-, openssl
-, icu
-, zlib
-, libgcc
-, krb5
-, fontconfig
-, freetype
-, libGL
-, xorg
-, runCommand
-}:
+{ pkgs ? import <nixpkgs> {} }:
 
 let
-  krb5WithUnversionedLib = runCommand "krb5-unversioned-so" {} ''
-    mkdir -p $out/lib
-    ln -s ${krb5}/lib/libgssapi_krb5.so.2 $out/lib/libgssapi_krb5.so
-  '';
+  # Update this to match the release version you want
+  version = "2.2.0.4";
 
-  runtimeLibs = [
-    # ── core .NET runtime ────────────────────────────────────────────────────
-    stdenv.cc.cc.lib        # libstdc++.so.6, libgcc_s.so.1
-    openssl
-    icu
-    zlib
-    libgcc.lib
-    krb5
-    krb5WithUnversionedLib  # provides unversioned libgssapi_krb5.so
-
-    # ── Skia / font rendering ────────────────────────────────────────────────
-    fontconfig
-    freetype
-    libGL
-
-    # ── X11 / Avalonia backend ───────────────────────────────────────────────
-    xorg.libX11
-    xorg.libICE
-    xorg.libSM
-    xorg.libXext
-    xorg.libXcursor
-    xorg.libXi
-    xorg.libXrandr
-    xorg.libXrender
-    xorg.libXinerama
-    xorg.libXcomposite
-    xorg.libXdamage
-    xorg.libXfixes
-    xorg.libXtst
-  ];
-
-  libPath = lib.makeLibraryPath runtimeLibs;
-  dynamicLinker = stdenv.cc.bintools.dynamicLinker;
-
-in
-stdenv.mkDerivation rec {
-  pname   = "Jellyfin2Samsung";
-  version = "2.2.0.4"; # bump alongside rev below
-
-  src = fetchFromGitHub {
-    owner = "Jellyfin2Samsung";
-    repo  = "Samsung-Jellyfin-Installer";
-    rev   = "v${version}";
-    # On first build Nix will error and print the correct hash — paste it here.
-    hash  = "sha256-ZG0zFvgHTz2TnY97PhSHYN6uvOWWcHyiFkv1zNgG/Ak=";
+  src = pkgs.fetchurl {
+    url = "https://github.com/Jellyfin2Samsung/Samsung-Jellyfin-Installer/releases/download/v${version}/Jellyfin2Samsung-v${version}-linux-x64.tar.gz";
+    # IMPORTANT: You must replace this hash the first time you build.
+    # Run:  nix-prefetch-url --unpack <url>
+    # or just set it to "" and let the build error tell you the correct hash.
+    sha256 = "hLHZ/JDtahvUGi8QpdF/xvIldgP+OTkcx0+efCHyKZk=";
   };
 
-  nativeBuildInputs = [ dotnet-sdk_8 patchelf ];
-  buildInputs = runtimeLibs;
-
-  preBuild = ''
-    export HOME=$(mktemp -d)
-    export DOTNET_CLI_TELEMETRY_OPTOUT=1
-    export DOTNET_NOLOGO=1
+  krb5WithUnversionedLib = pkgs.runCommand "krb5-unversioned-so" {} ''
+    mkdir -p $out/lib
+    ln -s ${pkgs.krb5}/lib/libgssapi_krb5.so.2 $out/lib/libgssapi_krb5.so
   '';
 
-  buildPhase = ''
-    runHook preBuild
+  # Unwrap the tarball into a derivation
+  jellyfin2samsung-unwrapped = pkgs.stdenv.mkDerivation {
+    pname = "jellyfin2samsung-unwrapped";
+    inherit version src;
 
-    dotnet publish Jellyfin2Samsung-CrossOS/Jellyfin2Samsung.csproj \
-      -c Release \
-      -r linux-x64 \
-      --self-contained true \
-      -p:PublishSingleFile=false \
-      -p:PublishTrimmed=false \
-      -p:ContinuousIntegrationBuild=true \
-      --output ./out
+    # The tarball might not have a top-level directory
+    sourceRoot = ".";
 
-    runHook postBuild
-  '';
+    # No patching needed — the FHS env provides all libraries at runtime
+    dontBuild = true;
+    dontConfigure = true;
+    dontPatchELF = true;
+    dontStrip = true;
+    dontFixup = true;
+
+    installPhase = ''
+      runHook preInstall
+
+      mkdir -p $out/lib/jellyfin2samsung
+
+      # Handle both cases: tarball with top-level dir or flat files
+      if [ -f Jellyfin2Samsung ]; then
+        cp -r . $out/lib/jellyfin2samsung/
+      elif [ -d Jellyfin2Samsung-linux-x64 ]; then
+        cp -r Jellyfin2Samsung-linux-x64/* $out/lib/jellyfin2samsung/
+      else
+        # Find wherever the main binary ended up
+        find . -name 'Jellyfin2Samsung' -type f | head -1 | xargs -I{} dirname {} | xargs -I{} cp -r {}/* $out/lib/jellyfin2samsung/
+      fi
+
+      chmod +x $out/lib/jellyfin2samsung/Jellyfin2Samsung || true
+
+      runHook postInstall
+    '';
+  };
+
+  # FHS environment so all dynamically linked binaries (TizenSdb, .NET native
+  # libs, etc.) work without patching
+  fhs = pkgs.buildFHSEnv {
+    name = "Jellyfin2Samsung";
+
+    targetPkgs = p: with p; [
+      # ── core .NET runtime ──────────────────────────────────────────────────
+      stdenv.cc.cc.lib
+      openssl
+      icu
+      zlib
+      libgcc.lib
+      krb5
+      krb5WithUnversionedLib
+
+      # ── Skia / font rendering ─────────────────────────────────────────────
+      fontconfig
+      freetype
+      libGL
+
+      # ── X11 / Avalonia backend ─────────────────────────────────────────────
+      libX11
+      libICE
+      libSM
+      libXext
+      libXcursor
+      libXi
+      libXrandr
+      libXrender
+      libXinerama
+      libXcomposite
+      libXdamage
+      libXfixes
+      libXtst
+
+      # ── networking / utilities used by the app ─────────────────────────────
+      nmap
+      iproute2
+      curl
+      wget
+    ];
+
+    runScript = pkgs.writeShellScript "jellyfin2samsung-run" ''
+      # The app writes Logs/, Assets/, certs, etc. next to its own binary.
+      # The Nix store is read-only, so we maintain a writable copy in the
+      # user's home directory and sync new versions automatically.
+      APP_DIR="$HOME/.local/share/jellyfin2samsung"
+      STAMP="$APP_DIR/.nix-version"
+      CURRENT="${jellyfin2samsung-unwrapped}"
+
+      # (Re)create the writable copy when the Nix store path changes (i.e. upgrade)
+      if [ ! -f "$STAMP" ] || [ "$(cat "$STAMP")" != "$CURRENT" ]; then
+        echo "Setting up Jellyfin2Samsung in $APP_DIR ..."
+
+        # Back up user data dirs if they exist
+        TMPBACK="$(mktemp -d)"
+        for d in Logs Certs Settings; do
+          if [ -d "$APP_DIR/$d" ]; then
+            mv "$APP_DIR/$d" "$TMPBACK/$d"
+          fi
+        done
+
+        # Clean and recreate
+        rm -rf "$APP_DIR"
+        mkdir -p "$APP_DIR"
+
+        # Copy fresh app files
+        cp -r ${jellyfin2samsung-unwrapped}/lib/jellyfin2samsung/* "$APP_DIR/"
+        chmod -R u+w "$APP_DIR"
+
+        # Restore user data
+        for d in Logs Certs Settings; do
+          if [ -d "$TMPBACK/$d" ]; then
+            rm -rf "$APP_DIR/$d"
+            mv "$TMPBACK/$d" "$APP_DIR/$d"
+          fi
+        done
+        rm -rf "$TMPBACK"
+
+        echo "$CURRENT" > "$STAMP"
+      fi
+
+      cd "$APP_DIR"
+      exec ./Jellyfin2Samsung "$@"
+    '';
+
+    meta = with pkgs.lib; {
+      description = "One-click Jellyfin installer for Samsung Tizen Smart TVs";
+      homepage = "https://github.com/Jellyfin2Samsung/Samsung-Jellyfin-Installer";
+      license = licenses.mit;
+      platforms = [ "x86_64-linux" ];
+      mainProgram = "Jellyfin2Samsung";
+    };
+  };
+
+in
+pkgs.stdenv.mkDerivation {
+  pname = "Jellyfin2Samsung";
+  inherit version;
+
+  # No source needed — we just wrap the FHS env and add desktop integration
+  dontUnpack = true;
+  dontBuild = true;
+
+  nativeBuildInputs = [ pkgs.copyDesktopItems ];
 
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out/lib/jellyfin2samsung $out/bin
+    # Symlink the FHS-wrapped binary
+    mkdir -p $out/bin
+    ln -s ${fhs}/bin/Jellyfin2Samsung $out/bin/Jellyfin2Samsung
 
-    # Copy binary + all bundled native .so files
-    cp -r ./out/. $out/lib/jellyfin2samsung/
+    # Desktop entry for app launchers
+    mkdir -p $out/share/applications
+    cat > $out/share/applications/jellyfin2samsung.desktop <<EOF
+[Desktop Entry]
+Name=Jellyfin2Samsung
+Comment=Install Jellyfin on your Samsung Smart TV
+Exec=$out/bin/Jellyfin2Samsung
+Terminal=false
+Type=Application
+Categories=Utility;Network;
+Keywords=jellyfin;samsung;tizen;tv;
+StartupWMClass=Jellyfin2Samsung
+EOF
 
-    # Patch the main executable
-    patchelf \
-      --set-interpreter "${dynamicLinker}" \
-      --set-rpath "${libPath}:$out/lib/jellyfin2samsung" \
-      $out/lib/jellyfin2samsung/Jellyfin2Samsung
-
-    # Patch every NuGet-bundled native .so (libSkiaSharp, libHarfBuzzSharp, etc.)
-    find $out/lib/jellyfin2samsung -maxdepth 1 -name "*.so" | while read so; do
-      patchelf \
-        --set-interpreter "${dynamicLinker}" \
-        --set-rpath "${libPath}:$out/lib/jellyfin2samsung" \
-        "$so" 2>/dev/null || true
-    done
-
-    # Thin wrapper so the binary is on PATH with the right LD_LIBRARY_PATH
-    cat > $out/bin/Jellyfin2Samsung <<EOF
-    #!/bin/sh
-    export LD_LIBRARY_PATH="${libPath}:$out/lib/jellyfin2samsung\''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-    exec $out/lib/jellyfin2samsung/Jellyfin2Samsung "\$@"
-    EOF
-    chmod +x $out/bin/Jellyfin2Samsung
+    # Icon (use the one bundled in the app if available, otherwise skip)
+    if [ -f ${jellyfin2samsung-unwrapped}/lib/jellyfin2samsung/jellyfin.ico ]; then
+      mkdir -p $out/share/icons/hicolor/256x256/apps
+      cp ${jellyfin2samsung-unwrapped}/lib/jellyfin2samsung/jellyfin.ico \
+        $out/share/icons/hicolor/256x256/apps/jellyfin2samsung.ico
+      # Add icon reference to desktop file
+      sed -i 's|StartupWMClass=|Icon='"$out"'/share/icons/hicolor/256x256/apps/jellyfin2samsung.ico\nStartupWMClass=|' \
+        $out/share/applications/jellyfin2samsung.desktop
+    fi
 
     runHook postInstall
   '';
 
-  meta = {
-    description = "One-click installer for Jellyfin on Samsung Tizen Smart TVs";
-    homepage    = "https://github.com/Jellyfin2Samsung/Samsung-Jellyfin-Installer";
-    license     = lib.licenses.mit;
-    platforms   = [ "x86_64-linux" ];
+  meta = with pkgs.lib; {
+    description = "One-click Jellyfin installer for Samsung Tizen Smart TVs";
+    homepage = "https://github.com/Jellyfin2Samsung/Samsung-Jellyfin-Installer";
+    license = licenses.mit;
+    platforms = [ "x86_64-linux" ];
     mainProgram = "Jellyfin2Samsung";
   };
 }
