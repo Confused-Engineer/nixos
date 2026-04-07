@@ -102,10 +102,30 @@
 
 
 
+  boot = {
+    loader = {
+      systemd-boot.enable = false;
+      limine.enable = true;
+      efi.canTouchEfiVariables = true;
 
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+    };
+
+    plymouth = {
+      enable = true;
+      theme = "abstract_ring";
+      themePackages = with pkgs; [
+        # By default we would install all themes
+        (adi1090x-plymouth-themes.override {
+          selected_themes = [ "abstract_ring" ];
+        })
+      ];
+    };
+    
+    initrd.systemd.enable = true;
+    consoleLogLevel = 0;
+    kernelParams = [ "quiet" "splash" "boot.shell_on_fail" ];
+    kernelModules = [ "ntsync" ];
+  };
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -200,7 +220,11 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    #needed for Limine Secure Boot
+    sbctl
+
     heroic
+    protonup-qt
     
     r2modman
     pavucontrol
