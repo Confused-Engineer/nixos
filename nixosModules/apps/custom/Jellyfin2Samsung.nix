@@ -65,7 +65,7 @@ stdenv.mkDerivation rec {
     repo  = "Samsung-Jellyfin-Installer";
     rev   = "v${version}";
     # On first build Nix will error and print the correct hash — paste it here.
-    hash  = lib.fakeHash;
+    hash  = "sha256-ZG0zFvgHTz2TnY97PhSHYN6uvOWWcHyiFkv1zNgG/Ak=";
   };
 
   nativeBuildInputs = [ dotnet-sdk_8 patchelf ];
