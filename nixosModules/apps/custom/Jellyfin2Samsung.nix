@@ -166,6 +166,11 @@ pkgs.stdenv.mkDerivation {
     mkdir -p $out/bin
     ln -s ${fhs}/bin/Jellyfin2Samsung $out/bin/Jellyfin2Samsung
 
+    # Desktop Icon
+    mkdir -p $out/share/icons/hicolor/256x256/apps
+    cp ${jellyfin2samsung-unwrapped}/lib/jellyfin2samsung/Assets/jelly2sams.png \
+        $out/share/icons/hicolor/256x256/apps/jellyfin2samsung.png
+
     # Desktop entry for app launchers
     mkdir -p $out/share/applications
     cat > $out/share/applications/jellyfin2samsung.desktop <<EOF
@@ -173,22 +178,13 @@ pkgs.stdenv.mkDerivation {
 Name=Jellyfin2Samsung
 Comment=Install Jellyfin on your Samsung Smart TV
 Exec=$out/bin/Jellyfin2Samsung
+Icon=$out/share/icons/hicolor/256x256/apps/jellyfin2samsung.png
 Terminal=false
 Type=Application
 Categories=Utility;Network;
 Keywords=jellyfin;samsung;tizen;tv;
 StartupWMClass=Jellyfin2Samsung
 EOF
-
-    # Icon (use the one bundled in the app if available, otherwise skip)
-    if [ -f ${jellyfin2samsung-unwrapped}/lib/jellyfin2samsung/jellyfin.ico ]; then
-      mkdir -p $out/share/icons/hicolor/256x256/apps
-      cp ${jellyfin2samsung-unwrapped}/lib/jellyfin2samsung/jellyfin.ico \
-        $out/share/icons/hicolor/256x256/apps/jellyfin2samsung.ico
-      # Add icon reference to desktop file
-      sed -i 's|StartupWMClass=|Icon='"$out"'/share/icons/hicolor/256x256/apps/jellyfin2samsung.ico\nStartupWMClass=|' \
-        $out/share/applications/jellyfin2samsung.desktop
-    fi
 
     runHook postInstall
   '';
