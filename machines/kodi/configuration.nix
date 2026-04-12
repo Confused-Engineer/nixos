@@ -12,22 +12,38 @@
     ];
 
   specialisation = {
-    kodi.configuration = {
+    desktop.configuration = {
 
       custom = {
+        apps = {
+          browsers.firefox = {
+            enable = true;
+            privacy = "strict";
+            homepage = "https://hp.a5f.org/";
+          };
+        };
 
         os = {
           autoClean.enable = true; # Clean System images greater than 7 days old
           autoUpgrade.enable = true;
-          ui.kodi.enable = true;
+
+          ui = {
+            cosmic = {
+              enable = true; # Use gnome
+              strip.enable = true;
+              nvidiaFix.hibernate = false;
+            };
+          };
         };    
       };
 
-      services.xserver.desktopManager.kodi.package = (pkgs.kodi.withPackages (kodiPkgs: with kodiPkgs; [
-        jellyfin
-        inputstream-adaptive
-        pvr-iptvsimple
-      ]));
+      environment.systemPackages = with pkgs; [
+      #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+      #  wget
+        vscode
+        git
+      ];
+      
     };
 
 
@@ -82,9 +98,6 @@
 
 
 
-
-
-
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -121,6 +134,12 @@
     packages = with pkgs; [
     #  thunderbird
     ];
+    openssh.authorizedKeys.keys = [
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDFpKE1DjAc7J+2cJuns84/gZIpNxbch1oYh/UeYbiiDbTMVGMMh8KGCKAhrJ9LO1aEyZxcfBlA2KyMRSnam4GUPGv4M+a9f0j/Bxs0m8Lwc+wWKMMuKhkJrGn8nKZUO7gjRUZevUFGvIe2lOp3L5RggPNewQ4hpLmn4Uf2Ywh8n6bdUZDAEdd4ut9IgRKFr9bQsLvgMA3cD7Ot66rbkplPvTmIuV4Qo8W8E3l2VpH6UHAl0nwpkDCOYEnSe32iSuewygGb13ZRa6jrEbrsLmI5pPfMitNGNVGnEPpKBC/dw8MJ4p8e302TJKNpnizHXnwPvxIT1D+/kygj8ob0D2YlySfI5bNeuXcZS86cthtI5Y0LDZqngQgsOr3mIIBl0dAxV44ytyqdVYqtoXgND4MvEHy+ur7QEEuWK7gZMh/g1yjllFV15chfnudlJqz7zS6lGA8drF58Sl5ipNQrCw56pT3vJs2eCtLagP16BCKm60ciSEL88QMxFqH3oGi1tn8= david" # content of authorized_keys file
+      # note: ssh-copy-id will add user@your-machine after the public key
+      # but we can remove the "@your-machine" part
+    ];
+
   };
 
 
