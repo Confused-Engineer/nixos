@@ -186,9 +186,12 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
+  nixpkgs.config.packageOverrides = pkgs: {
+    jellyfin2samsung = pkgs.callPackage ./../../nixosModules/apps/custom/Jellyfin2Samsung/package.nix { };
+  };
+
   environment.systemPackages = with pkgs; [
+    jellyfin2samsung
     git 
     zsh
     zsh-completions
