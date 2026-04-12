@@ -90,6 +90,18 @@
       inheritParentConfig = true;
       configuration = {
         system.nixos.tags = [ "no-sunshine" ];
+        boot.kernelPackages = pkgs.linuxPackages_latest;
+
+      };
+    };
+  };
+
+  specialisation = {
+    zen = {
+      inheritParentConfig = true;
+      configuration = {
+        system.nixos.tags = [ "gaming-boi" ];
+        boot.kernelPackages = pkgs.linuxPackages_zen;
 
       };
     };
@@ -128,7 +140,7 @@
   };
 
   # Use latest kernel.
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  
   ### ZFS SUPPORT ###
   #boot.supportedFilesystems = [ "zfs" ];
   #boot.zfs.forceImportRoot = false;
@@ -219,9 +231,9 @@
 
 
 
-    nixpkgs.config.packageOverrides = pkgs: {
-      Jellyfin2Samsung = pkgs.callPackage ./../../nixosModules/apps/custom/Jellyfin2Samsung.nix { };
-    };
+  nixpkgs.config.packageOverrides = pkgs: {
+    Jellyfin2Samsung = pkgs.callPackage ./../../nixosModules/apps/custom/Jellyfin2Samsung.nix { };
+  };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
