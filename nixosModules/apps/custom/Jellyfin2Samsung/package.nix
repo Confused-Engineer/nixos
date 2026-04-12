@@ -9,7 +9,7 @@ let
     # IMPORTANT: You must replace this hash the first time you build.
     # Run:  nix-prefetch-url --unpack <url>
     # or just set it to "" and let the build error tell you the correct hash.
-    sha256 = "hLHZ/JDtahvUGi8QpdF/xvIldgP+OTkcx0+efCHyKZk=";
+    sha256 = "/Rt4aGopd/nuj7jQRzBH/xWnib2QMdobY3UmQAOWgQc=";
   };
 
   krb5WithUnversionedLib = pkgs.runCommand "krb5-unversioned-so" {} ''
