@@ -2,7 +2,7 @@
 
 let
   # Update this to match the release version you want
-  version = "2.2.0.4";
+  version = "2.2.0.7";
 
   src = pkgs.fetchurl {
     url = "https://github.com/Jellyfin2Samsung/Samsung-Jellyfin-Installer/releases/download/v${version}/Jellyfin2Samsung-v${version}-linux-x64.tar.gz";
@@ -195,5 +195,9 @@ EOF
     license = licenses.mit;
     platforms = [ "x86_64-linux" ];
     mainProgram = "Jellyfin2Samsung";
+    maintainers = with lib.maintainers; [
+      PatrickSt1991
+      Confused-Engineer
+    ];
   };
 }

@@ -232,7 +232,7 @@
 
 
   nixpkgs.config.packageOverrides = pkgs: {
-    Jellyfin2Samsung = pkgs.callPackage ./../../nixosModules/apps/custom/Jellyfin2Samsung.nix { };
+    Jellyfin2Samsung = pkgs.callPackage ./../../nixosModules/apps/custom/Jellyfin2Samsung/default.nix { };
   };
 
   # List packages installed in system profile. To search, run:
