@@ -27,18 +27,15 @@ in
   };
 
   home.packages = with pkgs; [
+    brave
+    gimp
+    git
     nitch
     obsidian
-    vscode
-    git
-    
-    
-    spotify
-    gimp
-    
     prismlauncher
-    brave
+    spotify
     vlc
+    vscode
   ];
 
   # In your configuration.nix or home-manager config

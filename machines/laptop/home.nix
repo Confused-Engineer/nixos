@@ -46,22 +46,15 @@ in
   };
 
   home.packages = with pkgs; [
-    adwaita-icon-theme
-    libadwaita
     brave
-    obsidian
-    vscode
-    nixfmt-rfc-style
-    git
-    discord
-    plexamp
-    spotify
-    nitch
-    
     moonlight-qt
-    gimp
-    #cosmic-edit
+    nitch
+    obsidian
+    spotify
     vlc
+    vscode
+    discord
+    libreoffice
     (pkgs.kodi.withPackages (
       kodiPkgs: with kodiPkgs; [
         jellyfin

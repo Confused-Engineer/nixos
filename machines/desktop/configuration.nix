@@ -94,9 +94,7 @@
 
       };
     };
-  };
 
-  specialisation = {
     zen = {
       inheritParentConfig = true;
       configuration = {
@@ -118,17 +116,18 @@
     loader = {
       systemd-boot.enable = false;
       limine.enable = true;
+      limine.secureBoot.enable = true;
       efi.canTouchEfiVariables = true;
 
     };
 
     plymouth = {
       enable = true;
-      theme = "abstract_ring";
+      theme = "circle";
       themePackages = with pkgs; [
         # By default we would install all themes
         (adi1090x-plymouth-themes.override {
-          selected_themes = [ "abstract_ring" ];
+          selected_themes = [ "circle" ];
         })
       ];
     };
@@ -261,6 +260,8 @@
     #winboat
 
     discord
+
+    libreoffice
   ];
   
   services.fwupd.enable = true;

@@ -29,7 +29,7 @@
       browsers.firefox = {
         enable = true;
         privacy = "strict";
-        homepage = "https://hp.a5f.org/";
+        homepage = "https://hp.int.a5f.org/";
       };
     };
 
@@ -70,40 +70,59 @@
     
   };
 
-  #programs.hyprland = {
-  #  enable = true;
-  #  xwayland.enable = true;
-  #  withUWSM = true;
-  #};
+
+  specialisation = {
+    lid-no-sleep = {
+      inheritParentConfig = true;
+      configuration = {
+        services.logind.settings.Login.HandleLidSwitchDocked = "ignore"; 
+        services.logind.settings.Login.HandleLidSwitchExternalPower = "ignore"; 
+
+      };
+    };
+
+  };
 
   services.mullvad-vpn.enable = true;
   services.mullvad-vpn.package = pkgs.mullvad-vpn;
-  services.fwupd.enable = true;
+  #services.fwupd.enable = true;
   programs.kdeconnect.enable = true;
 
 
- # networking.nameservers = [ "1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" ];
- # services.resolved = {
- #   enable = true;
- #   dnssec = "true";
- #   domains = [ "~." ];
- #   fallbackDns = [ "1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" ];
- #   dnsovertls = "true";
- # };
-
   nix.settings.experimental-features = ["nix-command" "flakes"];
-  boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+
+  boot = {
+    loader = {
+      systemd-boot.enable = false;
+      limine.enable = true;
+      limine.secureBoot.enable = true;
+      efi.canTouchEfiVariables = true;
+
+    };
+
+    plymouth = {
+      enable = true;
+      theme = "circle";
+      themePackages = with pkgs; [
+        # By default we would install all themes
+        (adi1090x-plymouth-themes.override {
+          selected_themes = [ "circle" ];
+        })
+      ];
+    };
+    
+    initrd.systemd.enable = true;
+    consoleLogLevel = 0;
+
+    kernelPackages = pkgs.linuxPackages_latest;
+    kernelParams = [ "quiet" "splash" "boot.shell_on_fail" ];
+    kernelModules = [ "ntsync" ];
+  };
+
 
   networking.hostName = "laptop"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
   networking.networkmanager.enable = true;
@@ -165,11 +184,6 @@
     ];
   };
 
-  virtualisation.docker = {
-    enable = true;
-  };
-  # Install firefox.
-  # programs.firefox.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -197,31 +211,10 @@
     font-awesome
     material-design-icons
   ];
-  # Optional settings:
-  # services.logind.lidSwitchExternalPower = "hibernate"; # Hibernate when on external power
-  # services.logind.lidSwitchDocked = "ignore"; # Don't hibernate when docked
+
   services.power-profiles-daemon.enable = true;
   powerManagement.enable = true;
-  #services.tlp = {
-  #  enable = true;
-  #  settings = {
-  #    CPU_SCALING_GOVERNOR_ON_AC = "performance";
-  #    CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-#
-  #    CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
-  #    CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
-#
-  #    CPU_MIN_PERF_ON_AC = 0;
-  #    CPU_MAX_PERF_ON_AC = 100;
-  #    CPU_MIN_PERF_ON_BAT = 0;
-  #    CPU_MAX_PERF_ON_BAT = 20;
-#
-  #    #Optional helps save long term battery health
-  #    START_CHARGE_THRESH_BAT0 = 50; # 40 and below it starts to charge
-  #    STOP_CHARGE_THRESH_BAT0 = 85; # 80 and above it stops charging
-#
-  #  };
-  #};
+
 
   hardware.graphics.extraPackages = with pkgs; [ intel-vaapi-driver intel-media-driver ];
   # Some programs need SUID wrappers, can be configured further or are
@@ -252,6 +245,6 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.05"; # Did you read the comment?
+  system.stateVersion = "25.11"; # Did you read the comment?
 
 }
