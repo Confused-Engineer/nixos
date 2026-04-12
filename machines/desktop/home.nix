@@ -1,5 +1,12 @@
 { config, pkgs, ... }:
-
+let
+  config = "/etc/nixos/machines/desktop/home/.config";
+  create_symlink = path: config.lib.file.mkOutOfStoreSymlink path;
+  configs = {
+    MangoHud = "MangoHud";
+    autostart = "autostart";
+  };
+in
 {
   home.username = "david";
   home.homeDirectory = "/home/david";
@@ -39,5 +46,14 @@
     [Context]
     filesystems=/run/user/1000;
   '';
+
+  home.file.".local/share/Steam/steam_dev.cfg".text = ''
+    unShaderBackgroundProcessingThreads 16
+  '';
+
+  xdg.configFile = builtins.mapAttrs (name: subpath: {
+    source = create_symlink "${config}/${subpath}";
+    recursive = true;
+  }) configs;
 
 }

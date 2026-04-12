@@ -1,0 +1,4 @@
+[Desktop Entry]
+Type=Application
+Name=StreamController
+Exec=flatpak run com.core447.StreamController -b
