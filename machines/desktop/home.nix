@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 let
-  config = "/etc/nixos/machines/desktop/home/.config";
+  config_dir = "/etc/nixos/machines/desktop/home/.config";
   create_symlink = path: config.lib.file.mkOutOfStoreSymlink path;
   configs = {
     MangoHud = "MangoHud";
@@ -52,7 +52,7 @@ in
   '';
 
   xdg.configFile = builtins.mapAttrs (name: subpath: {
-    source = create_symlink "${config}/${subpath}";
+    source = create_symlink "${config_dir}/${subpath}";
     recursive = true;
   }) configs;
 
