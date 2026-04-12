@@ -22,7 +22,7 @@ in
       nix-remote = ''
         read -p "Target Hostname: " TargetHostname
         read -p "Target IP: " TargetIP
-        nixos-rebuild boot --flake /etc/nixos#$(TargetHostname) --target-host $(TargetIP) --use-remote-sudo
+        nixos-rebuild boot --flake /etc/nixos#"''${TargetHostname}" --target-host "''${TargetIP}" --use-remote-sudo --ask-sudo-password
       '';
     };
     initExtra = ''
