@@ -19,9 +19,17 @@ in
 {
 
   imports = [
-    ./../../nixosModules/home-manager/bash/nixCommandAlias.nix
-    ./../../nixosModules/home-manager/bash/fancyShell.nix
+    ./../../nixosModules/home-manager
   ];
+
+  custom = {
+    shell.bash = {
+      enable = true;
+      fancy = true;
+      nixosAlias = true;
+      startHyprland = false;
+    };
+  };
 
   home.username = "david";
   home.homeDirectory = "/home/david";
