@@ -45,6 +45,6 @@ in {
     home.packages = with pkgs; mkIf (cfg.fancy == true ) [
       nitch
     ];
-  }
+  };
 
 }

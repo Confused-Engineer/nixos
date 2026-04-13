@@ -2,8 +2,8 @@
 
 {
 
-    imports = [
-        ./bash
-    ];
+  imports = [
+      ./bash
+  ];
 
 }
