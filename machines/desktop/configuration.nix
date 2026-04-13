@@ -90,19 +90,9 @@
       inheritParentConfig = true;
       configuration = {
         system.nixos.tags = [ "no-sunshine" ];
-        boot.kernelPackages = pkgs.linuxPackages_latest;
-
       };
     };
 
-    zen = {
-      inheritParentConfig = true;
-      configuration = {
-        system.nixos.tags = [ "gaming-boi" ];
-        boot.kernelPackages = pkgs.linuxPackages_zen;
-
-      };
-    };
   };
 
 
@@ -134,6 +124,7 @@
     
     initrd.systemd.enable = true;
     consoleLogLevel = 0;
+    kernelPackages = pkgs.linuxPackages_latest;
     kernelParams = [ "quiet" "splash" "boot.shell_on_fail" ];
     kernelModules = [ "ntsync" ];
   };
