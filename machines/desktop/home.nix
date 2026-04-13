@@ -8,34 +8,28 @@ let
   };
 in
 {
+
+  imports = [
+    ./../../nixosModules/home-manager
+  ];
+
+  custom = {
+    shell.bash = {
+      enable = true;
+      fancy = true;
+      nixosAlias = true;
+      startHyprland = false;
+    };
+  };
+
   home.username = "david";
   home.homeDirectory = "/home/david";
   home.stateVersion = "25.11";
-  programs.bash = {
-    enable = true;
-    shellAliases = {
-      nix-switch = "sudo nixos-rebuild switch --flake /etc/nixos";
-      nix-boot = "sudo nixos-rebuild boot --flake /etc/nixos";
-      nix-test = "sudo nixos-rebuild build-vm --flake /etc/nixos";
-      nix-upgrade = "sudo nix flake update --flake /etc/nixos && sudo nixos-rebuild build-vm --flake /etc/nixos";
-      nix-clean = "sudo nix-collect-garbage; sudo nix-collect-garbage -d; sudo nixos-rebuild boot --flake /etc/nixos";
-      nix-remote = ''
-        read -p "Target Hostname: " TargetHostname
-        read -p "Target IP: " TargetIP
-        nixos-rebuild boot --flake /etc/nixos#"''${TargetHostname}" --target-host "''${TargetIP}" --sudo --ask-sudo-password
-      '';
-    };
-    initExtra = ''
-      export PS1='\[\e[38;5;76m\]\u\[\e[0m\] in \[\e[38;5;32m\]\w\[\e[0m\] \\$ '
-      nitch
-    '';
-  };
 
   home.packages = with pkgs; [
     brave
     gimp
     git
-    nitch
     obsidian
     prismlauncher
     spotify
