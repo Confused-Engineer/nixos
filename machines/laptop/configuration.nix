@@ -22,6 +22,7 @@
         desiredFlatpaks = [
           "com.github.tchx84.Flatseal"
           "com.bambulab.BambuStudio"
+          "com.plexamp.Plexamp"
         ];
       };
 
