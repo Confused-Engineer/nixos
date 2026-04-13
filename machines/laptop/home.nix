@@ -30,7 +30,6 @@ in
   home.packages = with pkgs; [
     brave
     moonlight-qt
-    nitch
     obsidian
     spotify
     vlc

@@ -7,4 +7,7 @@
       nitch
     '';
   };
+  home.packages = with pkgs; [
+    nitch
+  ];
 }
