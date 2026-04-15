@@ -3,7 +3,7 @@ let
   config_dir = "/etc/nixos/machines/desktop/home/.config";
   create_symlink = path: config.lib.file.mkOutOfStoreSymlink path;
   configs = {
-    MangoHud = "MangoHud";
+    #MangoHud = "MangoHud";
     autostart = "autostart";
   };
 in
