@@ -253,10 +253,6 @@
     discord
 
     libreoffice
-
-    (ollama.override { 
-      acceleration = "cuda";
-    })
   ];
   
   services.fwupd.enable = true;
