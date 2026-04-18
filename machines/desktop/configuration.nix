@@ -86,7 +86,7 @@
   };
 
   specialisation = {
-    non-default = {
+    NoSunshine = {
       inheritParentConfig = true;
       configuration = {
         system.nixos.tags = [ "no-sunshine" ];
