@@ -89,7 +89,7 @@
     NoSunshine = {
       inheritParentConfig = true;
       configuration = {
-        system.nixos.tags = [ "no-sunshine" ];
+        system.nixos.tags = [ "NoSunshine" ];
       };
     };
 
