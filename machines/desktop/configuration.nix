@@ -51,7 +51,7 @@
     };
 
     hardware.gpu.nvidia.enable = true;
-    hardware.controllers.xbox.enable = true;
+    hardware.controllers.xbox = true;
 
     os = {
       autoClean.enable = true; # Clean System images greater than 7 days old
