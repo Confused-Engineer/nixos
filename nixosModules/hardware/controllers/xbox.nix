@@ -9,7 +9,7 @@ in {
   # Declare what settings a user of this "hello.nix" module CAN SET.
   options.custom.hardware.controllers = {
   
-    xbox = mkEnableOption "Provide Xbox Controller Support";;
+    xbox = mkEnableOption "Provide Xbox Controller Support";
 
 
 
