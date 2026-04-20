@@ -20,6 +20,7 @@ in
       nixosAlias = true;
       startHyprland = false;
     };
+    mangohud.enable = true;
   };
 
   home.username = "david";

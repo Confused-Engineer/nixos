@@ -238,7 +238,7 @@
     
     r2modman
     pavucontrol
-    mangohud
+    
     polychromatic
     openrazer-daemon
     

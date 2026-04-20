@@ -4,6 +4,7 @@
 
   imports = [
       ./bash
+      ./mangohud
   ];
 
 }
