@@ -86,12 +86,12 @@
   };
 
   specialisation = {
-    NoSunshine = {
-      inheritParentConfig = true;
-      configuration = {
-        system.nixos.tags = [ "NoSunshine" ];
-      };
-    };
+    # NoSunshine = {
+    #   inheritParentConfig = true;
+    #   configuration = {
+    #     system.nixos.tags = [ "NoSunshine" ];
+    #   };
+    # };
 
   };
 
