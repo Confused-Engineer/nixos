@@ -19,7 +19,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./default-only.nix
+      #./default-only.nix
       ./../../nixosModules
     ];
 
