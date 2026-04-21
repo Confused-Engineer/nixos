@@ -30,6 +30,11 @@ in {
         nix-test = "sudo nixos-rebuild build-vm --flake /etc/nixos";
         nix-upgrade = "sudo nix flake update --flake /etc/nixos && sudo nixos-rebuild build-vm --flake /etc/nixos";
         nix-clean = "sudo nix-collect-garbage; sudo nix-collect-garbage -d; sudo nixos-rebuild boot --flake /etc/nixos";
+        nix-remote = ''
+          read -p "Target Hostname: " TargetHostname
+          read -p "Target IP: " TargetIP
+          nixos-rebuild boot --flake /etc/nixos#"''${TargetHostname}" --target-host "''${TargetIP}" --sudo --ask-sudo-password
+        '';
       };
       initExtra = mkIf (cfg.fancy == true ) ''
         export PS1='\[\e[38;5;76m\]\u\[\e[0m\] in \[\e[38;5;32m\]\w\[\e[0m\] \\$ '
