@@ -5,8 +5,6 @@
     custom = {
 
       os = {
-        autoClean.enable = true; # Clean System images greater than 7 days old
-        autoUpgrade.enable = true;
         ui.kodi.enable = true;
       };    
     };
