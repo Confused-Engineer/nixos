@@ -36,6 +36,13 @@
     hardware.gpu.nvidia.enable = false;
     hardware.controllers.xbox = true;
 
+    boot = {
+      enable = true;
+      fancy.enable = true;
+      fancy.secureBoot = false;
+      systemd = false;
+    };
+
     os = {
       autoClean.enable = true; # Clean System images greater than 7 days old
       autoUpgrade.enable = true;
@@ -90,35 +97,6 @@
 
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
-
-
-  boot = {
-    loader = {
-      systemd-boot.enable = false;
-      limine.enable = true;
-      efi.canTouchEfiVariables = true;
-
-    };
-
-    plymouth = {
-      enable = true;
-      theme = "circle";
-      themePackages = with pkgs; [
-        # By default we would install all themes
-        (adi1090x-plymouth-themes.override {
-          selected_themes = [ "circle" ];
-        })
-      ];
-    };
-    
-    initrd.systemd.enable = true;
-    consoleLogLevel = 0;
-
-    kernelPackages = pkgs.linuxPackages_latest;
-    kernelParams = [ "quiet" "splash" "boot.shell_on_fail" ];
-    kernelModules = [ "ntsync" ];
-  };
-
 
   networking.hostName = "laptop"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.

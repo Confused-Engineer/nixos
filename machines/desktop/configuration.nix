@@ -53,6 +53,14 @@
     hardware.gpu.nvidia.enable = true;
     hardware.controllers.xbox = true;
 
+
+    boot = {
+      enable = true;
+      fancy.enable = true;
+      fancy.secureBoot = true;
+      systemd = false;
+    };
+
     os = {
       autoClean.enable = true; # Clean System images greater than 7 days old
       autoUpgrade.enable = true;
@@ -100,34 +108,6 @@
   # Flakes
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
-
-
-  boot = {
-    loader = {
-      systemd-boot.enable = false;
-      limine.enable = true;
-      limine.secureBoot.enable = true;
-      efi.canTouchEfiVariables = true;
-
-    };
-
-    plymouth = {
-      enable = true;
-      theme = "circle";
-      themePackages = with pkgs; [
-        # By default we would install all themes
-        (adi1090x-plymouth-themes.override {
-          selected_themes = [ "circle" ];
-        })
-      ];
-    };
-    
-    initrd.systemd.enable = true;
-    consoleLogLevel = 0;
-    kernelPackages = pkgs.linuxPackages_latest;
-    kernelParams = [ "quiet" "splash" "boot.shell_on_fail" ];
-    kernelModules = [ "ntsync" ];
-  };
 
   # Use latest kernel.
   
