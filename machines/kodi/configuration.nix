@@ -1,3 +1,5 @@
+# sudo -u kodi XDG_RUNTIME_DIR=/run/user/$(id -u kodi) wpctl set-volume @DEFAULT_AUDIO_SINK@ 1.0
+# set system volume from terminal of other user 
 { config, pkgs, ... }:
 {
   imports =
