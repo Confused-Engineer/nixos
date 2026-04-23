@@ -139,17 +139,12 @@
     initialPassword = "vmtest";
     extraGroups = [ "networkmanager" "dialout" "wheel" "audio" "openrazer" "power" "docker"];
     packages = with pkgs; [
-      tree
     ];
   };
 
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
-  nixpkgs.config.packageOverrides = pkgs: {
-    jellyfin2samsung = pkgs.callPackage ./../../nixosModules/apps/custom/Jellyfin2Samsung/package.nix { };
-  };
 
   environment.systemPackages = with pkgs; [
     jellyfin2samsung
@@ -158,7 +153,7 @@
     zsh-completions
     pavucontrol
     gparted
-    # winboat
+    sbctl
   ];
 
   services.logind.settings.Login.HandleLidSwitch = "hibernate";

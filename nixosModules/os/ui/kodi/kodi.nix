@@ -21,6 +21,12 @@ in {
 
     services.xserver.enable = true;
     services.xserver.desktopManager.kodi.enable = true;
+    services.xserver.desktopManager.kodi.package = (pkgs.kodi.withPackages (kodiPkgs: with kodiPkgs; [
+      jellyfin
+      inputstream-adaptive
+      pvr-iptvsimple
+    ]));
+
     services.displayManager.autoLogin.user = "kodi";
     services.xserver.displayManager.lightdm.greeter.enable = false;
     users.extraUsers.kodi.isNormalUser = true;
@@ -33,6 +39,7 @@ in {
     systemd.targets.suspend.enable = false;
     systemd.targets.hibernate.enable = false;
     systemd.targets.hybridSleep.enable = false;
+
 
   };
 }

@@ -187,17 +187,11 @@
   programs.kdeconnect.enable = true;
 
 
-
-  nixpkgs.config.packageOverrides = pkgs: {
-    jellyfin2samsung = pkgs.callPackage ./../../nixosModules/apps/custom/Jellyfin2Samsung/package.nix { };
-  };
-
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-
+    git
     jellyfin2samsung
-    #needed for Limine Secure Boot
     sbctl
 
     heroic

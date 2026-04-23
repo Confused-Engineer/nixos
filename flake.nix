@@ -37,6 +37,9 @@
                     config.allowUnfree = true;
                   };
                 })
+                (final: prev: {
+                  jellyfin2samsung = final.callPackage ./nixosModules/apps/custom/Jellyfin2Samsung/package.nix { };
+                })
               ];
             }
             ./machines/${hostname}/configuration.nix

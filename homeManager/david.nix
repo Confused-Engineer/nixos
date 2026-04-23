@@ -21,7 +21,6 @@
   home.packages = with pkgs; [
     brave
     gimp
-    git
     obsidian
     prismlauncher
     spotify
