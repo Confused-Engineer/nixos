@@ -33,26 +33,10 @@
       };
     };
 
-    hardware.gpu.nvidia.enable = false;
     hardware.controllers.xbox = true;
 
     os = {
-      autoClean.enable = true; # Clean System images greater than 7 days old
-      autoUpgrade.enable = true;
-
       ui = {
-        gnome = {
-          enable = false; # Use gnome
-          strip.enable = true;
-          extensions.enable = true;
-          nvidiaFix.hibernate = true;
-        };
-
-        kde = {
-          enable = false; # Use gnome
-          strip.enable = true;
-        };
-
         cosmic = {
           enable = true; # Use gnome
           strip.enable = true;
@@ -66,8 +50,6 @@
       shizukuLinux.enable = false; # Enable starting shizuku on android device plugin
     };
 
-    
-    
   };
 
 

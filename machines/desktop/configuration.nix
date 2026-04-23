@@ -56,18 +56,6 @@
     os = {
 
       ui = {
-        gnome = {
-          enable = false; # Use gnome
-          strip.enable = true;
-          extensions.enable = true;
-          nvidiaFix.hibernate = true;
-        };
-
-        kde = {
-          enable = false; # Use gnome
-          strip.enable = true;
-        };
-
         cosmic = {
           enable = true; # Use gnome
           strip.enable = true;
