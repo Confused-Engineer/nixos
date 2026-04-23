@@ -1,5 +1,4 @@
-{ lib, pkgs, config, ... }:
-with lib;                      
+{ lib, pkgs, config, ... }:                   
 let
   # Shorter name to access final settings a 
   # user of hello.nix module HAS ACTUALLY SET.
@@ -10,15 +9,15 @@ in {
   options.custom.os.ui = {
   
     cosmic = {
-      enable = mkEnableOption "Use gnome";
+      enable = lib.mkEnableOption "Use gnome";
     };
 
     cosmic.strip = {
-      enable = mkEnableOption "Strip most default apps";
+      enable = lib.mkEnableOption "Strip most default apps";
     };
 
     cosmic.nvidiaFix = {
-      hibernate = mkEnableOption "Fix Hibernate with Nvidia GPU";
+      hibernate = lib.mkEnableOption "Fix Hibernate with Nvidia GPU";
     };
 
 
@@ -26,7 +25,7 @@ in {
   # Define what other settings, services and resources should be active IF
   # a user of this "hello.nix" module ENABLED this module 
   # by setting "services.hello.enable = true;".
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
 
     # Enable the COSMIC login manager
     services.displayManager.cosmic-greeter.enable = true;
@@ -34,7 +33,7 @@ in {
     # Enable the COSMIC desktop environment
     services.desktopManager.cosmic.enable = true;
 
-    systemd = mkIf (cfg.nvidiaFix.hibernate == true ) {
+    systemd = lib.mkIf (cfg.nvidiaFix.hibernate == true ) {
       services."cosmic-suspend" = {
         description = "suspend cosmic desktop";
         before = [
@@ -71,7 +70,7 @@ in {
     };
 
 
-    environment.cosmic.excludePackages = with pkgs; mkIf (cfg.strip.enable == true ) [
+    environment.cosmic.excludePackages = with pkgs; lib.mkIf (cfg.strip.enable == true ) [
       cosmic-store
     ];
 

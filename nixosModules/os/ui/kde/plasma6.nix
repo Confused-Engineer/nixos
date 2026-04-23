@@ -1,5 +1,4 @@
-{ lib, pkgs, config, ... }:
-with lib;                      
+{ lib, pkgs, config, ... }:                     
 let
   # Shorter name to access final settings a 
   # user of hello.nix module HAS ACTUALLY SET.
@@ -10,18 +9,18 @@ in {
   options.custom.os.ui = {
   
     kde = {
-      enable = mkEnableOption "Use KDE Plasma 6";
+      enable = lib.mkEnableOption "Use KDE Plasma 6";
     };
 
     kde.strip = {
-      enable = mkEnableOption "Strip most default apps";
+      enable = lib.mkEnableOption "Strip most default apps";
     };
 
   };
   # Define what other settings, services and resources should be active IF
   # a user of this "hello.nix" module ENABLED this module 
   # by setting "services.hello.enable = true;".
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
 
 
     services.xserver.enable = true; # optional
@@ -29,7 +28,7 @@ in {
     services.displayManager.sddm.wayland.enable = true;
     services.desktopManager.plasma6.enable = true;
 
-    environment.plasma6.excludePackages = with pkgs; mkIf (cfg.strip.enable == true ) [
+    environment.plasma6.excludePackages = with pkgs; lib.mkIf (cfg.strip.enable == true ) [
       kdePackages.elisa # Simple music player aiming to provide a nice experience for its users
       kdePackages.kdepim-runtime # Akonadi agents and resources
       kdePackages.kmahjongg # KMahjongg is a tile matching game for one or two players

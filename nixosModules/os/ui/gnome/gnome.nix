@@ -1,5 +1,5 @@
 { lib, pkgs, config, ... }:
-with lib;                      
+                  
 let
   # Shorter name to access final settings a 
   # user of hello.nix module HAS ACTUALLY SET.
@@ -10,26 +10,26 @@ in {
   options.custom.os.ui = {
   
     gnome = {
-      enable = mkEnableOption "Use gnome";
+      enable = lib.mkEnableOption "Use gnome";
     };
 
     gnome.extensions = {
-      enable = mkEnableOption "Add gnome Extensions";
+      enable = lib.mkEnableOption "Add gnome Extensions";
     };
 
     gnome.strip = {
-      enable = mkEnableOption "Strip most default apps";
+      enable = lib.mkEnableOption "Strip most default apps";
     };
 
     gnome.nvidiaFix = {
-      hibernate = mkEnableOption "Fix Hibernate with Nvidia GPU";
+      hibernate = lib.mkEnableOption "Fix Hibernate with Nvidia GPU";
     };
 
   };
   # Define what other settings, services and resources should be active IF
   # a user of this "hello.nix" module ENABLED this module 
   # by setting "services.hello.enable = true;".
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
 
     services.xserver = {
       # Enable the X11 windowing system.
@@ -46,7 +46,7 @@ in {
 
 
 
-    environment.systemPackages = with pkgs.gnomeExtensions; mkIf (cfg.extensions.enable == true ) [
+    environment.systemPackages = with pkgs.gnomeExtensions; lib.mkIf (cfg.extensions.enable == true ) [
       dash-to-dock
       tray-icons-reloaded
     ];
@@ -99,7 +99,7 @@ in {
     };
 
 
-    environment.gnome.excludePackages = with pkgs; mkIf (cfg.strip.enable == true ) [
+    environment.gnome.excludePackages = with pkgs; lib.mkIf (cfg.strip.enable == true ) [
     # baobab      # disk usage analyzer
       cheese      # photo booth
     # eog         # image viewer

@@ -27,7 +27,6 @@
     apps = {
       steam.enable = true; # Enable Steam
       steam.systemd.enable = false; # Start Steam on Login
-      lact.enable = true;
       flatpaks = {
         enable = true;
         update = true;
@@ -52,10 +51,9 @@
 
     hardware.gpu.nvidia.enable = true;
     hardware.controllers.xbox = true;
+    hardware.gpu.lact.enable = true;
 
     os = {
-      autoClean.enable = true; # Clean System images greater than 7 days old
-      autoUpgrade.enable = true;
 
       ui = {
         gnome = {

@@ -1,124 +1,31 @@
-{
-  description = "Flakes basic Template";
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-  };
-
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, ... }: {
-
-    nixosConfigurations.desktop = nixpkgs-unstable.lib.nixosSystem {
-      system = "x86_64-linux";
+let
+  mkSystem = { hostname, system ? "x86_64-linux", stateNixpkgs ? nixpkgs-unstable, useHomeManager ? true }:
+    stateNixpkgs.lib.nixosSystem {
+      inherit system;
+      specialArgs = { inherit inputs; };
       modules = [
-        ({ pkgs, ... }: {
-          nixpkgs = { overlays = [ 
-            (self: super: { stable = import nixpkgs {
-              system = "x86_64-linux";
-              config= {
-                allowUnfree = true;
-                permittedInsecurePackages = [
-                  "mbedtls-2.28.10"
-                ];
-              };
-            };})
-          ];};
-        })
-
-        #({ pkgs, config, lib, ... }: 
-        #  let
-        #    zfsCompatibleKernelPackages = lib.filterAttrs (
-        #      name: kernelPackages:
-        #      (builtins.match "linux_[0-9]+_[0-9]+" name) != null
-        #      && (builtins.tryEval kernelPackages).success
-        #      && (!kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}.meta.broken)
-        #    ) pkgs.linuxKernel.packages;
-        #    latestKernelPackage = lib.last (
-        #      lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
-        #        builtins.attrValues zfsCompatibleKernelPackages
-        #      )
-        #    );
-        #  in
-        #  {
-        #    # Note this might jump back and forth as kernels are added or removed.
-        #    boot.kernelPackages = latestKernelPackage;
-        #  }
-        #)
-
-        home-manager.nixosModules.home-manager {
-          home-manager = {
+        { nixpkgs.overlays = [ (final: prev: {
+            stable = import nixpkgs { inherit system; config.allowUnfree = true; };
+            unstable = import nixpkgs-unstable { inherit system; config.allowUnfree = true; };
+          }) ]; }
+        ./machines/${hostname}/configuration.nix
+      ] ++ lib.optionals useHomeManager [
+        home-manager.nixosModules.home-manager
+        { home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
-            users.david = import ./machines/desktop/home.nix;
-            backupFileExtension = "backup";
-          };
-        }
-
-        ./machines/desktop/configuration.nix
-      ];
-    };
-
-    nixosConfigurations.vacation = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [
-        ({ pkgs, ... }: {
-          nixpkgs = { overlays = [ (self: super: { unstable = import nixpkgs-unstable { system = "x86_64-linux"; }; }) ];};
-        })
-        ./machines/vacation/configuration.nix
-      ];
-    };
-
-    nixosConfigurations.laptop = nixpkgs-unstable.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [
-        ({ pkgs, ... }: {
-          nixpkgs = { overlays = [(self: super: { stable = import nixpkgs { system = "x86_64-linux"; }; }) ]; };
-        })
-        
-        home-manager.nixosModules.home-manager {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            users.david = import ./machines/laptop/home.nix;
-            backupFileExtension = "backup";
-          };
-        }
-
-        ./machines/laptop/configuration.nix
-      ];
-    };
-
-    nixosConfigurations.lat9430 = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [
-        ./machines/lat9430/configuration.nix
-
-        ({ pkgs, ... }: {
-          nixpkgs = { overlays = [(self: super: { unstable = import nixpkgs-unstable { system = "x86_64-linux"; }; }) ]; };
-        })
-        
-        home-manager.nixosModules.home-manager {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            users.david = import ./machines/lat9430/home.nix;
+            users.david = import ./homeManager/david.nix;
             backupFileExtension = "backup";
           };
         }
       ];
     };
-
-    nixosConfigurations.kodi = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [
-        ({ pkgs, ... }: {
-          nixpkgs = { overlays = [(self: super: { unstable = import nixpkgs-unstable { system = "x86_64-linux"; }; }) ]; };
-        })
-        ./machines/kodi/configuration.nix
-      ];
-    };
+in {
+  nixosConfigurations = {
+    desktop = mkSystem { hostname = "desktop"; };
+    laptop = mkSystem { hostname = "laptop"; };
+    lat9430 = mkSystem { hostname = "lat9430"; stateNixpkgs = nixpkgs; };
+    vacation = mkSystem { hostname = "vacation"; stateNixpkgs = nixpkgs; useHomeManager = false; };
+    kodi = mkSystem { hostname = "kodi"; stateNixpkgs = nixpkgs; useHomeManager = false; };
   };
 }

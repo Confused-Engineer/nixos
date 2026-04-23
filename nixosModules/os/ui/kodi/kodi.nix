@@ -1,5 +1,4 @@
-{ lib, pkgs, config, ... }:
-with lib;                      
+{ lib, pkgs, config, ... }:                     
 let
   # Shorter name to access final settings a 
   # user of hello.nix module HAS ACTUALLY SET.
@@ -10,27 +9,14 @@ in {
   options.custom.os.ui = {
   
     kodi = {
-      enable = mkEnableOption "Use gnome";
+      enable = lib.mkEnableOption "Enable Kodi Media Center";
     };
-
-    kodi.user.kodi = {
-      enable = mkEnableOption "Add gnome Extensions";
-    };
-
-    kodi.user.kodi.autologin = {
-      enable = mkEnableOption "Strip most default apps";
-    };
-
-    kodi.lidswitch.disable = {
-      enable = mkEnableOption "Strip most default apps";
-    };
-
 
   };
   # Define what other settings, services and resources should be active IF
   # a user of this "hello.nix" module ENABLED this module 
   # by setting "services.hello.enable = true;".
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
 
 
     services.xserver.enable = true;

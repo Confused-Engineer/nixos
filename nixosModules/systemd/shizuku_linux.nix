@@ -1,5 +1,4 @@
-{ lib, pkgs, config, ... }:
-with lib;                      
+{ lib, pkgs, config, ... }:                     
 let
   # Shorter name to access final settings a 
   # user of hello.nix module HAS ACTUALLY SET.
@@ -10,7 +9,7 @@ in {
   options.custom.systemd = {
   
     shizukuLinux = {
-      enable = mkEnableOption "Setup shizuku_linux on device plugin";
+      enable = lib.mkEnableOption "Setup shizuku_linux on device plugin";
     };
 
 
@@ -18,7 +17,7 @@ in {
   # Define what other settings, services and resources should be active IF
   # a user of this "hello.nix" module ENABLED this module 
   # by setting "services.hello.enable = true;".
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
 
     networking.firewall.allowedTCPPorts = [ 5002 ]; # Allow TCP port 80
 

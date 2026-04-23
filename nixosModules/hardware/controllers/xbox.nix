@@ -1,5 +1,5 @@
 { lib, pkgs, config, ... }:
-with lib;                      
+                     
 let
   # Shorter name to access final settings a 
   # user of hello.nix module HAS ACTUALLY SET.
@@ -9,7 +9,7 @@ in {
   # Declare what settings a user of this "hello.nix" module CAN SET.
   options.custom.hardware.controllers = {
   
-    xbox = mkEnableOption "Provide Xbox Controller Support";
+    xbox = lib.mkEnableOption "Provide Xbox Controller Support";
 
 
 
@@ -17,7 +17,7 @@ in {
   # Define what other settings, services and resources should be active IF
   # a user of this "hello.nix" module ENABLED this module 
   # by setting "services.hello.enable = true;".
-  config = mkIf cfg.xbox {
+  config = lib.mkIf cfg.xbox {
 
     hardware.bluetooth = {
         enable = true;

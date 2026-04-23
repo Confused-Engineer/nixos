@@ -1,13 +1,13 @@
 { lib, pkgs, config, ... }:
-with lib;                      
+                     
 let
   cfg = config.custom.mangohud;
 in {
   options.custom.mangohud = {
-    enable = mkEnableOption "enable mangohud with preffered settings";
+    enable = lib.mkEnableOption "enable mangohud with preffered settings";
   };
 
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
     programs.mangohud = {
       enable = true;
       # (Optional) Automatically enable MangoHud for all Vulkan applications

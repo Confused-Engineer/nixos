@@ -1,5 +1,4 @@
 { lib, config, pkgs, ... }:
-with lib;
 let
   # We point directly to 'gnugrep' instead of 'grep'
   grep = pkgs.gnugrep;
@@ -14,18 +13,18 @@ in {
 
   options.custom.apps.flatpaks = {
 
-    enable = mkEnableOption "Enable Flatpacks";
+    enable = lib.mkEnableOption "Enable Flatpacks";
 
     desiredFlatpaks = pkgs.lib.mkOption {
       description = "list of flatpaks";
       type = lib.types.listOf types.str;
     };
 
-    update = mkEnableOption "Updates flatpaks on rebuild";
+    update = lib.mkEnableOption "Updates flatpaks on rebuild";
 
   };
 
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
     
     services.flatpak.enable = true;
     environment.systemPackages = [ pkgs.gnugrep ];
@@ -58,7 +57,7 @@ in {
       '';
     };
 
-    system.userActivationScripts.flatpakUpdate = mkIf cfg.update {
+    system.userActivationScripts.flatpakUpdate = lib.mkIf cfg.update {
       text = ''
         # 7. Update all installed Flatpaks
         ${pkgs.flatpak}/bin/flatpak update -y

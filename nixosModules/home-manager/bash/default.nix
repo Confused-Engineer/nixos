@@ -1,5 +1,4 @@
-{ lib, pkgs, config, ... }:
-with lib;                      
+{ lib, pkgs, config, ... }:                      
 let
   # Shorter name to access final settings a 
   # user of hello.nix module HAS ACTUALLY SET.
@@ -9,11 +8,11 @@ in {
   # Declare what settings a user of this "hello.nix" module CAN SET.
   options.custom.shell.bash = {
     
-    enable = mkEnableOption "enable bash option";
+    enable = lib.mkEnableOption "enable bash option";
   
-    fancy = mkEnableOption "nitch";
-    nixosAlias = mkEnableOption "Nixos-Rebuild alias's";
-    startHyprland = mkEnableOption "Start hyprland on login";
+    fancy = lib.mkEnableOption "nitch";
+    nixosAlias = lib.mkEnableOption "Nixos-Rebuild alias's";
+    startHyprland = lib.mkEnableOption "Start hyprland on login";
 
 
 
@@ -21,10 +20,10 @@ in {
   # Define what other settings, services and resources should be active IF
   # a user of this "hello.nix" module ENABLED this module 
   # by setting "services.hello.enable = true;".
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
     programs.bash = {
       enable = true;
-      shellAliases = mkIf (cfg.nixosAlias == true ) {
+      shellAliases = lib.mkIf (cfg.nixosAlias == true ) {
         nix-switch = "sudo nixos-rebuild switch --flake /etc/nixos";
         nix-boot = "sudo nixos-rebuild boot --flake /etc/nixos";
         nix-test = "sudo nixos-rebuild build-vm --flake /etc/nixos";
@@ -36,18 +35,18 @@ in {
           nixos-rebuild boot --flake /etc/nixos#"''${TargetHostname}" --target-host "''${TargetIP}" --sudo --ask-sudo-password
         '';
       };
-      initExtra = mkIf (cfg.fancy == true ) ''
+      initExtra = lib.mkIf (cfg.fancy == true ) ''
         export PS1='\[\e[38;5;76m\]\u\[\e[0m\] in \[\e[38;5;32m\]\w\[\e[0m\] \\$ '
         nitch
       '';
-      profileExtra = mkIf (cfg.startHyprland == true ) ''
+      profileExtra = lib.mkIf (cfg.startHyprland == true ) ''
         if [ -z "$WAYLAND_DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
           exec uwsm start hyprland-uwsm.desktop
         fi
       '';
 
     };
-    home.packages = with pkgs; mkIf (cfg.fancy == true ) [
+    home.packages = with pkgs; lib.mkIf (cfg.fancy == true ) [
       nitch
     ];
   };

@@ -1,5 +1,4 @@
-{ lib, pkgs, config, ... }:
-with lib;                      
+{ lib, pkgs, config, ... }:                    
 let
   # Shorter name to access final settings a 
   # user of hello.nix module HAS ACTUALLY SET.
@@ -10,7 +9,7 @@ in {
   options.custom.hardware.gpu = {
   
     nvidia = {
-      enable = mkEnableOption "Use nvidia GPU";
+      enable = lib.mkEnableOption "Use nvidia GPU";
     };
 
 
@@ -19,7 +18,7 @@ in {
   # Define what other settings, services and resources should be active IF
   # a user of this "hello.nix" module ENABLED this module 
   # by setting "services.hello.enable = true;".
-  config = mkIf cfg.nvidia.enable {
+  config = lib.mkIf cfg.nvidia.enable {
 
 
     hardware.graphics = {
