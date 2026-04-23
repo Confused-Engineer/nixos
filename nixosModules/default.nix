@@ -16,6 +16,7 @@
         ./os/ui/kde/plasma6.nix
         ./hardware/gpu/nvidia.nix
         ./hardware/controllers/xbox.nix
+        ./boot
     ];
 
 }
