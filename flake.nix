@@ -56,8 +56,6 @@
       nixosConfigurations = {
         desktop  = mkSystem { hostname = "desktop"; };
         laptop   = mkSystem { hostname = "laptop"; };
-        lat9430  = mkSystem { hostname = "lat9430"; stateNixpkgs = nixpkgs; };
-        vacation = mkSystem { hostname = "vacation"; stateNixpkgs = nixpkgs; useHomeManager = false; };
         kodi     = mkSystem { hostname = "kodi";     stateNixpkgs = nixpkgs; useHomeManager = false; };
       };
     };
