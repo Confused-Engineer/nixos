@@ -32,7 +32,7 @@ in {
         nix-remote = ''
           read -p "Target Hostname: " TargetHostname
           read -p "Target IP: " TargetIP
-          nixos-rebuild boot --flake /etc/nixos#"''${TargetHostname}" --target-host "''${TargetIP}" --sudo --ask-sudo-password
+          nixos-rebuild boot --flake /etc/nixos#"''${TargetHostname}" --target-host root@"''${TargetIP}"
         '';
       };
       initExtra = lib.mkIf (cfg.fancy == true ) ''
