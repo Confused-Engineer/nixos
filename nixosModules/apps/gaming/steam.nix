@@ -10,11 +10,11 @@ in {
   options.custom.apps = {
   
     steam = {
-      enable = mkEnableOption "Install Steam";
+      enable = lib.mkEnableOption "Install Steam";
     };
 
     steam.systemd = {
-      enable = mkEnableOption "AutoStart Steam";
+      enable = lib.mkEnableOption "AutoStart Steam";
     };
 
 
@@ -22,7 +22,7 @@ in {
   # Define what other settings, services and resources should be active IF
   # a user of this "hello.nix" module ENABLED this module 
   # by setting "services.hello.enable = true;".
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
 
     programs.steam = {
         enable = true;
@@ -53,9 +53,9 @@ in {
     };
 
 
-    environment.systemPackages = mkIf (cfg.systemd.enable == true ) [ pkgs.coreutils ];
+    environment.systemPackages = lib.mkIf (cfg.systemd.enable == true ) [ pkgs.coreutils ];
     
-    systemd.user.services.steam = mkIf (cfg.systemd.enable == true ) {
+    systemd.user.services.steam = lib.mkIf (cfg.systemd.enable == true ) {
         enable = true;
         description = "Open Steam in the background at boot";
         wantedBy = [ "graphical-session.target" ];

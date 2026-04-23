@@ -17,7 +17,7 @@ in {
 
     desiredFlatpaks = pkgs.lib.mkOption {
       description = "list of flatpaks";
-      type = lib.types.listOf types.str;
+      type = lib.types.listOf lib.types.str;
     };
 
     update = lib.mkEnableOption "Updates flatpaks on rebuild";

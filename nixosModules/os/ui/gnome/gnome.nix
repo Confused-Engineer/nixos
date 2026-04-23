@@ -63,7 +63,7 @@ in {
         wantedBy = [ "multi-user.target" ];
       };
 
-      services."gnome-suspend" = mkIf (cfg.nvidiaFix.hibernate == true ) {
+      services."gnome-suspend" = lib.mkIf (cfg.nvidiaFix.hibernate == true ) {
         description = "suspend gnome shell";
         before = [
           "systemd-suspend.service" 
@@ -80,7 +80,7 @@ in {
           ExecStart = ''${pkgs.procps}/bin/pkill -f -STOP ${pkgs.gnome-shell}/bin/gnome-shell'';
         };
       };
-      services."gnome-resume" = mkIf (cfg.nvidiaFix.hibernate == true ) {
+      services."gnome-resume" = lib.mkIf (cfg.nvidiaFix.hibernate == true ) {
         description = "resume gnome shell";
         after = [
           "systemd-suspend.service" 
