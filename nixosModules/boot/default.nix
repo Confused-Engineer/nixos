@@ -38,7 +38,7 @@ in {
         consoleLogLevel = 0;
         kernelPackages = pkgs.linuxPackages_latest;
         kernelParams = [ "quiet" "splash" "boot.shell_on_fail" ];
-        kernelModules = [ "ntsync" ];
+        
       };
     })
   ]);
