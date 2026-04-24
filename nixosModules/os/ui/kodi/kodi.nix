@@ -35,6 +35,9 @@ in {
       allowedUDPPorts = [ 8080 ];
     };
     
+    services.logind.settings.Login = {
+      IdleAction = "ignore";
+    };
     systemd.targets.sleep.enable = false;
     systemd.targets.suspend.enable = false;
     systemd.targets.hibernate.enable = false;
