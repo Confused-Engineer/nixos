@@ -21,11 +21,6 @@ in {
 
     networking.firewall.allowedTCPPorts = [ 5002 ]; # Allow TCP port 80
 
-
-    nixpkgs.config.packageOverrides = pkgs: {
-      system_api = pkgs.callPackage ./../apps/custom/system_api.nix { };
-    };
-
     environment.systemPackages = with pkgs; [
       system_api
     ];

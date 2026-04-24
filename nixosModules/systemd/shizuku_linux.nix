@@ -19,12 +19,6 @@ in {
   # by setting "services.hello.enable = true;".
   config = lib.mkIf cfg.enable {
 
-    networking.firewall.allowedTCPPorts = [ 5002 ]; # Allow TCP port 80
-
-
-    nixpkgs.config.packageOverrides = pkgs: {
-      shizuku_linux = pkgs.callPackage ./../apps/custom/shizuku_linux.nix { };
-    };
 
     environment.systemPackages = with pkgs; [
       shizuku_linux
