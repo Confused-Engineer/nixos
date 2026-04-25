@@ -107,5 +107,5 @@ jobs:
     steps:
       - name: Garbage collect
         run: |
-          /nix/var/nix/profiles/default/bin/nix-store --gc
+          /nix/var/nix/profiles/default/bin/nix-collect-garbage --delete-older-than 7d
           df -h /nix/store
