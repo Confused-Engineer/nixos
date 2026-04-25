@@ -23,7 +23,7 @@
     discord
     gimp
     jellyfin2samsung
-    libreoffice
+    onlyoffice-desktopeditors
     moonlight-qt
     nixfmt
     nixfmt-tree
