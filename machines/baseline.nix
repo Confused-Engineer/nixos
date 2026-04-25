@@ -69,6 +69,7 @@
     nerd-fonts.fira-code
     font-awesome
     material-design-icons
+    corefonts
   ];
 
 }
