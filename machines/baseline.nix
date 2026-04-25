@@ -1,6 +1,19 @@
 { config, lib, pkgs, ... }:
 {
   nix.settings.experimental-features = ["nix-command" "flakes"];
+
+
+  system.autoUpgrade = {
+    enable = true;
+    flake = "github:Confused-Engineer/nixos#${config.networking.hostName}";
+    flags = [ "--refresh" "--no-write-lock-file" ];
+    dates = "Sun 08:00";
+    operation = "switch";
+    randomizedDelaySec = "30min";
+    allowReboot = false;
+  };
+
+
   networking.networkmanager.enable = true;
   time.timeZone = "America/New_York";
   i18n.defaultLocale = "en_US.UTF-8";

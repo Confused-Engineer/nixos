@@ -9,7 +9,7 @@
   [
     ./hardware-configuration.nix
     ./../../nixosModules
-    ./../../nixosModules/baseline.nix
+    ./../baseline.nix
   ];
 
   custom = {

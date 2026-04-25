@@ -12,7 +12,7 @@ in
     ./hardware-configuration.nix
     #./default-only.nix
     ./../../nixosModules
-    ./../../nixosModules/baseline.nix
+    ./../baseline.nix
   ];
 
   custom = {
