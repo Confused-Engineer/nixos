@@ -80,12 +80,14 @@ jobs:
     runs-on: [self-hosted, linux]
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/download-artifact@v4
         with:
           name: flake-lock
 
-      - uses: peter-evans/create-pull-request@v6
+      - uses: peter-evans/create-pull-request@v7
         with:
           commit-message: "flake.lock: weekly update"
           title: "flake.lock: weekly update"
@@ -99,11 +101,11 @@ jobs:
 
   cleanup:
     name: Garbage collect
-    needs: [pr]
+    needs: [update, pr]
     if: always() && needs.update.outputs.changed == 'true'
     runs-on: self-hosted
     steps:
       - name: Garbage collect
         run: |
-          nix-store --gc
+          /nix/var/nix/profiles/default/bin/nix-store --gc
           df -h /nix/store

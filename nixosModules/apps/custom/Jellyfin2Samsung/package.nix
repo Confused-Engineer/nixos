@@ -2,15 +2,23 @@
 
 let
   # Update this to match the release version you want
-  version = "2.2.0.7";
+  version = "2.2.0.8";
 
   src = pkgs.fetchurl {
     url = "https://github.com/Jellyfin2Samsung/Samsung-Jellyfin-Installer/releases/download/v${version}/Jellyfin2Samsung-v${version}-linux-x64.tar.gz";
-    # IMPORTANT: You must replace this hash the first time you build.
-    # Run:  nix-prefetch-url --unpack <url>
-    # or just set it to "" and let the build error tell you the correct hash.
-    sha256 = "+nOjTAJ2ZwG5CcobF15kY6+a7oJASUz1GdDywViQRqc=";
+  #  # IMPORTANT: You must replace this hash the first time you build.
+  #  # Run:  nix-prefetch-url --unpack <url>
+  #  # or just set it to "" and let the build error tell you the correct hash.
+    sha256 = "tqV4pRNXJu4bA+zD5rhr/L1g0Hcp13268lIW6NVSoYk=";
   };
+
+  #src = pkgs.fetchFromGitHub {
+  #  owner = "Jellyfin2Samsung";
+  #  repo = "Samsung-Jellyfin-Installer";
+  #  rev = "v2.2.0.8"; # Or commit SHA
+  #  hash = "sha256-XZAah8F+puup39xXiqTl10bdpSbej8gtb66dQuqF/Wk=";
+  #};
+
 
   krb5WithUnversionedLib = pkgs.runCommand "krb5-unversioned-so" {} ''
     mkdir -p $out/lib
