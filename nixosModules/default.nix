@@ -8,7 +8,7 @@
         ./apps/flatpak.nix
         ./apps/gaming/steam.nix
         ./boot
-        ./hardware/controllers/xbox.nix
+        ./hardware/controllers
         ./hardware/gpu/lact.nix
         ./hardware/gpu/nvidia.nix
         ./os/ui/cosmic/cosmic.nix

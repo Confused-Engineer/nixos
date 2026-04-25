@@ -1,12 +1,10 @@
 { lib, pkgs, config, ... }:
                   
 let
-  # Shorter name to access final settings a 
-  # user of hello.nix module HAS ACTUALLY SET.
-  # cfg is a typical convention.
+
   cfg = config.custom.os.ui.gnome;
 in {
-  # Declare what settings a user of this "hello.nix" module CAN SET.
+
   options.custom.os.ui = {
   
     gnome = {
@@ -26,9 +24,7 @@ in {
     };
 
   };
-  # Define what other settings, services and resources should be active IF
-  # a user of this "hello.nix" module ENABLED this module 
-  # by setting "services.hello.enable = true;".
+
   config = lib.mkIf cfg.enable {
 
     services.xserver = {
@@ -46,7 +42,7 @@ in {
 
 
 
-    environment.systemPackages = with pkgs.gnomeExtensions; lib.mkIf (cfg.extensions.enable == true ) [
+    environment.systemPackages = with pkgs.gnomeExtensions; lib.mkIf cfg.extensions.enable [
       dash-to-dock
       tray-icons-reloaded
     ];
@@ -63,7 +59,7 @@ in {
         wantedBy = [ "multi-user.target" ];
       };
 
-      services."gnome-suspend" = lib.mkIf (cfg.nvidiaFix.hibernate == true ) {
+      services."gnome-suspend" = lib.mkIf cfg.nvidiaFix.hibernate {
         description = "suspend gnome shell";
         before = [
           "systemd-suspend.service" 
@@ -80,7 +76,8 @@ in {
           ExecStart = ''${pkgs.procps}/bin/pkill -f -STOP ${pkgs.gnome-shell}/bin/gnome-shell'';
         };
       };
-      services."gnome-resume" = lib.mkIf (cfg.nvidiaFix.hibernate == true ) {
+      
+      services."gnome-resume" = lib.mkIf cfg.nvidiaFix.hibernate {
         description = "resume gnome shell";
         after = [
           "systemd-suspend.service" 
@@ -99,7 +96,7 @@ in {
     };
 
 
-    environment.gnome.excludePackages = with pkgs; lib.mkIf (cfg.strip.enable == true ) [
+    environment.gnome.excludePackages = with pkgs; lib.mkIf cfg.strip.enable [
     # baobab      # disk usage analyzer
       cheese      # photo booth
     # eog         # image viewer

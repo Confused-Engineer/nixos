@@ -20,15 +20,21 @@
 
   home.packages = with pkgs; [
     brave
+    discord
     gimp
+    jellyfin2samsung
+    libreoffice
+    moonlight-qt
+    nixfmt
     obsidian
+    pavucontrol
     prismlauncher
     spotify
     vlc
     vscode
-    moonlight-qt
-    discord
-    libreoffice
+    zsh
+    zsh-completions
+
     (pkgs.kodi.withPackages (
       kodiPkgs: with kodiPkgs; [
         jellyfin

@@ -1,11 +1,9 @@
 { lib, pkgs, config, ... }:                   
 let
-  # Shorter name to access final settings a 
-  # user of hello.nix module HAS ACTUALLY SET.
-  # cfg is a typical convention.
+
   cfg = config.custom.os.ui.cosmic;
 in {
-  # Declare what settings a user of this "hello.nix" module CAN SET.
+
   options.custom.os.ui = {
   
     cosmic = {
@@ -22,9 +20,7 @@ in {
 
 
   };
-  # Define what other settings, services and resources should be active IF
-  # a user of this "hello.nix" module ENABLED this module 
-  # by setting "services.hello.enable = true;".
+
   config = lib.mkIf cfg.enable {
 
     # Enable the COSMIC login manager
@@ -33,7 +29,7 @@ in {
     # Enable the COSMIC desktop environment
     services.desktopManager.cosmic.enable = true;
 
-    systemd = lib.mkIf (cfg.nvidiaFix.hibernate == true ) {
+    systemd = lib.mkIf cfg.nvidiaFix.hibernate {
       services."cosmic-suspend" = {
         description = "suspend cosmic desktop";
         before = [
@@ -70,7 +66,7 @@ in {
     };
 
 
-    environment.cosmic.excludePackages = with pkgs; lib.mkIf (cfg.strip.enable == true ) [
+    environment.cosmic.excludePackages = with pkgs; lib.mkIf cfg.strip.enable [
       cosmic-store
     ];
 

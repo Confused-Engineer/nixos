@@ -29,12 +29,12 @@
                 (final: prev: {
                   stable = import nixpkgs {
                     inherit system;
-                    config.allowUnfree = true;
+                    #config.allowUnfree = true;
                     config.permittedInsecurePackages = [ "mbedtls-2.28.10" ];
                   };
                   unstable = import nixpkgs-unstable {
                     inherit system;
-                    config.allowUnfree = true;
+                    #config.allowUnfree = true;
                   };
                 })
                 (final: prev: {
