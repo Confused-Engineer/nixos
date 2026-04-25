@@ -55,6 +55,16 @@ in
   
   boot.loader.efi.canTouchEfiVariables = true;
 
+  system.autoUpgrade = {
+    enable = true;
+    flake = "github:Confused-Engineer/nixos#${config.networking.hostName}";
+    flags = [ "--refresh" "--no-write-lock-file" ];
+    dates = "*-*-01 2:00:00";
+    operation = "switch";
+    randomizedDelaySec = "30min";
+    allowReboot = true;
+  };
+
   networking.hostName = "kodi"; # Define your hostname.
   nix.settings.trusted-users = [ "root" "david" ];
 
