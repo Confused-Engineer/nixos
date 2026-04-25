@@ -82,6 +82,8 @@ jobs:
     needs: [update, build]
     if: needs.update.outputs.changed == 'true'
     runs-on: [self-hosted, linux]
+    env:
+      HOME: /home/github-runner
     steps:
       - uses: actions/checkout@v4
         with:
