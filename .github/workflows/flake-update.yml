@@ -72,6 +72,17 @@ jobs:
             --print-build-logs \
             --no-link
 
+  cleanup:
+    name: Garbage collect
+    needs: [build]
+    if: always() && needs.update.outputs.changed == 'true'
+    runs-on: self-hosted
+    steps:
+      - name: Garbage collect
+        run: |
+          nix-collect-garbage --delete-older-than 7d
+          df -h /nix/store
+
   pr:
     name: Open PR
     needs: [update, build]
