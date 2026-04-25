@@ -1,0 +1,107 @@
+name: Update flake.lock
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'   # Mondays 06:00 UTC
+  workflow_dispatch:       # also allow manual runs
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    name: Update flake.lock
+    runs-on: [self-hosted, linux]
+    outputs:
+      changed: ${{ steps.diff.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+
+      - name: nix flake update
+        run: nix flake update
+
+      - id: diff
+        run: |
+          if git diff --quiet flake.lock; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: steps.diff.outputs.changed == 'true'
+        with:
+          name: flake-lock
+          path: flake.lock
+          retention-days: 1
+
+  build:
+    name: Build ${{ matrix.host }}
+    needs: update
+    if: needs.update.outputs.changed == 'true'
+    runs-on: [self-hosted, linux]
+    strategy:
+      fail-fast: false
+      matrix:
+        host: [desktop, laptop, kodi]
+    steps:
+      - name: Free disk space
+        uses: easimon/maximize-build-space@v10
+        with:
+          root-reserve-mb: 2048
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-docker-images: 'true'
+
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: flake-lock
+
+      - name: Build toplevel
+        run: |
+          nix build \
+            .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel \
+            --print-build-logs \
+            --no-link
+
+  pr:
+    name: Open PR
+    needs: [update, build]
+    if: needs.update.outputs.changed == 'true'
+    runs-on: [self-hosted, linux]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: flake-lock
+
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "flake.lock: weekly update"
+          title: "flake.lock: weekly update"
+          body: |
+            Automated weekly update of `flake.lock`.
+
+            ✅ desktop, laptop, and kodi all built successfully on x86_64-linux.
+          branch: automated/flake-update
+          delete-branch: true
+          labels: automated, dependencies
