@@ -1,0 +1,107 @@
+name: Update flake.lock
+
+on:
+  schedule:
+    - cron: '0 5 * * 0'   
+  workflow_dispatch:       # also allow manual runs
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    name: Update flake.lock
+    runs-on: nix
+    outputs:
+      changed: ${{ steps.diff.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          extra-conf: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+
+      - name: nix flake update
+        run: |
+          nix flake update \
+            --option access-tokens "github.com=${{ secrets.GITHUB_TOKEN }}"
+
+      - id: diff
+        run: |
+          if git diff --quiet flake.lock; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: steps.diff.outputs.changed == 'true'
+        with:
+          name: flake-lock
+          path: flake.lock
+          retention-days: 1
+
+  build:
+    name: Build ${{ matrix.host }}
+    needs: update
+    if: needs.update.outputs.changed == 'true'
+    runs-on: [self-hosted, linux]
+    strategy:
+      fail-fast: false
+      matrix:
+        host: [desktop, laptop, kodi]
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          extra-conf: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: flake-lock
+
+      - name: Build toplevel
+        run: |
+          nix build \
+            .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel \
+            --print-build-logs \
+            --no-link
+
+
+  publish:
+    name: Publish to main
+    needs: [update, build]
+    if: needs.update.outputs.changed == 'true'
+    runs-on: nix
+    env:
+      HOME: /home/github-runner
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - uses: actions/download-artifact@v4
+      with:
+        name: flake-lock
+
+    - name: Commit and push
+      run: |
+        git add flake.lock
+        git commit -m "flake.lock: weekly update
+
+        Automated weekly update.
+        ✅ desktop, laptop, and kodi all built successfully on x86_64-linux."
+        git push origin HEAD:main
+
+
+

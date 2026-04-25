@@ -1,0 +1,15 @@
+name: cleanup
+
+on:
+  schedule:
+    - cron: '0 8 1 */2 *'   # Mondays 06:00 UTC
+  workflow_dispatch:       # also allow manual runs
+
+jobs:
+  cleanup:
+    name: Garbage collect
+    runs-on: nix
+    steps:
+      - name: Garbage collect
+        run: |
+          /nix/var/nix/profiles/default/bin/nix-store --gc

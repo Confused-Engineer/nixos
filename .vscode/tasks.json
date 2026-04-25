@@ -1,0 +1,55 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Create Nix Package",
+            "type": "shell",
+            "command": "nix-build -E 'with import <nixpkgs> { }; callPackage ${input:filename} { } '",
+            "problemMatcher": []
+        },
+        {
+            "label": "Update Flake nixpkgs",
+            "type": "shell",
+            "command": "nix flake update",
+            "problemMatcher": []
+        },
+        {
+            "label": "Nixos Rebuild boot",
+            "type": "shell",
+            "command": "sudo nixos-rebuild boot --flake .",
+            "problemMatcher": []
+        },
+        {
+            "label": "Nixos Clean",
+            "type": "shell",
+            "command": "sudo nix-collect-garbage; sudo nix-collect-garbage -d; sudo nixos-rebuild boot --flake .",
+            "problemMatcher": []
+        },
+                {
+            "label": "Nixos Target Build",
+            "type": "shell",
+            "command": "nixos-rebuild --flake .#${input:flake} --target-host ${input:remoteIp} --use-remote-sudo boot",
+            "problemMatcher": []
+        },
+    ],
+    "inputs": [
+        {
+            "id": "filename",
+            "description": "File Name:",
+            "default": "default.nix",
+            "type": "promptString"
+        },
+        {
+            "id": "flake",
+            "description": "Name of flake to use:",
+            "default": "",
+            "type": "promptString"
+        },
+        {
+            "id": "remoteIp",
+            "description": "IP of Remote Host:",
+            "default": "",
+            "type": "promptString"
+        },
+    ]
+}
