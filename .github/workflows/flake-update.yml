@@ -20,6 +20,7 @@ jobs:
 
       - uses: DeterminateSystems/nix-installer-action@main
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           extra-conf: |
             experimental-features = nix-command flakes
             accept-flake-config = true
@@ -57,6 +58,7 @@ jobs:
 
       - uses: DeterminateSystems/nix-installer-action@main
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           extra-conf: |
             experimental-features = nix-command flakes
             accept-flake-config = true
