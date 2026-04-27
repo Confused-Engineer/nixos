@@ -39,8 +39,8 @@
                 })
                 (final: prev: {
                   jellyfin2samsung = final.callPackage ./nixosModules/apps/custom/Jellyfin2Samsung/package.nix { };
-                  shizuku_linux = final.callPackage ./nixosModules/apps/custom/ShizukuLinux/package.nix { };
-                  system_api = final.callPackage ./nixosModules/apps/custom/SystemAPI/package.nix { };
+                  shizuku-linux = final.callPackage ./nixosModules/apps/custom/shizuku-linux/package.nix { };
+                  system-api = final.callPackage ./nixosModules/apps/custom/system-api/package.nix { };
                 })
               ];
             }

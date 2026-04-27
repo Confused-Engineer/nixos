@@ -13,7 +13,7 @@
     ./os/ui/gnome/gnome.nix
     ./os/ui/kde/plasma6.nix
     ./os/ui/kodi/kodi.nix
-    ./systemd/shizuku_linux.nix
-    ./systemd/system_api.nix
+    ./systemd/shizuku-linux
+    ./systemd/system-api
   ];
 }

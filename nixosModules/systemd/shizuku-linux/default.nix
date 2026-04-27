@@ -1,17 +1,14 @@
-{ lib, pkgs, config, ... }:                  
+{ lib, pkgs, config, ... }:                     
 let
   # Shorter name to access final settings a 
   # user of hello.nix module HAS ACTUALLY SET.
   # cfg is a typical convention.
-  cfg = config.custom.systemd.system_api;
+  cfg = config.custom.systemd.shizuku-linux;
 in {
   # Declare what settings a user of this "hello.nix" module CAN SET.
-  options.custom.systemd = {
-  
-    system_api = {
-      enable = lib.mkEnableOption "Setup System API";
-    };
+  options.custom.systemd.shizuku-linux = {
 
+    enable = lib.mkEnableOption "Setup shizuku linux on device plugin";
 
   };
   # Define what other settings, services and resources should be active IF
@@ -19,21 +16,21 @@ in {
   # by setting "services.hello.enable = true;".
   config = lib.mkIf cfg.enable {
 
-    networking.firewall.allowedTCPPorts = [ 5002 ]; # Allow TCP port 80
 
     environment.systemPackages = with pkgs; [
-      system_api
+      shizuku-linux
     ];
 
+    programs.adb.enable = true;
 
-    systemd.services.systemapi = {
+    systemd.services.shizuku-linux = {
       enable = true;
-      description = "A System API for Home Assistant";
+      description = "Start Shizuku on Device Plugin";
       wantedBy = [ "network.target" ];
     # after = [ "network.target" ];
       serviceConfig = {
       # ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
-        ExecStart = "${pkgs.system_api}/bin/system_api";
+        ExecStart = "${pkgs.shizuku-linux}/bin/shizuku_linux";
         Restart = "on-failure";
         RestartSec = "5s";
       };

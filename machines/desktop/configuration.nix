@@ -65,8 +65,8 @@ in
     };
 
     systemd = {
-      system_api.enable = true; # Enable System API For Home Assistant
-      shizukuLinux.enable = false; # Enable starting shizuku on android device plugin
+      system-api.enable = true; # Enable System API For Home Assistant
+      shizuku-linux.enable = false; # Enable starting shizuku on android device plugin
     };
     
   };

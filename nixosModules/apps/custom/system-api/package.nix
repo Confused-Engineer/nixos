@@ -19,7 +19,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   meta = {
     description = "System API for basic Home Assistant Commands";
-    homepage = "https://github.com/Confused-Engineer/system_api";
+    homepage = "https://github.com/Confused-Engineer/systemAPI";
     license = lib.licenses.unlicense;
     maintainers = [ "Confused-Engineer" ];
   };
