@@ -3,10 +3,10 @@ let
   # Shorter name to access final settings a 
   # user of hello.nix module HAS ACTUALLY SET.
   # cfg is a typical convention.
-  cfg = config.custom.systemd.system_api;
+  cfg = config.custom.systemd.system-api;
 in {
   # Declare what settings a user of this "hello.nix" module CAN SET.
-  options.custom.systemd.system_api = {
+  options.custom.systemd.system-api = {
   
 
     enable = lib.mkEnableOption "Setup System API";
