@@ -8,7 +8,7 @@
     flake = "github:Confused-Engineer/nixos#${config.networking.hostName}";
     flags = [ "--refresh" "--no-write-lock-file" ];
     dates = "Sun 08:00";
-    operation = "switch";
+    operation = "boot";
     randomizedDelaySec = "30min";
     allowReboot = false;
   };
