@@ -2,17 +2,17 @@
 
 {
   imports = [
-    ./apps/browsers/firefox.nix
-    ./apps/flatpak.nix
-    ./apps/gaming/steam.nix
+    ./apps/browsers
+    ./apps/flatpak
+    ./apps/gaming/steam
     ./boot
     ./hardware/controllers
-    ./hardware/gpu/lact.nix
-    ./hardware/gpu/nvidia.nix
-    ./os/ui/cosmic/cosmic.nix
-    ./os/ui/gnome/gnome.nix
-    ./os/ui/kde/plasma6.nix
-    ./os/ui/kodi/kodi.nix
+    ./hardware/gpu/lact
+    ./hardware/gpu/nvidia
+    ./os/ui/cosmic
+    ./os/ui/gnome
+    ./os/ui/kde
+    ./os/ui/kodi
     ./systemd/shizuku-linux
     ./systemd/system-api
   ];
