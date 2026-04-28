@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./apps/browsers
+    ./apps/browsers/firefox
     ./apps/flatpak
     ./apps/gaming/steam
     ./boot
