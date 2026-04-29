@@ -9,7 +9,7 @@ in
 {
   imports =
   [
-    ./hardware-configuration.nix
+    ./../../hardware-configuration.nix
     #./default-only.nix
     ./../../nixosModules
     ./../baseline.nix
@@ -103,6 +103,8 @@ in
     stable.rpcs3
     stable.dolphin-emu
     #winboat
+
+    easyeffects
   ];
   
   hardware.openrazer.enable = true;
