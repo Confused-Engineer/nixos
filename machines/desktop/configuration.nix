@@ -9,7 +9,7 @@ in
 {
   imports =
   [
-    /etc/nixos/hardware-configuration.nix
+    ./hardware-configuration.nix
     #./default-only.nix
     ./../../nixosModules
     ./../baseline.nix
