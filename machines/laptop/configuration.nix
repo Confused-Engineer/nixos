@@ -38,7 +38,7 @@
     boot = {
       enable = true;
       fancy.enable = true;
-      fancy.secureBoot = false;
+      fancy.secureBoot = true;
       systemd = false;
     };
 
