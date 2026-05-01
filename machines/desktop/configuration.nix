@@ -88,15 +88,12 @@ in
   programs.kdeconnect.enable = true;
 
   environment.systemPackages = with pkgs; [
-    git
-    sbctl
     heroic
     protonup-qt
     r2modman
     polychromatic
     openrazer-daemon
     
-    gparted
     gnome-system-monitor
 
     stable.pcsx2

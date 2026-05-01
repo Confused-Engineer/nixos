@@ -75,9 +75,7 @@
   networking.hostName = "laptop"; # Define your hostname.
 
   environment.systemPackages = with pkgs; [
-    git
-    gparted
-    sbctl
+
   ];
 
   services.logind.settings.Login.HandleLidSwitch = "hibernate";

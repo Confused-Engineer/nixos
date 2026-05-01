@@ -4,13 +4,14 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, home-manager, ... }:
+  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, nixos-hardware, home-manager, ... }:
     let
       lib = nixpkgs-unstable.lib;
 
@@ -19,6 +20,7 @@
         , system ? "x86_64-linux"
         , stateNixpkgs ? nixpkgs-unstable
         , useHomeManager ? true
+        , hardwareModules ? [ ]
         }:
         stateNixpkgs.lib.nixosSystem {
           inherit system;
@@ -29,12 +31,10 @@
                 (final: prev: {
                   stable = import nixpkgs {
                     inherit system;
-                    #config.allowUnfree = true;
                     config.permittedInsecurePackages = [ "mbedtls-2.28.10" ];
                   };
                   unstable = import nixpkgs-unstable {
                     inherit system;
-                    #config.allowUnfree = true;
                   };
                 })
                 (final: prev: {
@@ -45,7 +45,8 @@
               ];
             }
             ./machines/${hostname}/configuration.nix
-          ] ++ lib.optionals useHomeManager [
+          ] ++ hardwareModules
+            ++ lib.optionals useHomeManager [
             home-manager.nixosModules.home-manager
             {
               home-manager = {
@@ -60,8 +61,8 @@
     in {
       nixosConfigurations = {
         desktop  = mkSystem { hostname = "desktop"; };
-        laptop   = mkSystem { hostname = "laptop"; };
-        kodi     = mkSystem { hostname = "kodi";     stateNixpkgs = nixpkgs; useHomeManager = false; };
+        laptop   = mkSystem { hostname = "laptop"; hardwareModules = [ nixos-hardware.nixosModules.dell-latitude-5520 ]; };
+        kodi     = mkSystem { hostname = "kodi"; stateNixpkgs = nixpkgs; useHomeManager = false; };
       };
     };
 }

@@ -52,14 +52,30 @@
     isNormalUser = true;
     initialPassword = "vmtest";
     description = "david";
-    extraGroups = [ "networkmanager" "wheel" "audio" "openrazer" "dialout" "docker"];
+    extraGroups = [ "networkmanager" "wheel" "audio" "openrazer" "dialout" "docker" "podman"];
     packages = with pkgs; [
     #  thunderbird
     ];
   };
+
+  virtualisation = {
+    containers.enable = true;
+    podman = {
+      enable = true;
+      dockerCompat = true;
+      defaultNetwork.settings.dns_enabled = true; # Required for containers under podman-compose to be able to talk to each other.
+    };
+  };
   
   services.fwupd.enable = true;
   nixpkgs.config.allowUnfree = true;
+
+  environment.systemPackages = with pkgs; [
+    git
+    gparted
+    sbctl
+    winboat
+  ];
 
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
