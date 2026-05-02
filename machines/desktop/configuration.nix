@@ -13,6 +13,7 @@ in
     #./default-only.nix
     ./../../nixosModules
     ./../baseline.nix
+    ./steam-os.nix
   ];
 
   custom = {
@@ -99,7 +100,7 @@ in
     stable.pcsx2
     stable.rpcs3
     stable.dolphin-emu
-    #winboat
+    winboat
 
     easyeffects
   ];

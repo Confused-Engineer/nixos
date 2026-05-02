@@ -74,7 +74,6 @@
     git
     gparted
     sbctl
-    winboat
   ];
 
   fonts.packages = with pkgs; [
