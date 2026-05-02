@@ -61,39 +61,23 @@ in
           };
 
 
-          programs.steam = {
-            enable = true;
-            remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-            dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-            localNetworkGameTransfers.openFirewall = true;
-            extraCompatPackages = with pkgs; [ proton-ge-bin ];
-            gamescopeSession = {
+          programs = {
+            xwayland.enable = true;
+            steam = {
               enable = true;
-              #args = [
-              #  #"--prefer-output DP-5"
-              #  #"--output-width 1920"
-              #  #"--output-height 1080"
-              #  #"--framerate-limit 60"
-              #  "--fullscreen"
-              #  "--steam"
-              #];
-              #env = {
-              #  # Force Steam into Big Picture mode under Wayland/gamescope
-              #  STEAM_FORCE_DESKTOPUI_SCALING = "1";
-              #  STEAM_USE_DYNAMIC_VRS = "1";
-              #  # Hint Steam/Qt apps to prefer Wayland
-              #  QT_QPA_PLATFORM = "wayland";
-              #  MOZ_ENABLE_WAYLAND = "1";
-              #  NIXOS_OZONE_WL = "1";
-              #};
+              remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+              dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+              localNetworkGameTransfers.openFirewall = true;
+              extraCompatPackages = with pkgs; [ proton-ge-bin ];
+              gamescopeSession.enable = true;
+            };
+            gamescope = {
+              enable = true;
+              capSysNice = true;
             };
           };
-          programs.gamescope = {
-            enable = true;
-            capSysNice = true;
-          };
 
-          programs.xwayland.enable = true;
+
           services.greetd = {
             enable = true;
             settings = {
@@ -108,32 +92,31 @@ in
             };
           };
 
-          systemd.services."getty@tty1".enable = false;
-          systemd.services."autovt@tty1".enable = false;
-          systemd.services.greetd = {
-            after = [
-              "systemd-user-sessions.service"
-              "systemd-logind.service"
-              "multi-user.target"
-              "plymouth-quit.service"
-            ];
-            wants = [
-              "systemd-logind.service"
-            ];
-            requires = [
-              "multi-user.target"
-            ];
-            serviceConfig = {
-              # Small grace period so logind + udev + DRM are fully
-              # quiescent before gamescope claims the seat.
-              ExecStartPre = "${pkgs.coreutils}/bin/sleep 2";
+
+          systemd.services = {
+            "getty@tty1".enable = false;
+            "autovt@tty1".enable = false;
+            greetd = {
+              after = [
+                "systemd-user-sessions.service"
+                "systemd-logind.service"
+                "multi-user.target"
+                "plymouth-quit.service"
+              ];
+              wants = [ "systemd-logind.service" ];
+              requires = [ "multi-user.target" ];
+              serviceConfig = { ExecStartPre = "${pkgs.coreutils}/bin/sleep 2"; };
             };
           };
+
           
           networking.hostName = "desktop";
 
-          boot.kernelModules = [ "ntsync" ];
-          boot.kernelParams = [ "nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" ];
+          boot = {
+            kernelModules = [ "ntsync" ];
+            #kernelParams = [ "nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" ];
+          };
+
 
           environment.systemPackages = with pkgs; [
             heroic
