@@ -117,7 +117,7 @@ in
             kernelPackages = pkgs.linuxPackages_latest;
           };
 
-
+          nixpkgs.config.allowUnfree = true;
           environment.systemPackages = with pkgs; [
             heroic
             r2modman
