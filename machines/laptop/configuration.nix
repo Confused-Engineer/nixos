@@ -84,7 +84,7 @@
   powerManagement.enable = true;
 
   hardware.graphics.extraPackages = with pkgs; [ intel-vaapi-driver intel-media-driver ];
-  kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   networking.firewall = {
     allowedTCPPorts = [ 8080 ];
     allowedUDPPorts = [ 8080 ];
