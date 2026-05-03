@@ -54,7 +54,7 @@ in
   };
   
   boot.loader.efi.canTouchEfiVariables = true;
-
+  kernelPackages = pkgs.linuxPackages;
   system.autoUpgrade = {
     enable = true;
     flake = "github:Confused-Engineer/nixos#${config.networking.hostName}";

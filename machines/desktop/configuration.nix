@@ -85,6 +85,8 @@ in
   networking.hostName = "desktop";
 
   boot.kernelModules = [ "ntsync" ];
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
 
   programs.kdeconnect.enable = true;
 

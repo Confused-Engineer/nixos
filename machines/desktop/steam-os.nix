@@ -114,15 +114,13 @@ in
 
           boot = {
             kernelModules = [ "ntsync" ];
-            #kernelParams = [ "nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" ];
+            kernelPackages = pkgs.linuxPackages_latest;
           };
 
 
           environment.systemPackages = with pkgs; [
             heroic
-            protonup-qt
             r2modman
-            polychromatic
             openrazer-daemon
 
             stable.pcsx2

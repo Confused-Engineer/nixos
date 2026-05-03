@@ -37,7 +37,6 @@ in
 
           initrd.systemd.enable = true;
           consoleLogLevel = 0;
-          kernelPackages = pkgs.linuxPackages_latest;
           kernelParams = [
             "quiet"
             "splash"
