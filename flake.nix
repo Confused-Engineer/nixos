@@ -41,6 +41,7 @@
                   jellyfin2samsung = final.callPackage ./nixosModules/apps/custom/Jellyfin2Samsung/package.nix { };
                   shizuku-linux = final.callPackage ./nixosModules/apps/custom/shizuku-linux/package.nix { };
                   system-api = final.callPackage ./nixosModules/apps/custom/system-api/package.nix { };
+                  vintagestory = final.callPackage ./nixosModules/apps/custom/vintagestory/package.nix { };
                 })
               ];
             }

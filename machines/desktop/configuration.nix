@@ -25,7 +25,6 @@ in
         update = true;
         desiredFlatpaks = [
           "com.github.tchx84.Flatseal"
-          "at.vintagestory.VintageStory"
           "com.usebottles.bottles"
           "com.bambulab.BambuStudio"
           "org.freecad.FreeCAD"
@@ -105,6 +104,7 @@ in
     winboat
 
     easyeffects
+    vintagestory
   ];
   
   hardware.openrazer.enable = true;
