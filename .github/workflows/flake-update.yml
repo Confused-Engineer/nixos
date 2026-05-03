@@ -24,6 +24,7 @@ jobs:
           extra-conf: |
             experimental-features = nix-command flakes
             accept-flake-config = true
+            allow-unfree = true
 
       - name: nix flake update
         run: |
