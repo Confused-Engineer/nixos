@@ -1,38 +1,24 @@
-{ lib, pkgs, config, ... }:                  
+{ lib, pkgs, config, ... }:
 let
-  # Shorter name to access final settings a 
-  # user of hello.nix module HAS ACTUALLY SET.
-  # cfg is a typical convention.
   cfg = config.custom.systemd.system-api;
 in {
-  # Declare what settings a user of this "hello.nix" module CAN SET.
   options.custom.systemd.system-api = {
-  
-
-    enable = lib.mkEnableOption "Setup System API";
-
+    enable = lib.mkEnableOption "system-api HTTP service for Home Assistant";
   };
-  # Define what other settings, services and resources should be active IF
-  # a user of this "hello.nix" module ENABLED this module 
-  # by setting "services.hello.enable = true;".
+
   config = lib.mkIf cfg.enable {
+    # system-api listens on TCP 5002.
+    networking.firewall.allowedTCPPorts = [ 5002 ];
 
-    networking.firewall.allowedTCPPorts = [ 5002 ]; # Allow TCP port 80
-
-    environment.systemPackages = with pkgs; [
-      system-api
-    ];
-
+    environment.systemPackages = [ pkgs.system-api ];
 
     systemd.services.systemapi = {
-      enable = true;
-      description = "A System API for Home Assistant";
-      wantedBy = [ "network.target" ];
-    # after = [ "network.target" ];
+      enable      = true;
+      description = "System API for Home Assistant";
+      wantedBy    = [ "network.target" ];
       serviceConfig = {
-      # ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
-        ExecStart = "${pkgs.system-api}/bin/system_api";
-        Restart = "on-failure";
+        ExecStart  = "${pkgs.system-api}/bin/system_api";
+        Restart    = "on-failure";
         RestartSec = "5s";
       };
     };

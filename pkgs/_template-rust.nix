@@ -1,3 +1,12 @@
+# Copy-paste starting point for a new Rust package. Not imported anywhere —
+# the leading underscore on the filename keeps it out of any glob.
+#
+# To use:
+#   1. Copy to `pkgs/<name>/package.nix`.
+#   2. Replace `pname`, `version`, `src`, and the two hashes.
+#   3. Run `nix build` once with placeholder hashes to get the real ones.
+#   4. Add an entry to `pkgs/default.nix`.
+
 {
   lib,
   fetchFromGitHub,

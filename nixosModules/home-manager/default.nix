@@ -1,10 +1,8 @@
-{ config, pkgs, lib, ... }:
-
+{ ... }:
 {
-
   imports = [
-      ./bash
-      ./mangohud
+    ./bash
+    ./mangohud
+    ./streamcontroller
   ];
-
 }

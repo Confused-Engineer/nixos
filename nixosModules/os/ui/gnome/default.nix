@@ -1,133 +1,88 @@
 { lib, pkgs, config, ... }:
-                  
 let
+  cfg     = config.custom.os.ui.gnome;
+  helpers = import ./../../../../lib { inherit lib pkgs; };
 
-  cfg = config.custom.os.ui.gnome;
+  # Move the inline shell from a one-liner into a script so it's readable.
+  copyMonitorsXml = pkgs.writeShellScript "copy-gdm-monitors-xml" ''
+    set -e
+    src=/home/david/.config/monitors.xml
+    dst=/run/gdm/.config/monitors.xml
+    if [ ! -e "$src" ]; then
+      echo "copy-gdm-monitors-xml: $src missing, skipping"
+      exit 0
+    fi
+    mkdir -p "$(dirname "$dst")"
+    if [ "$src" -ef "$dst" ]; then
+      exit 0
+    fi
+    cp "$src" "$dst"
+    chown gdm:gdm "$dst"
+    echo "copy-gdm-monitors-xml: refreshed $dst"
+  '';
 in {
-
-  options.custom.os.ui = {
-  
-    gnome = {
-      enable = lib.mkEnableOption "Use gnome";
-    };
-
-    gnome.extensions = {
-      enable = lib.mkEnableOption "Add gnome Extensions";
-    };
-
-    gnome.strip = {
-      enable = lib.mkEnableOption "Strip most default apps";
-    };
-
-    gnome.nvidiaFix = {
-      hibernate = lib.mkEnableOption "Fix Hibernate with Nvidia GPU";
-    };
-
+  options.custom.os.ui.gnome = {
+    enable              = lib.mkEnableOption "GNOME desktop";
+    extensions.enable   = lib.mkEnableOption "GNOME extensions (dash-to-dock, tray-icons)";
+    strip.enable        = lib.mkEnableOption "remove most default GNOME apps";
+    nvidiaFix.hibernate = lib.mkEnableOption "STOP/CONT gnome-shell around suspend (NVIDIA hibernate fix)";
   };
 
-  config = lib.mkIf cfg.enable {
-
-    services.xserver = {
-      # Enable the X11 windowing system.
-      enable = true;
-      # Enable the GNOME Desktop Environment.
-      displayManager.gdm.enable = true;
-      displayManager.gdm.autoSuspend = true;
-      desktopManager.gnome.enable = true;
-      excludePackages = [ pkgs.xterm ];
-
-    };
-
-
-
-
-
-    environment.systemPackages = with pkgs.gnomeExtensions; lib.mkIf cfg.extensions.enable [
-      dash-to-dock
-      tray-icons-reloaded
-    ];
-
-
-    systemd = {
-      services.copyGdmMonitorsXml = {
-        description = "Copy monitors.xml to GDM config";
-        after = [ "network.target" "systemd-user-sessions.service" "display-manager.service" ];
-        serviceConfig = {
-          ExecStart = "${pkgs.bash}/bin/bash -c 'echo \"Running copyGdmMonitorsXml service\" && mkdir -p /run/gdm/.config && echo \"Created /run/gdm/.config directory\" && [ \"/home/david/.config/monitors.xml\" -ef \"/run/gdm/.config/monitors.xml\" ] || cp /home/david/.config/monitors.xml /run/gdm/.config/monitors.xml && echo \"Copied monitors.xml to /run/gdm/.config/monitors.xml\" && chown gdm:gdm /run/gdm/.config/monitors.xml && echo \"Changed ownership of monitors.xml to gdm\"'";
-          Type = "oneshot";
-        };
-        wantedBy = [ "multi-user.target" ];
+  config = lib.mkIf cfg.enable (lib.mkMerge [
+    {
+      services.xserver = {
+        enable                       = true;
+        displayManager.gdm.enable    = true;
+        displayManager.gdm.autoSuspend = true;
+        desktopManager.gnome.enable  = true;
+        excludePackages              = [ pkgs.xterm ];
       };
 
-      services."gnome-suspend" = lib.mkIf cfg.nvidiaFix.hibernate {
-        description = "suspend gnome shell";
-        before = [
-          "systemd-suspend.service" 
-          "systemd-hibernate.service"
-          "nvidia-suspend.service"
-          "nvidia-hibernate.service"
-        ];
-        wantedBy = [
-          "systemd-suspend.service"
-          "systemd-hibernate.service"
-        ];
+      environment.systemPackages = lib.mkIf cfg.extensions.enable (with pkgs.gnomeExtensions; [
+        dash-to-dock
+        tray-icons-reloaded
+      ]);
+
+      systemd.services.copyGdmMonitorsXml = {
+        description = "Copy david's monitors.xml into GDM's config";
+        after       = [ "network.target" "systemd-user-sessions.service" "display-manager.service" ];
+        wantedBy    = [ "multi-user.target" ];
         serviceConfig = {
-          Type = "oneshot";
-          ExecStart = ''${pkgs.procps}/bin/pkill -f -STOP ${pkgs.gnome-shell}/bin/gnome-shell'';
+          Type      = "oneshot";
+          ExecStart = "${copyMonitorsXml}";
         };
       };
-      
-      services."gnome-resume" = lib.mkIf cfg.nvidiaFix.hibernate {
-        description = "resume gnome shell";
-        after = [
-          "systemd-suspend.service" 
-          "systemd-hibernate.service"
-          "nvidia-resume.service"
-        ];
-        wantedBy = [
-          "systemd-suspend.service"
-          "systemd-hibernate.service"
-        ];
-        serviceConfig = {
-          Type = "oneshot";
-          ExecStart = ''${pkgs.procps}/bin/pkill -f -CONT ${pkgs.gnome-shell}/bin/gnome-shell'';
-        };
+
+      environment.gnome.excludePackages = lib.mkIf cfg.strip.enable (with pkgs; [
+        cheese
+        epiphany
+        simple-scan
+        totem
+        yelp
+        evince
+        geary
+        seahorse
+        gnome-calculator
+        gnome-calendar
+        gnome-characters
+        gnome-clocks
+        gnome-contacts
+        gnome-font-viewer
+        gnome-logs
+        gnome-maps
+        gnome-music
+        gnome-photos
+        gnome-weather
+        gnome-connections
+        gnome-software
+      ]);
+    }
+
+    (lib.mkIf cfg.nvidiaFix.hibernate {
+      systemd = helpers.mkNvidiaSuspendFix {
+        name   = "gnome";
+        binary = "${pkgs.gnome-shell}/bin/gnome-shell";
       };
-    };
-
-
-    environment.gnome.excludePackages = with pkgs; lib.mkIf cfg.strip.enable [
-    # baobab      # disk usage analyzer
-      cheese      # photo booth
-    # eog         # image viewer
-      epiphany    # web browser
-    # gedit       # text editor
-      simple-scan # document scanner
-      totem       # video player
-      yelp        # help viewer
-      evince      # document viewer
-    # file-roller # archive manager
-      geary       # email client
-      seahorse    # password manager
-
-      # these should be self explanatory
-      gnome-calculator
-      gnome-calendar 
-      gnome-characters
-      gnome-clocks
-      gnome-contacts
-      gnome-font-viewer
-      gnome-logs
-      gnome-maps
-      gnome-music 
-      gnome-photos
-    # gnome-screenshot
-    # gnome-system-monitor
-      gnome-weather
-    # gnome-disk-utility
-      gnome-connections
-      gnome-software
-    ];
-
-  };
+    })
+  ]);
 }

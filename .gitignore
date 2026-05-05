@@ -1,4 +1,10 @@
+# Nix build outputs
 result
-!*/result
-configuration.nix
-hardware-configuration.nix
+result-*
+
+# direnv
+.direnv/
+
+# Editor scratch
+*.swp
+.DS_Store

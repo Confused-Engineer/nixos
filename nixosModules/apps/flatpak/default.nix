@@ -1,68 +1,65 @@
 { lib, config, pkgs, ... }:
 let
-  # We point directly to 'gnugrep' instead of 'grep'
-  grep = pkgs.gnugrep;
-  # 1. Declare the Flatpaks you *want* on your system
-#  desiredFlatpaks = [
-#  #  "org.onlyoffice.desktopeditors"
-#  ];
-
   cfg = config.custom.apps.flatpaks;
-
 in {
-
   options.custom.apps.flatpaks = {
+    enable = lib.mkEnableOption "Flatpak with declarative app management";
 
-    enable = lib.mkEnableOption "Enable Flatpacks";
-
-    desiredFlatpaks = pkgs.lib.mkOption {
-      description = "list of flatpaks";
-      type = lib.types.listOf lib.types.str;
+    desiredFlatpaks = lib.mkOption {
+      type        = lib.types.listOf lib.types.str;
+      default     = [ ];
+      description = "Flatpak app IDs to keep installed. Anything else managed by this hook will be removed.";
+      example     = [ "com.github.tchx84.Flatseal" ];
     };
 
-    update = lib.mkEnableOption "Updates flatpaks on rebuild";
-
+    update = lib.mkEnableOption "auto-update flatpaks on activation";
   };
 
   config = lib.mkIf cfg.enable {
-    
     services.flatpak.enable = true;
-    environment.systemPackages = [ pkgs.gnugrep ];
 
-    system.userActivationScripts.flatpakManagement = {
+    # System-side install/remove runs once at activation as root, not per-user.
+    # The per-user activation hook used previously fired on every login and
+    # could remove flatpaks belonging to other users.
+    system.activationScripts.flatpakManagement = {
       text = ''
-        # 2. Ensure the Flathub repo is added
-        ${pkgs.flatpak}/bin/flatpak remote-add --if-not-exists flathub \
+        # Add Flathub if it's not already configured (system-wide).
+        ${pkgs.flatpak}/bin/flatpak remote-add --if-not-exists --system flathub \
           https://flathub.org/repo/flathub.flatpakrepo
 
-        # 3. Get currently installed Flatpaks
-        installedFlatpaks=$(${pkgs.flatpak}/bin/flatpak list --app --columns=application)
+        # Compute desired set as newline-separated for safe exact-match comparison.
+        desired=$(printf '%s\n' ${lib.escapeShellArgs cfg.desiredFlatpaks})
 
-        # 4. Remove any Flatpaks that are NOT in the desired list
-        for installed in $installedFlatpaks; do
-          if ! echo ${toString cfg.desiredFlatpaks} | ${grep}/bin/grep -q $installed; then
-            echo "Removing $installed because it's not in the desiredFlatpaks list."
-            ${pkgs.flatpak}/bin/flatpak uninstall -y --noninteractive $installed
+        # Remove anything system-installed that isn't desired (exact match, no
+        # substring, no regex — the previous `grep -q` matched org.gnome.FooBar
+        # against org.gnome.Foo and similar near-misses).
+        installed=$(${pkgs.flatpak}/bin/flatpak list --system --app --columns=application)
+        for app in $installed; do
+          if ! printf '%s\n' "$desired" | ${pkgs.gnugrep}/bin/grep -Fxq "$app"; then
+            echo "flatpakManagement: removing $app"
+            ${pkgs.flatpak}/bin/flatpak uninstall --system -y --noninteractive "$app" || true
           fi
         done
 
-        # 5. Install or re-install the Flatpaks you DO want
-        for app in ${toString cfg.desiredFlatpaks}; do
-          echo "Ensuring $app is installed."
-          ${pkgs.flatpak}/bin/flatpak install -y flathub $app
+        # Install anything desired but missing.
+        for app in ${lib.escapeShellArgs cfg.desiredFlatpaks}; do
+          if ! printf '%s\n' "$installed" | ${pkgs.gnugrep}/bin/grep -Fxq "$app"; then
+            echo "flatpakManagement: installing $app"
+            ${pkgs.flatpak}/bin/flatpak install --system -y flathub "$app" || true
+          fi
         done
 
-        # 6. Remove unused Flatpaks
-        ${pkgs.flatpak}/bin/flatpak uninstall --unused -y
+        # Tidy up unused runtimes.
+        ${pkgs.flatpak}/bin/flatpak uninstall --system --unused -y || true
       '';
     };
 
+    # Updates touch user data, so they belong in user activation, gated.
     system.userActivationScripts.flatpakUpdate = lib.mkIf cfg.update {
       text = ''
-        # 7. Update all installed Flatpaks
-        ${pkgs.flatpak}/bin/flatpak update -y
+        ${pkgs.flatpak}/bin/flatpak update --user -y || true
+        ${pkgs.flatpak}/bin/flatpak update --system -y || true
       '';
     };
   };
-
 }

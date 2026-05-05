@@ -1,17 +1,15 @@
 { lib, pkgs, config, ... }:
-                     
 let
   cfg = config.custom.mangohud;
 in {
   options.custom.mangohud = {
-    enable = lib.mkEnableOption "enable mangohud with preffered settings";
+    enable = lib.mkEnableOption "MangoHud with personal preset";
   };
 
   config = lib.mkIf cfg.enable {
     programs.mangohud = {
-      enable = true;
-      # (Optional) Automatically enable MangoHud for all Vulkan applications
-      enableSessionWide = false; 
+      enable           = true;
+      enableSessionWide = false;
     };
 
     home.file.".config/MangoHud/MangoHud.conf".text = ''
@@ -53,10 +51,6 @@ in {
       network_color=e07b85
       battery_color=92e79a
       media_player_format={title};{artist};{album}
-
     '';
   };
-
 }
-
-

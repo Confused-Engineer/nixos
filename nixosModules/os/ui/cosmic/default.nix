@@ -1,76 +1,29 @@
-{ lib, pkgs, config, ... }:                   
+{ lib, pkgs, config, ... }:
 let
-
-  cfg = config.custom.os.ui.cosmic;
+  cfg     = config.custom.os.ui.cosmic;
+  helpers = import ./../../../../lib { inherit lib pkgs; };
 in {
-
-  options.custom.os.ui = {
-  
-    cosmic = {
-      enable = lib.mkEnableOption "Use gnome";
-    };
-
-    cosmic.strip = {
-      enable = lib.mkEnableOption "Strip most default apps";
-    };
-
-    cosmic.nvidiaFix = {
-      hibernate = lib.mkEnableOption "Fix Hibernate with Nvidia GPU";
-    };
-
-
+  options.custom.os.ui.cosmic = {
+    enable             = lib.mkEnableOption "COSMIC desktop";
+    strip.enable       = lib.mkEnableOption "remove the cosmic-store and other defaults";
+    nvidiaFix.hibernate = lib.mkEnableOption "STOP/CONT cosmic-osd around suspend (NVIDIA hibernate fix)";
   };
 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf cfg.enable (lib.mkMerge [
+    {
+      services.displayManager.cosmic-greeter.enable = true;
+      services.desktopManager.cosmic.enable         = true;
 
-    # Enable the COSMIC login manager
-    services.displayManager.cosmic-greeter.enable = true;
+      environment.cosmic.excludePackages = lib.mkIf cfg.strip.enable [
+        pkgs.cosmic-store
+      ];
+    }
 
-    # Enable the COSMIC desktop environment
-    services.desktopManager.cosmic.enable = true;
-
-    systemd = lib.mkIf cfg.nvidiaFix.hibernate {
-      services."cosmic-suspend" = {
-        description = "suspend cosmic desktop";
-        before = [
-          "systemd-suspend.service" 
-          "systemd-hibernate.service"
-          "nvidia-suspend.service"
-          "nvidia-hibernate.service"
-        ];
-        wantedBy = [
-          "systemd-suspend.service"
-          "systemd-hibernate.service"
-        ];
-        serviceConfig = {
-          Type = "oneshot";
-          ExecStart = ''${pkgs.procps}/bin/pkill -f -STOP ${pkgs.cosmic-osd}/bin/cosmic-osd'';
-        };
+    (lib.mkIf cfg.nvidiaFix.hibernate {
+      systemd = helpers.mkNvidiaSuspendFix {
+        name   = "cosmic";
+        binary = "${pkgs.cosmic-osd}/bin/cosmic-osd";
       };
-      services."cosmic-resume" = {
-        description = "resume cosmic desktop";
-        after = [
-          "systemd-suspend.service" 
-          "systemd-hibernate.service"
-          "nvidia-resume.service"
-        ];
-        wantedBy = [
-          "systemd-suspend.service"
-          "systemd-hibernate.service"
-        ];
-        serviceConfig = {
-          Type = "oneshot";
-          ExecStart = ''${pkgs.procps}/bin/pkill -f -CONT ${pkgs.cosmic-osd}/bin/cosmic-osd'';
-        };
-      };
-    };
-
-
-    environment.cosmic.excludePackages = with pkgs; lib.mkIf cfg.strip.enable [
-      cosmic-store
-    ];
-
-
-
-  };
+    })
+  ]);
 }
