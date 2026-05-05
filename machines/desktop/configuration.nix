@@ -59,7 +59,7 @@ in
         cosmic = {
           enable = true; # Use gnome
           strip.enable = true;
-          nvidiaFix.hibernate = true;
+          nvidiaFix.hibernate = false;
         };
       };
     };
