@@ -16,7 +16,7 @@ jobs:
     outputs:
       changed: ${{ steps.diff.outputs.changed }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: DeterminateSystems/nix-installer-action@main
         with:
@@ -57,7 +57,7 @@ jobs:
         host: [desktop, laptop, kodi]
     steps:
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: DeterminateSystems/nix-installer-action@main
         with:
@@ -66,7 +66,7 @@ jobs:
             experimental-features = nix-command flakes
             accept-flake-config = true
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: flake-lock
 
@@ -86,12 +86,12 @@ jobs:
     env:
       HOME: /home/github-runner
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         fetch-depth: 0
         token: ${{ secrets.GITHUB_TOKEN }}
 
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v5
       with:
         name: flake-lock
 

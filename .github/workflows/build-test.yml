@@ -1,0 +1,35 @@
+name: Build Test
+
+on: 
+  workflow_dispatch:       # also allow manual runs
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+
+  build:
+    name: Build ${{ matrix.host }}
+    runs-on: [self-hosted, linux]
+    strategy:
+      fail-fast: false
+      matrix:
+        host: [desktop, laptop, kodi]
+    steps:
+
+      - uses: actions/checkout@v5
+
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          extra-conf: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+
+      - name: Build toplevel
+        run: |
+          nix build \
+            .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel \
+            --print-build-logs \
+            --no-link
