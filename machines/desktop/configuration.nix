@@ -53,7 +53,7 @@ in {
     os.ui.cosmic = {
       enable              = true;
       strip.enable        = true;
-      nvidiaFix.hibernate = true;
+      nvidiaFix.hibernate = false;
     };
 
     systemd = {
