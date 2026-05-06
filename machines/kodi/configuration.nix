@@ -29,10 +29,8 @@ in {
         nvidiaFix.hibernate = false;
       };
     };
-
     environment.systemPackages = with pkgs; [
       vscode
-      git
     ];
   };
 
@@ -42,6 +40,10 @@ in {
     fancy.secureBoot = false;
     systemd          = false;
   };
+
+  environment.systemPackages = with pkgs; [
+    git
+  ];
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
