@@ -104,6 +104,7 @@ in {
       boot.kernelModules        = [ "ntsync" ];
       boot.kernelPackages       = pkgs.linuxPackages_latest;
       hardware.openrazer.enable = true;
+      nixpkgs.config.allowUnfree = true;
 
       environment.systemPackages = with pkgs; [
         heroic

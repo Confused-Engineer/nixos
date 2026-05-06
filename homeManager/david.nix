@@ -15,10 +15,8 @@
 
     # Only enable the Stream Deck stack on the desktop. The previous shared
     # config silently autostarted StreamController on every machine.
-    streamcontroller = {
-      enable             = hostname == "desktop";
-      steamShaderThreads = if hostname == "desktop" then 16 else null;
-    };
+    streamcontroller.enable = hostname == "desktop";
+    steam.steamShaderThreads = if hostname == "desktop" then 16 else null;
   };
 
   home.username      = "david";

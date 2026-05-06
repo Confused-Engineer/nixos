@@ -9,32 +9,20 @@ let
 in {
   options.custom.streamcontroller = {
     enable = lib.mkEnableOption "StreamController flatpak autostart + Stream Deck overrides";
-    steamShaderThreads = lib.mkOption {
-      type        = lib.types.nullOr lib.types.int;
-      default     = null;
-      description = "Override Steam's shader background processing thread count. Null disables.";
-    };
   };
 
-  config = lib.mkIf cfg.enable (lib.mkMerge [
-    {
-      home.file.".local/share/flatpak/overrides/com.core447.StreamController".text = ''
-        [Context]
-        filesystems=/run/user/1000;
-      '';
+  config = lib.mkIf (cfg.enable) { 
+    home.file.".local/share/flatpak/overrides/com.core447.StreamController".text = ''
+      [Context]
+      filesystems=/run/user/1000;
+    '';
 
-      home.file.".config/autostart/StreamController.desktop".text = ''
-        [Desktop Entry]
-        Type=Application
-        Name=StreamController
-        Exec=flatpak run com.core447.StreamController -b
-      '';
-    }
+    home.file.".config/autostart/StreamController.desktop".text = ''
+      [Desktop Entry]
+      Type=Application
+      Name=StreamController
+      Exec=flatpak run com.core447.StreamController -b
+    '';
+  };
 
-    (lib.mkIf (cfg.steamShaderThreads != null) {
-      home.file.".local/share/Steam/steam_dev.cfg".text = ''
-        unShaderBackgroundProcessingThreads ${toString cfg.steamShaderThreads}
-      '';
-    })
-  ]);
 }
