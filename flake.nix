@@ -87,6 +87,11 @@
           stateNixpkgs   = nixpkgs;
           useHomeManager = false;
         };
+        attic    = mkSystem {
+          hostname       = "attic";
+          stateNixpkgs   = nixpkgs;
+          useHomeManager = false;
+        };
       };
     };
 }
