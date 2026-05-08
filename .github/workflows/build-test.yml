@@ -34,7 +34,7 @@ jobs:
       - name: Authenticate with attic
         env:
           ATTIC_AUTH_TOKEN: ${{ secrets.ATTIC_AUTH_TOKEN }}
-        run: attic login default https://attic.a5f.org "$ATTIC_AUTH_TOKEN"
+        run: attic login system https://attic.a5f.org "$ATTIC_AUTH_TOKEN"
 
       - name: Build and push toplevel
         run: |
@@ -43,4 +43,4 @@ jobs:
             --print-build-logs \
             --print-out-paths \
             --no-link)
-          attic push default:system "$TOPLEVEL"
+          attic push system "$TOPLEVEL"
