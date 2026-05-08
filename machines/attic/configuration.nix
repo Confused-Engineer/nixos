@@ -22,7 +22,7 @@ in {
     interfaces.enp3s0.useDHCP = false;
     
     # Set static IP address and prefix
-    interfaces.enp3s0.ipv4.addresses = [ {
+    interfaces.ens18.ipv4.addresses = [ {
       address = "10.87.6.55";
       prefixLength = 24;
     } ];
