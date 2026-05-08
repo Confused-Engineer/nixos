@@ -14,6 +14,10 @@
   outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, nixos-hardware, home-manager, ... }:
     let
       lib = nixpkgs-unstable.lib;
+      binaryCache = {
+        url       = "https://attic.a5f.org/system";
+        publicKey = "system:s2m14EpDMRI7P0CYlRfwF/OUoVHz6V6dYf9CVpxjAkw=";
+      };
 
       # Overlay that exposes the *other* channels as `pkgs.stable` / `pkgs.unstable`.
       # Both inherit allowUnfree so reaching across channels (e.g. `pkgs.stable.pcsx2`)
@@ -41,6 +45,7 @@
         # Which nixpkgs evaluates the system. Default unstable; kodi pins stable.
         , stateNixpkgs    ? nixpkgs-unstable
         , useHomeManager  ? true
+        , useBinaryCache  ? true
         , homeUser        ? "david"
         , hardwareModules ? [ ]
         }:
@@ -59,6 +64,12 @@
             }
             ./machines/${hostname}/configuration.nix
           ]
+          ++ lib.optional useBinaryCache {
+            nix.settings = {
+              substituters        = [ binaryCache.url ];
+              trusted-public-keys = [ binaryCache.publicKey ];
+            };
+          }
           ++ hardwareModules
           ++ lib.optionals useHomeManager [
             home-manager.nixosModules.home-manager
@@ -87,10 +98,11 @@
           stateNixpkgs   = nixpkgs;
           useHomeManager = false;
         };
-        attic    = mkSystem {
+        attic   = mkSystem {
           hostname       = "attic";
           stateNixpkgs   = nixpkgs;
           useHomeManager = false;
+          useBinaryCache = false;
         };
       };
     };
