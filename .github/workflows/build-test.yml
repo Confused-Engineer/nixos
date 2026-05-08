@@ -22,16 +22,19 @@ jobs:
 
       - uses: DeterminateSystems/nix-installer-action@main
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          extra-conf: |
-            experimental-features = nix-command flakes
-            accept-flake-config = true
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            extra-conf: |
+                experimental-features = nix-command flakes
+                accept-flake-config = true
+                access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
       - name: Install attic client
         run: nix profile install nixpkgs#attic-client
 
       - name: Authenticate with attic
-        run: attic login default https://attic.a5f.org "${{ secrets.ATTIC_AUTH_TOKEN }}"
+        env:
+          ATTIC_AUTH_TOKEN: ${{ secrets.ATTIC_AUTH_TOKEN }}
+        run: attic login default https://attic.a5f.org "$ATTIC_AUTH_TOKEN"
 
       - name: Build and push toplevel
         run: |
