@@ -34,6 +34,9 @@ in {
     nameservers = [ "10.87.6.10" ];
   };
 
+  networking.firewall.allowedTCPPorts = [ 8080 ]; # Add your TCP ports here
+
+
   # `david` needs to be trusted by the daemon to push to the local store
   # during testing / manual `attic push` from this host. The cache itself
   # is reached over HTTPS regardless of this setting.
