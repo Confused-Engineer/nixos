@@ -43,4 +43,4 @@ jobs:
             --print-build-logs \
             --print-out-paths \
             --no-link)
-          attic push system "$TOPLEVEL"
+
