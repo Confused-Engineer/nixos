@@ -121,9 +121,9 @@ in {
     flake              = "github:Confused-Engineer/nixos#${config.networking.hostName}";
     flags              = [ "--refresh" "--no-write-lock-file" ];
     dates              = "*-*-* 04:00:00";
-    operation          = "switch";
+    operation          = "boot";
     randomizedDelaySec = "30min";
-    allowReboot        = false;
+    allowReboot        = true;
   };
 
   environment.systemPackages = with pkgs; [
