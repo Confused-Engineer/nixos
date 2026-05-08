@@ -1,6 +1,6 @@
 name: Build Test
 
-on: 
+on:
   workflow_dispatch:       # also allow manual runs
 
 permissions:
@@ -27,9 +27,17 @@ jobs:
             experimental-features = nix-command flakes
             accept-flake-config = true
 
-      - name: Build toplevel
+      - name: Install attic client
+        run: nix profile install nixpkgs#attic-client
+
+      - name: Authenticate with attic
+        run: attic login default https://attic.a5f.org "${{ secrets.ATTIC_AUTH_TOKEN }}"
+
+      - name: Build and push toplevel
         run: |
-          nix build \
+          TOPLEVEL=$(nix build \
             .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel \
             --print-build-logs \
-            --no-link
+            --print-out-paths \
+            --no-link)
+          attic push default:system "$TOPLEVEL"
