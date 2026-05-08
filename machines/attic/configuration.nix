@@ -17,6 +17,22 @@ in {
 
   networking.hostName              = "attic";
   networking.networkmanager.enable = true;
+  networking = {
+    # Disable DHCP for the interface
+    interfaces.enp3s0.useDHCP = false;
+    
+    # Set static IP address and prefix
+    interfaces.enp3s0.ipv4.addresses = [ {
+      address = "10.87.6.55";
+      prefixLength = 24;
+    } ];
+    
+    # Set default gateway
+    defaultGateway = "10.87.6.1";
+    
+    # Set DNS servers
+    nameservers = [ "10.87.6.10" ];
+  };
 
   # `david` needs to be trusted by the daemon to push to the local store
   # during testing / manual `attic push` from this host. The cache itself
@@ -26,7 +42,7 @@ in {
   time.timeZone      = "America/New_York";
   i18n.defaultLocale = "en_US.UTF-8";
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  
+
   services.openssh = {
     enable                           = true;
     settings.PasswordAuthentication  = false;
