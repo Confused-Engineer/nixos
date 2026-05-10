@@ -61,6 +61,7 @@ in {
 
     settings = {
       listen = "[::]:8080";
+      database.url = "postgresql:///atticd?host=/run/postgresql";
 
       jwt = { };
 
@@ -102,7 +103,19 @@ in {
     };
   };
 
+  services.postgresql = {
+    enable           = true;
+    ensureDatabases  = [ "atticd" ];
+    ensureUsers      = [{
+      name              = "atticd";
+      ensureDBOwnership = true;
+    }];
+  };
 
+  systemd.services.atticd = {
+    after    = [ "postgresql.service" ];
+    requires = [ "postgresql.service" ];
+  };
 
   users.users = {
     david = {
