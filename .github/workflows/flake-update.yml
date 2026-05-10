@@ -95,8 +95,14 @@ jobs:
       with:
         name: flake-lock
 
+    - name: Configure Git
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        
     - name: Commit and push
       run: |
+      
         git add flake.lock
         git commit -m "flake.lock: weekly update
 
