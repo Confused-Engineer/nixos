@@ -16,7 +16,7 @@
       lib = nixpkgs-unstable.lib;
       binaryCache = {
         url       = "https://attic.a5f.org/system";
-        publicKey = "system:s2m14EpDMRI7P0CYlRfwF/OUoVHz6V6dYf9CVpxjAkw=";
+        publicKey = "system:OYIcW3XGdarzUi63x+H5mJ4FIhiYZcdiNUdyL7mKKEE=";
       };
 
       # Overlay that exposes the *other* channels as `pkgs.stable` / `pkgs.unstable`.
