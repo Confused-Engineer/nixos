@@ -14,11 +14,11 @@ in {
       enable = true;
 
       shellAliases = lib.mkIf cfg.nixosAlias {
-        nix-switch  = "sudo nixos-rebuild switch    --flake github:Confused-Engineer/nixos --refresh";
-        nix-boot    = "sudo nixos-rebuild boot      --flake github:Confused-Engineer/nixos --refresh";
-        nix-test    = "sudo nixos-rebuild test      --flake /etc/nixos";
-        nix-vm      = "sudo nixos-rebuild build-vm  --flake /etc/nixos";
-        nix-upgrade = "sudo nix flake update --flake /etc/nixos && sudo nixos-rebuild build-vm --flake /etc/nixos";
+        nix-switch  = "sudo nixos-rebuild switch        --flake github:Confused-Engineer/nixos --refresh";
+        nix-boot    = "sudo nixos-rebuild boot          --flake github:Confused-Engineer/nixos --refresh";
+        nix-build   = "sudo nixos-rebuild dry-activate  --flake /etc/nixos";
+        nix-test    = "sudo nixos-rebuild test          --flake /etc/nixos";
+        nix-vm      = "sudo nixos-rebuild build-vm      --flake /etc/nixos";
         nix-clean   = "sudo nix-collect-garbage; sudo nix-collect-garbage -d";
         nix-remote  = ''
           read -p "Target Hostname: " TargetHostname
