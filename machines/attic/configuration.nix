@@ -76,7 +76,7 @@ in {
         #
         # If 0, chunking is disabled entirely for newly-uploaded NARs.
         # If 1, all NARs are chunked.
-        nar-size-threshold = 0 # 64 * 1024; # 64 KiB
+        nar-size-threshold = 0; # 64 * 1024; # 64 KiB
 
         # The preferred minimum size of a chunk, in bytes
         min-size = 16 * 1024; # 16 KiB
