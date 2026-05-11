@@ -2,7 +2,7 @@ name: Flake Test
 
 on:
   schedule:
-    - cron: '0 3 * * *'   
+    - cron: '0 4 * * *'   
   workflow_dispatch:       # also allow manual runs
 
 permissions:

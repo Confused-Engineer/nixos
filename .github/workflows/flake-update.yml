@@ -2,7 +2,7 @@ name: Update flake.lock
 
 on:
   schedule:
-    - cron: '0 5 * * 0'   
+    - cron: '0 2 * * 0'   
   workflow_dispatch:       # also allow manual runs
 
 permissions:
@@ -70,12 +70,22 @@ jobs:
         with:
           name: flake-lock
 
-      - name: Build toplevel
+      - name: Install attic client
+        run: nix profile install nixpkgs#attic-client
+
+      - name: Authenticate with attic
+        env:
+          ATTIC_AUTH_TOKEN: "${{ secrets.ATTIC_AUTH_TOKEN }}"
+        run: attic login default https://attic.a5f.org "$ATTIC_AUTH_TOKEN"
+
+      - name: Build Toplevel
         run: |
-          nix build \
+          TOPLEVEL=$(nix build \
             .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel \
             --print-build-logs \
-            --no-link
+            --print-out-paths \
+            --no-link)
+          attic push default:system "$TOPLEVEL"
 
 
   publish:
