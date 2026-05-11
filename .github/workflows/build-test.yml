@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        host: [desktop, laptop, kodi]
+        host: [desktop, laptop, kodi, attic]
     steps:
 
       - uses: actions/checkout@v5
