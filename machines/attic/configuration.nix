@@ -53,7 +53,8 @@ in {
     settings.PermitRootLogin          = "prohibit-password";
   };
 
-  
+  services.qemuGuest.enable = true;
+
   services.atticd = {
     enable = true;
 
