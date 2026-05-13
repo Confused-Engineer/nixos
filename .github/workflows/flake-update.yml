@@ -2,7 +2,7 @@ name: Update flake.lock
 
 on:
   schedule:
-    - cron: '0 2 * * 0'   
+    - cron: '0 2,3,4 * * 0'   
   workflow_dispatch:       # also allow manual runs
 
 permissions:

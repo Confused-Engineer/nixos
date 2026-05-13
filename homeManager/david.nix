@@ -38,6 +38,7 @@
     spotify
     vlc
     vscode
+    nixd
     zsh
     zsh-completions
 
