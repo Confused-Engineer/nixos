@@ -19,7 +19,8 @@
 
 { lib, pkgs }:
 
-{ name, binary }: {
+{ name, binary }:
+{
   services."${name}-suspend" = {
     description = "Pause ${name} before suspend/hibernate (NVIDIA fix)";
     before = [
@@ -33,7 +34,7 @@
       "systemd-hibernate.service"
     ];
     serviceConfig = {
-      Type      = "oneshot";
+      Type = "oneshot";
       ExecStart = "${pkgs.procps}/bin/pkill -f -STOP ${binary}";
     };
   };
@@ -50,7 +51,7 @@
       "systemd-hibernate.service"
     ];
     serviceConfig = {
-      Type      = "oneshot";
+      Type = "oneshot";
       ExecStart = "${pkgs.procps}/bin/pkill -f -CONT ${binary}";
     };
   };

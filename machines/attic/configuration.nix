@@ -1,7 +1,8 @@
 { config, pkgs, ... }:
 let
   keys = import ./../../users/keys.nix;
-in {
+in
+{
   imports = [
     ./hardware-configuration.nix
     ./../../nixosModules
@@ -9,48 +10,58 @@ in {
 
   custom = {
     boot = {
-      enable  = true;
-      systemd = true;            # plain systemd-boot is fine for a server
+      enable = true;
+      systemd = true; # plain systemd-boot is fine for a server
     };
 
   };
 
-  networking.hostName              = "attic";
+  networking.hostName = "attic";
   networking.networkmanager.enable = true;
   networking = {
     # Disable DHCP for the interface
     interfaces.enp3s0.useDHCP = false;
-    
+
     # Set static IP address and prefix
-    interfaces.ens18.ipv4.addresses = [ {
-      address = "10.87.6.55";
-      prefixLength = 24;
-    } ];
-    
+    interfaces.ens18.ipv4.addresses = [
+      {
+        address = "10.87.6.55";
+        prefixLength = 24;
+      }
+    ];
+
     # Set default gateway
     defaultGateway = "10.87.6.1";
-    
+
     # Set DNS servers
     nameservers = [ "10.87.6.10" ];
   };
 
   networking.firewall.allowedTCPPorts = [ 8080 ]; # Add your TCP ports here
 
-
   # `david` needs to be trusted by the daemon to push to the local store
   # during testing / manual `attic push` from this host. The cache itself
   # is reached over HTTPS regardless of this setting.
-  nix.settings.trusted-users = [ "root" "david" ];
+  nix.settings.trusted-users = [
+    "root"
+    "david"
+  ];
 
-  time.timeZone      = "America/New_York";
+  time.timeZone = "America/New_York";
   i18n.defaultLocale = "en_US.UTF-8";
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   services.openssh = {
-    enable                           = true;
-    settings.PasswordAuthentication  = false;
-    settings.AllowUsers               = [ "david" "root" ];
-    settings.PermitRootLogin          = "prohibit-password";
+    enable = true;
+    settings.PasswordAuthentication = false;
+    settings.AllowUsers = [
+      "david"
+      "root"
+    ];
+    settings.PermitRootLogin = "prohibit-password";
   };
 
   services.qemuGuest.enable = true;
@@ -90,7 +101,7 @@ in {
       };
 
       compression = {
-        type  = "zstd";
+        type = "zstd";
         level = 8;
       };
 
@@ -98,31 +109,36 @@ in {
       # `attic cache configure <name> --retention-period <duration>`;
       # this is just the global default for caches that don't override.
       garbage-collection = {
-        interval                 = "12 hours";
+        interval = "12 hours";
         default-retention-period = "6 months";
       };
     };
   };
 
   services.postgresql = {
-    enable           = true;
-    ensureDatabases  = [ "atticd" ];
-    ensureUsers      = [{
-      name              = "atticd";
-      ensureDBOwnership = true;
-    }];
+    enable = true;
+    ensureDatabases = [ "atticd" ];
+    ensureUsers = [
+      {
+        name = "atticd";
+        ensureDBOwnership = true;
+      }
+    ];
   };
 
   systemd.services.atticd = {
-    after    = [ "postgresql.service" ];
+    after = [ "postgresql.service" ];
     requires = [ "postgresql.service" ];
   };
 
   users.users = {
     david = {
-      isNormalUser                = true;
-      description                 = "david";
-      extraGroups                 = [ "networkmanager" "wheel" ];
+      isNormalUser = true;
+      description = "david";
+      extraGroups = [
+        "networkmanager"
+        "wheel"
+      ];
       openssh.authorizedKeys.keys = keys.david;
     };
     root.openssh.authorizedKeys.keys = keys.david;
@@ -131,18 +147,21 @@ in {
   # Auto-upgrade nightly. Server, no display, no one watching — switch in
   # place rather than waiting for a reboot.
   system.autoUpgrade = {
-    enable             = true;
-    flake              = "github:Confused-Engineer/nixos#${config.networking.hostName}";
-    flags              = [ "--refresh" "--no-write-lock-file" ];
-    dates              = "*-*-* 04:00:00";
-    operation          = "boot";
+    enable = true;
+    flake = "github:Confused-Engineer/nixos#${config.networking.hostName}";
+    flags = [
+      "--refresh"
+      "--no-write-lock-file"
+    ];
+    dates = "*-*-* 04:00:00";
+    operation = "boot";
     randomizedDelaySec = "30min";
-    allowReboot        = true;
+    allowReboot = true;
   };
 
   environment.systemPackages = with pkgs; [
     git
-    attic-client       # `attic` CLI for managing the local server
+    attic-client # `attic` CLI for managing the local server
   ];
 
   system.stateVersion = "25.05";

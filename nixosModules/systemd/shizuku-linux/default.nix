@@ -1,7 +1,13 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 let
   cfg = config.custom.systemd.shizuku-linux;
-in {
+in
+{
   options.custom.systemd.shizuku-linux = {
     enable = lib.mkEnableOption "shizuku-linux helper that starts Shizuku on Android device plug-in";
   };
@@ -9,15 +15,15 @@ in {
   config = lib.mkIf cfg.enable {
     # Shizuku speaks to the device over ADB; no inbound network is required.
     environment.systemPackages = [ pkgs.shizuku-linux ];
-    programs.adb.enable        = true;
+    programs.adb.enable = true;
 
     systemd.services.shizuku-linux = {
-      enable      = true;
+      enable = true;
       description = "Start Shizuku on device plug-in";
-      wantedBy    = [ "network.target" ];
+      wantedBy = [ "network.target" ];
       serviceConfig = {
-        ExecStart  = "${pkgs.shizuku-linux}/bin/shizuku_linux";
-        Restart    = "on-failure";
+        ExecStart = "${pkgs.shizuku-linux}/bin/shizuku_linux";
+        Restart = "on-failure";
         RestartSec = "5s";
       };
     };

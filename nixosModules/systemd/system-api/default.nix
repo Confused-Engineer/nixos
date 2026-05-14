@@ -1,7 +1,13 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 let
   cfg = config.custom.systemd.system-api;
-in {
+in
+{
   options.custom.systemd.system-api = {
     enable = lib.mkEnableOption "system-api HTTP service for Home Assistant";
   };
@@ -13,12 +19,12 @@ in {
     environment.systemPackages = [ pkgs.system-api ];
 
     systemd.services.systemapi = {
-      enable      = true;
+      enable = true;
       description = "System API for Home Assistant";
-      wantedBy    = [ "network.target" ];
+      wantedBy = [ "network.target" ];
       serviceConfig = {
-        ExecStart  = "${pkgs.system-api}/bin/system_api";
-        Restart    = "on-failure";
+        ExecStart = "${pkgs.system-api}/bin/system_api";
+        Restart = "on-failure";
         RestartSec = "5s";
       };
     };

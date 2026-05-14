@@ -1,4 +1,10 @@
-{ config, pkgs, lib, hostname ? null, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  hostname ? null,
+  ...
+}:
 {
   imports = [
     ./../nixosModules/home-manager
@@ -6,9 +12,9 @@
 
   custom = {
     shell.bash = {
-      enable        = true;
-      fancy         = true;
-      nixosAlias    = true;
+      enable = true;
+      fancy = true;
+      nixosAlias = true;
       startHyprland = false;
     };
     mangohud.enable = true;
@@ -19,9 +25,9 @@
     steam.steamShaderThreads = if hostname == "desktop" then 16 else null;
   };
 
-  home.username      = "david";
+  home.username = "david";
   home.homeDirectory = "/home/david";
-  home.stateVersion  = "25.11";
+  home.stateVersion = "25.11";
 
   home.packages = with pkgs; [
     brave
@@ -42,9 +48,11 @@
     zsh
     zsh-completions
 
-    (pkgs.kodi.withPackages (kp: with kp; [
-      jellyfin
-      inputstream-adaptive
-    ]))
+    (pkgs.kodi.withPackages (
+      kp: with kp; [
+        jellyfin
+        inputstream-adaptive
+      ]
+    ))
   ];
 }

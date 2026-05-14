@@ -1,7 +1,13 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 let
   cfg = config.custom.hardware.gpu.lact;
-in {
+in
+{
   options.custom.hardware.gpu.lact = {
     enable = lib.mkEnableOption "LACT GPU control daemon";
   };
@@ -10,10 +16,10 @@ in {
     environment.systemPackages = [ pkgs.lact ];
 
     systemd.services.lact = {
-      enable      = true;
+      enable = true;
       description = "LACT GPU control daemon";
-      after       = [ "multi-user.target" ];
-      wantedBy    = [ "multi-user.target" ];
+      after = [ "multi-user.target" ];
+      wantedBy = [ "multi-user.target" ];
       serviceConfig.ExecStart = "${pkgs.lact}/bin/lact daemon";
     };
   };

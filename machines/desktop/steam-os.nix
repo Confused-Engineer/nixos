@@ -1,9 +1,19 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   ext4DataMount = uuid: {
-    device  = "/dev/disk/by-uuid/${uuid}";
-    fsType  = "ext4";
-    options = [ "defaults" "users" "nofail" "exec" ];
+    device = "/dev/disk/by-uuid/${uuid}";
+    fsType = "ext4";
+    options = [
+      "defaults"
+      "users"
+      "nofail"
+      "exec"
+    ];
   };
 
   steamSession = pkgs.writeShellScript "steam-gamescope-session" ''
@@ -29,7 +39,8 @@ let
       --steam \
       -- ${pkgs.steam}/bin/steam -tenfoot -pipewire-dmabuf
   '';
-in {
+in
+{
   specialisation.SteamOS = {
     inheritParentConfig = false;
     configuration = {
@@ -42,30 +53,30 @@ in {
       system.nixos.tags = [ "SteamOS" ];
 
       custom = {
-        hardware.gpu.nvidia.enable       = true;
-        hardware.gpu.lact.enable         = true;
+        hardware.gpu.nvidia.enable = true;
+        hardware.gpu.lact.enable = true;
         hardware.controllers.xbox.enable = true;
 
         boot = {
-          enable           = true;
-          fancy.enable     = true;
+          enable = true;
+          fancy.enable = true;
           fancy.secureBoot = true;
-          systemd          = false;
+          systemd = false;
         };
       };
 
       programs = {
         xwayland.enable = true;
         steam = {
-          enable                                 = true;
-          remotePlay.openFirewall                = true;
-          dedicatedServer.openFirewall           = true;
+          enable = true;
+          remotePlay.openFirewall = true;
+          dedicatedServer.openFirewall = true;
           localNetworkGameTransfers.openFirewall = true;
-          extraCompatPackages                    = [ pkgs.proton-ge-bin ];
-          gamescopeSession.enable                = true;
+          extraCompatPackages = [ pkgs.proton-ge-bin ];
+          gamescopeSession.enable = true;
         };
         gamescope = {
-          enable     = true;
+          enable = true;
           capSysNice = true;
         };
       };
@@ -75,17 +86,17 @@ in {
         settings = {
           default_session = {
             command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --remember-user-session --cmd ${steamSession}";
-            user    = "greeter";
+            user = "greeter";
           };
           initial_session = {
             command = "${steamSession}";
-            user    = "david";
+            user = "david";
           };
         };
       };
 
       systemd.services = {
-        "getty@tty1".enable  = false;
+        "getty@tty1".enable = false;
         "autovt@tty1".enable = false;
         greetd = {
           after = [
@@ -94,15 +105,15 @@ in {
             "multi-user.target"
             "plymouth-quit.service"
           ];
-          wants    = [ "systemd-logind.service" ];
+          wants = [ "systemd-logind.service" ];
           requires = [ "multi-user.target" ];
           serviceConfig.ExecStartPre = "${pkgs.coreutils}/bin/sleep 2";
         };
       };
 
-      networking.hostName       = "desktop";
-      boot.kernelModules        = [ "ntsync" ];
-      boot.kernelPackages       = pkgs.linuxPackages_latest;
+      networking.hostName = "desktop";
+      boot.kernelModules = [ "ntsync" ];
+      boot.kernelPackages = pkgs.linuxPackages_latest;
       hardware.openrazer.enable = true;
       nixpkgs.config.allowUnfree = true;
 
@@ -115,7 +126,7 @@ in {
         stable.dolphin-emu
       ];
 
-      fileSystems."/media/Games"   = ext4DataMount "1c39032b-b81a-410d-9d7f-4a9ae60073d4";
+      fileSystems."/media/Games" = ext4DataMount "1c39032b-b81a-410d-9d7f-4a9ae60073d4";
       fileSystems."/media/Extra01" = ext4DataMount "8c36d5a0-4afc-4bea-95be-6da718b570f8";
       fileSystems."/media/Extra02" = ext4DataMount "c3c0b3cb-2f63-47aa-b388-362bac34c7fa";
 

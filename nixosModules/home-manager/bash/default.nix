@@ -1,11 +1,17 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 let
   cfg = config.custom.shell.bash;
-in {
+in
+{
   options.custom.shell.bash = {
-    enable        = lib.mkEnableOption "managed bash configuration";
-    fancy         = lib.mkEnableOption "colorful PS1 + nitch on shell start";
-    nixosAlias    = lib.mkEnableOption "convenience aliases for nixos-rebuild";
+    enable = lib.mkEnableOption "managed bash configuration";
+    fancy = lib.mkEnableOption "colorful PS1 + nitch on shell start";
+    nixosAlias = lib.mkEnableOption "convenience aliases for nixos-rebuild";
     startHyprland = lib.mkEnableOption "auto-start hyprland on tty1";
   };
 
@@ -14,13 +20,13 @@ in {
       enable = true;
 
       shellAliases = lib.mkIf cfg.nixosAlias {
-        nix-switch  = "sudo nixos-rebuild switch        --flake github:Confused-Engineer/nixos --refresh";
-        nix-boot    = "sudo nixos-rebuild boot          --flake github:Confused-Engineer/nixos --refresh";
-        nix-build   = "sudo nixos-rebuild dry-activate  --flake /etc/nixos";
-        nix-test    = "sudo nixos-rebuild test          --flake /etc/nixos";
-        nix-vm      = "sudo nixos-rebuild build-vm      --flake /etc/nixos";
-        nix-clean   = "sudo nix-collect-garbage; sudo nix-collect-garbage -d";
-        nix-remote  = ''
+        nix-switch = "sudo nixos-rebuild switch        --flake github:Confused-Engineer/nixos --refresh";
+        nix-boot = "sudo nixos-rebuild boot          --flake github:Confused-Engineer/nixos --refresh";
+        nix-build = "sudo nixos-rebuild dry-activate  --flake /etc/nixos";
+        nix-test = "sudo nixos-rebuild test          --flake /etc/nixos";
+        nix-vm = "sudo nixos-rebuild build-vm      --flake /etc/nixos";
+        nix-clean = "sudo nix-collect-garbage; sudo nix-collect-garbage -d";
+        nix-remote = ''
           read -p "Target Hostname: " TargetHostname
           read -p "Target IP: " TargetIP
           nixos-rebuild boot --flake /etc/nixos#"''${TargetHostname}" --target-host root@"''${TargetIP}"

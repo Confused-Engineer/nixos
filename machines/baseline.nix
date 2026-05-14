@@ -1,52 +1,63 @@
-{ config, lib, pkgs, ... }:
 {
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   system.autoUpgrade = {
-    enable             = true;
-    flake              = "github:Confused-Engineer/nixos#${config.networking.hostName}";
-    flags              = [ "--refresh" "--no-write-lock-file" ];
-    dates              = "Sun 08:00";
-    operation          = "boot";
+    enable = true;
+    flake = "github:Confused-Engineer/nixos#${config.networking.hostName}";
+    flags = [
+      "--refresh"
+      "--no-write-lock-file"
+    ];
+    dates = "Sun 08:00";
+    operation = "boot";
     randomizedDelaySec = "30min";
-    allowReboot        = false;
+    allowReboot = false;
   };
 
   networking.networkmanager.enable = true;
-  time.timeZone                    = "America/New_York";
+  time.timeZone = "America/New_York";
 
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {
-    LC_ADDRESS        = "en_US.UTF-8";
+    LC_ADDRESS = "en_US.UTF-8";
     LC_IDENTIFICATION = "en_US.UTF-8";
-    LC_MEASUREMENT    = "en_US.UTF-8";
-    LC_MONETARY       = "en_US.UTF-8";
-    LC_NAME           = "en_US.UTF-8";
-    LC_NUMERIC        = "en_US.UTF-8";
-    LC_PAPER          = "en_US.UTF-8";
-    LC_TELEPHONE      = "en_US.UTF-8";
-    LC_TIME           = "en_US.UTF-8";
+    LC_MEASUREMENT = "en_US.UTF-8";
+    LC_MONETARY = "en_US.UTF-8";
+    LC_NAME = "en_US.UTF-8";
+    LC_NUMERIC = "en_US.UTF-8";
+    LC_PAPER = "en_US.UTF-8";
+    LC_TELEPHONE = "en_US.UTF-8";
+    LC_TIME = "en_US.UTF-8";
   };
 
   services.xserver.xkb = {
-    layout  = "us";
+    layout = "us";
     variant = "";
   };
 
-  services.printing.enable  = true;
+  services.printing.enable = true;
   services.pulseaudio.enable = false;
-  security.rtkit.enable      = true;
+  security.rtkit.enable = true;
 
   services.pipewire = {
-    enable            = true;
-    alsa.enable       = true;
+    enable = true;
+    alsa.enable = true;
     alsa.support32Bit = true;
-    pulse.enable      = true;
+    pulse.enable = true;
   };
 
   users.users.david = {
     isNormalUser = true;
-    description  = "david";
+    description = "david";
     # Provisioning password — should be changed on first login. Set via
     # `passwd` after install. (Not `password` because that's permanent.)
     initialPassword = "vmtest";
@@ -64,8 +75,8 @@
   virtualisation = {
     containers.enable = true;
     podman = {
-      enable        = true;
-      dockerCompat  = true;
+      enable = true;
+      dockerCompat = true;
       # Required for containers under podman-compose to talk to each other.
       defaultNetwork.settings.dns_enabled = true;
     };

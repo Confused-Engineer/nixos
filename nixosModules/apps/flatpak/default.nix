@@ -1,15 +1,21 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.custom.apps.flatpaks;
-in {
+in
+{
   options.custom.apps.flatpaks = {
     enable = lib.mkEnableOption "Flatpak with declarative app management";
 
     desiredFlatpaks = lib.mkOption {
-      type        = lib.types.listOf lib.types.str;
-      default     = [ ];
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
       description = "Flatpak app IDs to keep installed. Anything else managed by this hook will be removed.";
-      example     = [ "com.github.tchx84.Flatseal" ];
+      example = [ "com.github.tchx84.Flatseal" ];
     };
 
     update = lib.mkEnableOption "auto-update flatpaks on activation";

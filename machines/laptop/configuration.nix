@@ -8,7 +8,7 @@
 
   custom = {
     apps = {
-      steam.enable         = false;
+      steam.enable = false;
       steam.systemd.enable = true;
 
       flatpaks = {
@@ -22,8 +22,8 @@
       };
 
       browsers.firefox = {
-        enable   = true;
-        privacy  = "strict";
+        enable = true;
+        privacy = "strict";
         homepage = "https://hp.int.a5f.org/";
       };
     };
@@ -31,20 +31,20 @@
     hardware.controllers.xbox.enable = true;
 
     boot = {
-      enable           = true;
-      fancy.enable     = true;
+      enable = true;
+      fancy.enable = true;
       fancy.secureBoot = true;
-      systemd          = false;
+      systemd = false;
     };
 
     os.ui.cosmic = {
-      enable              = true;
-      strip.enable        = true;
+      enable = true;
+      strip.enable = true;
       nvidiaFix.hibernate = false;
     };
 
     systemd = {
-      system-api.enable    = false;
+      system-api.enable = false;
       shizuku-linux.enable = false;
     };
   };
@@ -53,7 +53,7 @@
     inheritParentConfig = true;
     configuration = {
       services.logind.settings.Login = {
-        HandleLidSwitchDocked        = "ignore";
+        HandleLidSwitchDocked = "ignore";
         HandleLidSwitchExternalPower = "ignore";
       };
     };
@@ -61,13 +61,13 @@
 
   networking.hostName = "laptop";
 
-  services.mullvad-vpn.enable  = true;
+  services.mullvad-vpn.enable = true;
   services.mullvad-vpn.package = pkgs.mullvad-vpn;
-  programs.kdeconnect.enable   = true;
+  programs.kdeconnect.enable = true;
 
   services.logind.settings.Login.HandleLidSwitch = "hibernate";
-  services.power-profiles-daemon.enable          = true;
-  powerManagement.enable                         = true;
+  services.power-profiles-daemon.enable = true;
+  powerManagement.enable = true;
 
   hardware.graphics.extraPackages = with pkgs; [
     intel-vaapi-driver

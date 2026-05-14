@@ -1,7 +1,9 @@
-{ pkgs ? import <nixpkgs> {} }:
+{
+  pkgs ? import <nixpkgs> { },
+}:
 
 let
-  krb5WithUnversionedLib = pkgs.runCommand "krb5-unversioned-so" {} ''
+  krb5WithUnversionedLib = pkgs.runCommand "krb5-unversioned-so" { } ''
     mkdir -p $out/lib
     ln -s ${pkgs.krb5}/lib/libgssapi_krb5.so.2 $out/lib/libgssapi_krb5.so
   '';
@@ -11,48 +13,49 @@ let
   fhs = pkgs.buildFHSEnv {
     name = "jellyfin2samsung-fhs";
 
-    targetPkgs = p: with p; [
-      # ── build tooling ──────────────────────────────────────────────────────
-      dotnet-sdk_8
-      patchelf
-      file
+    targetPkgs =
+      p: with p; [
+        # ── build tooling ──────────────────────────────────────────────────────
+        dotnet-sdk_8
+        patchelf
+        file
 
-      # ── core .NET runtime ──────────────────────────────────────────────────
-      stdenv.cc.cc.lib
-      openssl
-      icu
-      zlib
-      libgcc.lib
-      krb5
-      krb5WithUnversionedLib
+        # ── core .NET runtime ──────────────────────────────────────────────────
+        stdenv.cc.cc.lib
+        openssl
+        icu
+        zlib
+        libgcc.lib
+        krb5
+        krb5WithUnversionedLib
 
-      # ── Skia / font rendering ─────────────────────────────────────────────
-      fontconfig
-      freetype
-      libGL
+        # ── Skia / font rendering ─────────────────────────────────────────────
+        fontconfig
+        freetype
+        libGL
 
-      # ── X11 / Avalonia backend ─────────────────────────────────────────────
-      xorg.libX11
-      xorg.libICE
-      xorg.libSM
-      xorg.libXext
-      xorg.libXcursor
-      xorg.libXi
-      xorg.libXrandr
-      xorg.libXrender
-      xorg.libXinerama
-      xorg.libXcomposite
-      xorg.libXdamage
-      xorg.libXfixes
-      xorg.libXtst
+        # ── X11 / Avalonia backend ─────────────────────────────────────────────
+        xorg.libX11
+        xorg.libICE
+        xorg.libSM
+        xorg.libXext
+        xorg.libXcursor
+        xorg.libXi
+        xorg.libXrandr
+        xorg.libXrender
+        xorg.libXinerama
+        xorg.libXcomposite
+        xorg.libXdamage
+        xorg.libXfixes
+        xorg.libXtst
 
-      # ── networking / utilities ─────────────────────────────────────────────
-      nmap
-      iproute2
-      curl
-      wget
-      xdg-utils
-    ];
+        # ── networking / utilities ─────────────────────────────────────────────
+        nmap
+        iproute2
+        curl
+        wget
+        xdg-utils
+      ];
 
     runScript = pkgs.writeShellScript "jellyfin2samsung-entry" ''
       export DOTNET_CLI_TELEMETRY_OPTOUT=1

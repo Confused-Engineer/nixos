@@ -1,14 +1,20 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 let
   cfg = config.custom.mangohud;
-in {
+in
+{
   options.custom.mangohud = {
     enable = lib.mkEnableOption "MangoHud with personal preset";
   };
 
   config = lib.mkIf cfg.enable {
     programs.mangohud = {
-      enable           = true;
+      enable = true;
       enableSessionWide = false;
     };
 

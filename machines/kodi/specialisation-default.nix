@@ -8,9 +8,14 @@
 # This file used to be called `default-only.nix`, which gave no hint
 # about what the conditional was doing.
 
-{ config, lib, pkgs, ... }:
 {
-  config = lib.mkIf (config.specialisation != {}) {
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
+  config = lib.mkIf (config.specialisation != { }) {
     custom.os.ui.kodi.enable = true;
   };
 }

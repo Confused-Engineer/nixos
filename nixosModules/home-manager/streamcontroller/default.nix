@@ -3,15 +3,21 @@
 # (laptop, kodi-as-desktop, …) got StreamController autostart and Steam
 # tweaks even when no Stream Deck was present. Behind a custom option now.
 
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 let
   cfg = config.custom.streamcontroller;
-in {
+in
+{
   options.custom.streamcontroller = {
     enable = lib.mkEnableOption "StreamController flatpak autostart + Stream Deck overrides";
   };
 
-  config = lib.mkIf (cfg.enable) { 
+  config = lib.mkIf (cfg.enable) {
     home.file.".local/share/flatpak/overrides/com.core447.StreamController".text = ''
       [Context]
       filesystems=/run/user/1000;

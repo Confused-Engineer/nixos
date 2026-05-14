@@ -2,20 +2,28 @@
   description = "Multi-machine NixOS config";
 
   inputs = {
-    nixpkgs.url          = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixos-hardware.url   = "github:NixOS/nixos-hardware/master";
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     home-manager = {
-      url                    = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, nixos-hardware, home-manager, ... }:
+  outputs =
+    inputs@{
+      self,
+      nixpkgs,
+      nixpkgs-unstable,
+      nixos-hardware,
+      home-manager,
+      ...
+    }:
     let
       lib = nixpkgs-unstable.lib;
       binaryCache = {
-        url       = "https://attic.a5f.org/system";
+        url = "https://attic.a5f.org/system";
         publicKey = "system:OYIcW3XGdarzUi63x+H5mJ4FIhiYZcdiNUdyL7mKKEE=";
       };
 
@@ -40,14 +48,15 @@
       customPkgs = import ./pkgs;
 
       mkSystem =
-        { hostname
-        , system          ? "x86_64-linux"
-        # Which nixpkgs evaluates the system. Default unstable; kodi pins stable.
-        , stateNixpkgs    ? nixpkgs-unstable
-        , useHomeManager  ? true
-        , useBinaryCache  ? true
-        , homeUser        ? "david"
-        , hardwareModules ? [ ]
+        {
+          hostname,
+          system ? "x86_64-linux",
+          # Which nixpkgs evaluates the system. Default unstable; kodi pins stable.
+          stateNixpkgs ? nixpkgs-unstable,
+          useHomeManager ? true,
+          useBinaryCache ? true,
+          homeUser ? "david",
+          hardwareModules ? [ ],
         }:
         stateNixpkgs.lib.nixosSystem {
           inherit system;
@@ -66,7 +75,7 @@
           ]
           ++ lib.optional useBinaryCache {
             nix.settings = {
-              substituters        = [ binaryCache.url ];
+              substituters = [ binaryCache.url ];
               trusted-public-keys = [ binaryCache.publicKey ];
             };
           }
@@ -75,32 +84,33 @@
             home-manager.nixosModules.home-manager
             {
               home-manager = {
-                useGlobalPkgs       = true;
-                useUserPackages     = true;
+                useGlobalPkgs = true;
+                useUserPackages = true;
                 backupFileExtension = "backup";
-                users.${homeUser}   = import (./homeManager + "/${homeUser}.nix");
+                users.${homeUser} = import (./homeManager + "/${homeUser}.nix");
                 # Per-host extensions live in machines/<host>/home.nix and are
                 # imported by the user's home file when present.
-                extraSpecialArgs    = { inherit inputs hostname; };
+                extraSpecialArgs = { inherit inputs hostname; };
               };
             }
           ];
         };
-    in {
+    in
+    {
       nixosConfigurations = {
         desktop = mkSystem { hostname = "desktop"; };
-        laptop  = mkSystem {
-          hostname        = "laptop";
+        laptop = mkSystem {
+          hostname = "laptop";
           hardwareModules = [ nixos-hardware.nixosModules.dell-latitude-5520 ];
         };
-        kodi    = mkSystem {
-          hostname       = "kodi";
-          stateNixpkgs   = nixpkgs;
+        kodi = mkSystem {
+          hostname = "kodi";
+          stateNixpkgs = nixpkgs;
           useHomeManager = false;
         };
-        attic   = mkSystem {
-          hostname       = "attic";
-          stateNixpkgs   = nixpkgs;
+        attic = mkSystem {
+          hostname = "attic";
+          stateNixpkgs = nixpkgs;
           useHomeManager = false;
           useBinaryCache = false;
         };

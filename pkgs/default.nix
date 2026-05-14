@@ -9,7 +9,7 @@
 
 final: prev: {
   jellyfin2samsung = final.callPackage ./jellyfin2samsung/package.nix { };
-  shizuku-linux    = final.callPackage ./shizuku-linux/package.nix    { };
-  system-api       = final.callPackage ./system-api/package.nix       { };
-  vintagestory     = final.callPackage ./vintagestory/package.nix     { };
+  shizuku-linux = final.callPackage ./shizuku-linux/package.nix { };
+  system-api = final.callPackage ./system-api/package.nix { };
+  vintagestory = final.callPackage ./vintagestory/package.nix { };
 }
