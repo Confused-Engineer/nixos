@@ -152,7 +152,7 @@ let
 
 in
 pkgs.stdenv.mkDerivation {
-  pname = "Jellyfin2Samsung";
+  pname = "jellyfin2samsung";
   inherit version;
 
   # No source needed — we just wrap the FHS env and add desktop integration
