@@ -1,26 +1,18 @@
-{ pkgs ? import <nixpkgs> {} }:
+{
+  pkgs ? import <nixpkgs> { },
+}:
 
 let
-  # Update this to match the release version you want
-  version = "2.2.0.8";
+  # https://github.com/Jellyfin2Samsung/Samsung-Jellyfin-Installer/releases/
+  version = "2.2.1.0";
 
   src = pkgs.fetchurl {
     url = "https://github.com/Jellyfin2Samsung/Samsung-Jellyfin-Installer/releases/download/v${version}/Jellyfin2Samsung-v${version}-linux-x64.tar.gz";
-  #  # IMPORTANT: You must replace this hash the first time you build.
-  #  # Run:  nix-prefetch-url --unpack <url>
-  #  # or just set it to "" and let the build error tell you the correct hash.
-    sha256 = "tqV4pRNXJu4bA+zD5rhr/L1g0Hcp13268lIW6NVSoYk=";
+    #  sha256 is taken from the repo's release page, which github generates
+    sha256 = "b8232903ee3c402c00f68bc90bacff4b87287004c1b92a068863a5f1f66b01cb";
   };
 
-  #src = pkgs.fetchFromGitHub {
-  #  owner = "Jellyfin2Samsung";
-  #  repo = "Samsung-Jellyfin-Installer";
-  #  rev = "v2.2.0.8"; # Or commit SHA
-  #  hash = "sha256-XZAah8F+puup39xXiqTl10bdpSbej8gtb66dQuqF/Wk=";
-  #};
-
-
-  krb5WithUnversionedLib = pkgs.runCommand "krb5-unversioned-so" {} ''
+  krb5WithUnversionedLib = pkgs.runCommand "krb5-unversioned-so" { } ''
     mkdir -p $out/lib
     ln -s ${pkgs.krb5}/lib/libgssapi_krb5.so.2 $out/lib/libgssapi_krb5.so
   '';
@@ -33,7 +25,7 @@ let
     # The tarball might not have a top-level directory
     sourceRoot = ".";
 
-    # No patching needed — the FHS env provides all libraries at runtime
+    # FHS env provides all libraries at runtime
     dontBuild = true;
     dontConfigure = true;
     dontPatchELF = true;
@@ -66,42 +58,43 @@ let
   fhs = pkgs.buildFHSEnv {
     name = "Jellyfin2Samsung";
 
-    targetPkgs = p: with p; [
-      # ── core .NET runtime ──────────────────────────────────────────────────
-      stdenv.cc.cc.lib
-      openssl
-      icu
-      zlib
-      libgcc.lib
-      krb5
-      krb5WithUnversionedLib
+    targetPkgs =
+      p: with p; [
+        # ── core .NET runtime ──────────────────────────────────────────────────
+        stdenv.cc.cc.lib
+        openssl
+        icu
+        zlib
+        libgcc.lib
+        krb5
+        krb5WithUnversionedLib
 
-      # ── Skia / font rendering ─────────────────────────────────────────────
-      fontconfig
-      freetype
-      libGL
+        # ── Skia / font rendering ─────────────────────────────────────────────
+        fontconfig
+        freetype
+        libGL
 
-      # ── X11 / Avalonia backend ─────────────────────────────────────────────
-      libX11
-      libICE
-      libSM
-      libXext
-      libXcursor
-      libXi
-      libXrandr
-      libXrender
-      libXinerama
-      libXcomposite
-      libXdamage
-      libXfixes
-      libXtst
+        # ── X11 / Avalonia backend ─────────────────────────────────────────────
+        libX11
+        libICE
+        libSM
+        libXext
+        libXcursor
+        libXi
+        libXrandr
+        libXrender
+        libXinerama
+        libXcomposite
+        libXdamage
+        libXfixes
+        libXtst
 
-      # ── networking / utilities used by the app ─────────────────────────────
-      nmap
-      iproute2
-      curl
-      wget
-    ];
+        # ── networking / utilities used by the app ─────────────────────────────
+        nmap
+        iproute2
+        curl
+        wget
+      ];
 
     runScript = pkgs.writeShellScript "jellyfin2samsung-run" ''
       # The app writes Logs/, Assets/, certs, etc. next to its own binary.
@@ -168,33 +161,33 @@ pkgs.stdenv.mkDerivation {
   nativeBuildInputs = [ pkgs.copyDesktopItems ];
 
   installPhase = ''
-    runHook preInstall
+        runHook preInstall
 
-    # Symlink the FHS-wrapped binary
-    mkdir -p $out/bin
-    ln -s ${fhs}/bin/Jellyfin2Samsung $out/bin/Jellyfin2Samsung
+        # Symlink the FHS-wrapped binary
+        mkdir -p $out/bin
+        ln -s ${fhs}/bin/Jellyfin2Samsung $out/bin/Jellyfin2Samsung
 
-    # Desktop Icon
-    mkdir -p $out/share/icons/hicolor/256x256/apps
-    cp ${jellyfin2samsung-unwrapped}/lib/jellyfin2samsung/Assets/jelly2sams.png \
-        $out/share/icons/hicolor/256x256/apps/jellyfin2samsung.png
+        # Desktop Icon
+        mkdir -p $out/share/icons/hicolor/256x256/apps
+        cp ${jellyfin2samsung-unwrapped}/lib/jellyfin2samsung/Assets/jelly2sams.png \
+            $out/share/icons/hicolor/256x256/apps/jellyfin2samsung.png
 
-    # Desktop entry for app launchers
-    mkdir -p $out/share/applications
-    cat > $out/share/applications/jellyfin2samsung.desktop <<EOF
-[Desktop Entry]
-Name=Jellyfin2Samsung
-Comment=Install Jellyfin on your Samsung Smart TV
-Exec=$out/bin/Jellyfin2Samsung
-Icon=$out/share/icons/hicolor/256x256/apps/jellyfin2samsung.png
-Terminal=false
-Type=Application
-Categories=Utility;Network;
-Keywords=jellyfin;samsung;tizen;tv;
-StartupWMClass=Jellyfin2Samsung
-EOF
+        # Desktop entry for app launchers
+        mkdir -p $out/share/applications
+        cat > $out/share/applications/jellyfin2samsung.desktop <<EOF
+    [Desktop Entry]
+    Name=Jellyfin2Samsung
+    Comment=Install Jellyfin on your Samsung Smart TV
+    Exec=$out/bin/Jellyfin2Samsung
+    Icon=$out/share/icons/hicolor/256x256/apps/jellyfin2samsung.png
+    Terminal=false
+    Type=Application
+    Categories=Utility;Network;
+    Keywords=jellyfin;samsung;tizen;tv;
+    StartupWMClass=Jellyfin2Samsung
+    EOF
 
-    runHook postInstall
+        runHook postInstall
   '';
 
   meta = with pkgs.lib; {
