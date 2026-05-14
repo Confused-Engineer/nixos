@@ -155,7 +155,9 @@ pkgs.stdenv.mkDerivation {
   pname = "jellyfin2samsung";
   inherit version;
 
-  # No source needed — we just wrap the FHS env and add desktop integration
+  strictDeps = true;
+  __structuredAttrs = true;
+
   dontUnpack = true;
   dontBuild = true;
 
