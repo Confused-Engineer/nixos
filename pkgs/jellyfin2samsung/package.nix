@@ -1,5 +1,6 @@
 {
-  pkgs ? import <nixpkgs> { },
+  lib,
+  pkgs,
 }:
 
 let
