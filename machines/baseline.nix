@@ -99,5 +99,6 @@
     font-awesome
     material-design-icons
     corefonts
+    podman-compose
   ];
 }
