@@ -200,8 +200,7 @@ pkgs.stdenv.mkDerivation {
     platforms = [ "x86_64-linux" ];
     mainProgram = "Jellyfin2Samsung";
     maintainers = with lib.maintainers; [
-      PatrickSt1991
-      Confused-Engineer
+      confused-engineer
     ];
   };
 }
