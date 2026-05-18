@@ -20,9 +20,21 @@
   # pkgs set where these are missing/null. The `isSupported` check below
   # routes us to the stub in that case instead of letting the FHS env
   # below crash trying to dereference a null `xorg`.
+  libX11 ? null,
+  libICE ? null,
+  libSM ? null,
+  libXext ? null,
+  libXcursor ? null,
+  libXi ? null,
+  libXrandr ? null,
+  libXrender ? null,
+  libXinerama ? null,
+  libXcomposite ? null,
+  libXdamage ? null,
+  libXfixes ? null,
+  libXtst ? null,
   libgcc ? null,
   libGL ? null,
-  xorg ? null,
   iproute2 ? null,
 }:
 
@@ -51,7 +63,22 @@ let
   # So gate on both the platform *and* the actual deps being present.
   isSupported =
     stdenv.hostPlatform.system == "x86_64-linux"
-    && xorg != null
+    && libX11 != null
+    && libICE != null
+    && libSM != null
+    && libXext != null
+    && libXcursor != null
+    && libXi != null
+    && libXrandr != null
+    && libXrender != null
+    && libXinerama != null
+    && libXcomposite != null
+    && libXdamage != null
+    && libXfixes != null
+    && libXtst != null
+    && libgcc != null
+    && libGL != null
+    && iproute2 != null
     && libGL != null
     && libgcc != null
     && iproute2 != null;
@@ -139,19 +166,19 @@ else
         libGL
 
         # ── X11 / Avalonia backend ───────────────────────────────────────────
-        xorg.libX11
-        xorg.libICE
-        xorg.libSM
-        xorg.libXext
-        xorg.libXcursor
-        xorg.libXi
-        xorg.libXrandr
-        xorg.libXrender
-        xorg.libXinerama
-        xorg.libXcomposite
-        xorg.libXdamage
-        xorg.libXfixes
-        xorg.libXtst
+        libX11
+        libICE
+        libSM
+        libXext
+        libXcursor
+        libXi
+        libXrandr
+        libXrender
+        libXinerama
+        libXcomposite
+        libXdamage
+        libXfixes
+        libXtst
 
         # ── networking / utilities used by the app ───────────────────────────
         nmap
