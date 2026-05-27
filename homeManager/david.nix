@@ -47,6 +47,7 @@
     nixd
     zsh
     zsh-completions
+    qFlipper
 
     (pkgs.kodi.withPackages (
       kp: with kp; [
