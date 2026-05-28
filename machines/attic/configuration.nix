@@ -110,7 +110,7 @@ in
       # this is just the global default for caches that don't override.
       garbage-collection = {
         interval = "12 hours";
-        default-retention-period = "6 months";
+        default-retention-period = "2 weeks";
       };
     };
   };
