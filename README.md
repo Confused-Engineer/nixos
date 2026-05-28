@@ -1,3 +1,4 @@
+[![System Build](https://github.com/Confused-Engineer/nixos/actions/workflows/build.yml/badge.svg)](https://github.com/Confused-Engineer/nixos/actions/workflows/build.yml)
 # nixos
 
 Multi-machine NixOS configuration. One flake, three hosts: `desktop`, `laptop`, `kodi`.
