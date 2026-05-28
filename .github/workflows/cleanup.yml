@@ -2,7 +2,7 @@ name: cleanup
 
 on:
   schedule:
-    - cron: '0 8 1 */2 *'   # Mondays 06:00 UTC
+    - cron: '0 8 * * 3'
   workflow_dispatch:       # also allow manual runs
 
 jobs:
