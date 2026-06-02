@@ -21,7 +21,7 @@ in
     ./hardware-configuration.nix
     ./../../nixosModules
     ./../baseline.nix
-    ./steam-os.nix
+    #./steam-os.nix
   ];
 
   custom = {
