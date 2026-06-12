@@ -20,7 +20,7 @@ in
   networking.networkmanager.enable = true;
   networking = {
     # Disable DHCP for the interface
-    interfaces.enp3s0.useDHCP = false;
+    interfaces.ens18.useDHCP = false;
 
     # Set static IP address and prefix
     interfaces.ens18.ipv4.addresses = [
