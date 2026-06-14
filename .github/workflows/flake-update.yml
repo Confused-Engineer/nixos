@@ -83,36 +83,33 @@ jobs:
 
 
   publish:
-    name: Publish to main
-    needs: [update, build]
-    if: needs.update.outputs.changed == 'true'
-    runs-on: nix
-    env:
-      HOME: /home/gitrunner
-    steps:
-    - uses: actions/checkout@v5
-      with:
-        fetch-depth: 0
-        token: ${{ secrets.GITHUB_TOKEN }}
+      name: Publish to main
+      needs: [update, build]
+      if: needs.update.outputs.changed == 'true'
+      runs-on: nix
+      steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-    - uses: actions/download-artifact@v7
-      with:
-        name: flake-lock
+      - uses: actions/download-artifact@v7
+        with:
+          name: flake-lock
 
-    - name: Configure Git
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        
-    - name: Commit and push
-      run: |
-      
-        git add flake.lock
-        git commit -m "flake.lock: weekly update
+      - name: Commit and push
+        env:
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
+        run: |
+          git add flake.lock
+          git commit -m "flake.lock: weekly update
 
-        Automated weekly update.
-        ✅ desktop, laptop, and kodi all built successfully on x86_64-linux."
-        git push origin HEAD:main
+          Automated weekly update.
+          ✅ desktop, laptop, and kodi all built successfully on x86_64-linux."
+          git push origin HEAD:main
 
 
 
