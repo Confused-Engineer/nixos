@@ -78,7 +78,6 @@ jobs:
             --print-build-logs \
             --print-out-paths \
             --no-link)
-          /nix/var/nix/profiles/default/bin/nix-store --gc
 
 
   publish:
