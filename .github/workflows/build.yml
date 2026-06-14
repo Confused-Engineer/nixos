@@ -39,9 +39,9 @@ jobs:
         run: attic login default https://attic.a5f.org "$ATTIC_AUTH_TOKEN"
 
       - name: Build and push toplevel
-        env:
-          NIX_CONFIG: "access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}"
         run: |
+          sudo sed -i '/^access-tokens/d' /etc/nix/nix.conf
+          echo "access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}" | sudo tee -a /etc/nix/nix.conf
           TOPLEVEL=$(nix build \
             .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel \
             --print-build-logs \
