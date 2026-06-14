@@ -48,3 +48,4 @@ jobs:
             --print-out-paths \
             --no-link)
           attic push default:system "$TOPLEVEL"
+          /nix/var/nix/profiles/default/bin/nix-store --gc
