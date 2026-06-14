@@ -23,6 +23,7 @@ Multi-machine NixOS configuration. One flake, three hosts: `desktop`, `laptop`, 
 │   ├── baseline.nix          # imported by every host
 │   ├── desktop/
 │   ├── laptop/
+│   ├── attic/
 │   └── kodi/
 └── nixosModules/             # custom NixOS modules under `custom.*`
     ├── apps/
