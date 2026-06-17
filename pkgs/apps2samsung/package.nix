@@ -2,10 +2,13 @@
   lib,
   buildDotnetModule,
   buildFHSEnv,
+  buildEnv,
   writeShellScript,
   dotnetCorePackages,
   fetchFromGitHub,
   fetchurl,
+  stdenvNoCC,
+  cacert,
   esbuild,
   fontconfig,
   freetype,
@@ -61,12 +64,70 @@ let
     startupNotify = true;
   };
 
+  # Merged view of all NuGet packages bundled with the SDK.  Used in the
+  # FOD below to exclude them from the output so they don't collide with
+  # dotnet-sdk.packages in buildDotnetModule's buildInputs.
+  sdkPackages = buildEnv {
+    name = "${pname}-sdk-packages";
+    paths = dotnetCorePackages.sdk_8_0.packages;
+  };
+
+  # Fixed-output derivation: fetches the NuGet packages that are NOT
+  # bundled with the SDK.  To update the hash after a dep bump, set
+  # outputHash = lib.fakeHash; build once to get the real hash, then
+  # substitute it back.
+  nugetDeps = stdenvNoCC.mkDerivation {
+    name = "${pname}-nuget-deps";
+    nativeBuildInputs = [
+      dotnetCorePackages.sdk_8_0
+      cacert
+    ];
+    outputHashMode = "recursive";
+    outputHashAlgo = "sha256";
+    outputHash = "sha256-n1iSjHLYpjuSTCBLCVDxgCAYvxXy0vxicJyHSZc0FlM=";
+    buildCommand = ''
+      export HOME=$TMPDIR
+      export DOTNET_NOLOGO=1
+      export DOTNET_CLI_TELEMETRY_OPTOUT=1
+
+      # dotnet restore needs a writable project directory for obj/
+      cp -r ${src} $TMPDIR/src
+      chmod -R +w $TMPDIR/src
+
+      # Restore all NuGet packages to a temp cache
+      dotnet restore \
+        --packages $TMPDIR/nuget-packages \
+        $TMPDIR/src/Jellyfin2Samsung-CrossOS/Apps2Samsung.csproj
+
+      # Copy only non-SDK packages to the output.
+      # dotnet-sdk.packages are already in buildInputs of the main
+      # buildDotnetModule derivation; duplicating them here would cause
+      # symlink collisions in the SDK setup hook's _linkPackages function.
+      mkdir -p "$out/share/nuget/packages"
+      while IFS= read -r -d "" pkg_dir; do
+        pkgid=$(basename "$(dirname "$pkg_dir")")
+        ver=$(basename "$pkg_dir")
+        [ -d "${sdkPackages}/share/nuget/packages/$pkgid/$ver" ] && continue
+        mkdir -p "$out/share/nuget/packages/$pkgid"
+        cp -r "$pkg_dir" "$out/share/nuget/packages/$pkgid/"
+      done < <(find "$TMPDIR/nuget-packages" -mindepth 2 -maxdepth 2 -type d -print0)
+
+      # Build local NuGet feed (share/nuget/source) from our packages
+      while IFS= read -r -d "" nupkg; do
+        ver=$(basename "$(dirname "$nupkg")")
+        pkgid=$(basename "$(dirname "$(dirname "$nupkg")")")
+        dstdir="$out/share/nuget/source/$pkgid/$ver"
+        mkdir -p "$dstdir"
+        cp "$nupkg" "$dstdir/"
+      done < <(find "$out/share/nuget/packages" -name "*.nupkg" -print0)
+    '';
+  };
+
   apps2samsung-unwrapped = buildDotnetModule {
     pname = "${pname}-unwrapped";
-    inherit version src;
+    inherit version src nugetDeps;
 
     projectFile = "Jellyfin2Samsung-CrossOS/Apps2Samsung.csproj";
-    nugetDeps = ./deps.json;
 
     dotnet-sdk = dotnetCorePackages.sdk_8_0;
     dotnet-runtime = dotnetCorePackages.aspnetcore_8_0;
