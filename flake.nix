@@ -9,6 +9,7 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    claude-code-nix.url = "github:ryoppippi/nix-claude-code";
   };
 
   outputs =

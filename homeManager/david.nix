@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  inputs,
   lib,
   hostname ? null,
   ...
@@ -29,6 +30,14 @@
   home.homeDirectory = "/home/david";
   home.stateVersion = "25.11";
 
+  home.file.".aider.conf.yml".text = ''
+    architect: claude-haiku-4-5
+    editor-model: ollama/gemma4:e4b
+    editor-edit-format: diff
+    ollama-api-base: http://10.87.10.21:11434
+    auto-commits: false
+  '';
+
   home.packages = with pkgs; [
     brave
     discord
@@ -48,6 +57,9 @@
     zsh
     zsh-completions
     qFlipper
+    inputs.claude-code-nix.packages.${pkgs.system}.default
+    # inputs.claude-code-nix.packages.${pkgs.system}.claude-code-fhs
+    aider-chat
 
     (pkgs.kodi.withPackages (
       kp: with kp; [
