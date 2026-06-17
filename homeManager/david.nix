@@ -60,6 +60,7 @@
     inputs.claude-code-nix.packages.${pkgs.system}.default
     # inputs.claude-code-nix.packages.${pkgs.system}.claude-code-fhs
     aider-chat
+    apps2samsung
 
     (pkgs.kodi.withPackages (
       kp: with kp; [
