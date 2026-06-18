@@ -203,29 +203,30 @@ in
 buildFHSEnv {
   name = pname;
 
-  targetPkgs = pkgs: with pkgs; [
-    apps2samsung-unwrapped
-    fontconfig
-    freetype
-    libGL
-    libx11
-    libice
-    libsm
-    libxext
-    libxcursor
-    libxi
-    libxrandr
-    libxrender
-    libxinerama
-    libxcomposite
-    libxdamage
-    libxfixes
-    libxtst
-    krb5
-    openssl
-    zlib
-    icu
-  ];
+  targetPkgs =
+    pkgs: with pkgs; [
+      apps2samsung-unwrapped
+      fontconfig
+      freetype
+      libGL
+      libx11
+      libice
+      libsm
+      libxext
+      libxcursor
+      libxi
+      libxrandr
+      libxrender
+      libxinerama
+      libxcomposite
+      libxdamage
+      libxfixes
+      libxtst
+      krb5
+      openssl
+      zlib
+      icu
+    ];
 
   runScript = writeShellScript "${pname}-run" ''
     mkdir -p "''${XDG_CONFIG_HOME:-$HOME/.config}/Apps2Samsung/TizenSDB"
