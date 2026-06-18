@@ -31,7 +31,7 @@
   home.stateVersion = "25.11";
 
   home.file.".aider.conf.yml".text = ''
-    model: ollama/gemma:e4b
+    model: ollama/gemma4:e4b
 
     set-env:
       - OLLAMA_API_BASE=http://10.87.10.21:11434
