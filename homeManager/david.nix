@@ -31,11 +31,21 @@
   home.stateVersion = "25.11";
 
   home.file.".aider.conf.yml".text = ''
-    architect: claude-haiku-4-5
-    editor-model: ollama/gemma4:e4b
-    editor-edit-format: diff
-    ollama-api-base: http://10.87.10.21:11434
+    model: ollama/gemma:e4b
+
+    set-env:
+      - OLLAMA_API_BASE=http://10.87.10.21:11434
+
     auto-commits: false
+    dirty-commits: true
+
+    pretty: true
+    stream: true
+
+    map-tokens: 512
+    map-refresh: files
+    max-chat-history-tokens: 2048
+    suggest-shell-commands: false
   '';
 
   home.packages = with pkgs; [
