@@ -24,5 +24,16 @@ in
       nvidiaSettings = true;
       package = config.boot.kernelPackages.nvidiaPackages.latest;
     };
+
+    # Load NVIDIA modules in the initrd so the DRM device is fully registered
+    # before greetd starts. Without this, cosmic-comp races against nvidia-drm
+    # loading, fails to open /dev/dri/card0 (simpledrm, which gets evicted), and
+    # greetd hits its restart limit before /dev/dri/card1 (nvidia-drm) appears.
+    boot.initrd.kernelModules = [
+      "nvidia"
+      "nvidia_modeset"
+      "nvidia_uvm"
+      "nvidia_drm"
+    ];
   };
 }
