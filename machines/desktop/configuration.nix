@@ -76,9 +76,25 @@ in
   networking.hostName = "desktop";
 
   boot.kernelModules = [ "ntsync" ];
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_zen;
 
   programs.kdeconnect.enable = true;
+
+  programs.gamemode = {
+    enable = true;
+    settings = {
+      general = {
+        renice = 10;
+        inhibit_screensaver = 1;
+      };
+      cpu.governor = "performance";
+      gpu = {
+        apply_gpu_optimisations = "accept-responsibility";
+        gpu_device = 0;
+        nv_powermizer_mode = 1;
+      };
+    };
+  };
   hardware.openrazer.enable = true;
 
   environment.systemPackages = with pkgs; [
