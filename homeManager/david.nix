@@ -49,7 +49,7 @@
     zsh
     zsh-completions
     qFlipper
-    inputs.claude-code-nix.packages.${pkgs.system}.default
+    inputs.claude-code-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
     # inputs.claude-code-nix.packages.${pkgs.system}.claude-code-fhs
     apps2samsung
 
