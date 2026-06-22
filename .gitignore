@@ -8,3 +8,5 @@ result-*
 # Editor scratch
 *.swp
 .DS_Store
+
+CLAUDE.md
