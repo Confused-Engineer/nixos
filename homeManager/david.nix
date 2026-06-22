@@ -32,6 +32,7 @@
 
   home.packages = with pkgs; [
     brave
+    baobab
     discord
     gimp
     jellyfin2samsung
