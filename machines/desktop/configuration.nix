@@ -97,6 +97,10 @@ in
   };
   hardware.openrazer.enable = true;
 
+  virtualisation.docker = {
+    enable = true;
+  };
+
   environment.systemPackages = with pkgs; [
     heroic
     protonup-qt
