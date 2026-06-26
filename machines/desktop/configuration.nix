@@ -97,6 +97,7 @@ in
   };
   hardware.openrazer.enable = true;
 
+  hardware.nvidia-container-toolkit.enable = true;
   virtualisation.docker = {
     enable = true;
   };
