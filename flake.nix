@@ -27,6 +27,10 @@
         url = "https://attic.a5f.org/system";
         publicKey = "system:OYIcW3XGdarzUi63x+H5mJ4FIhiYZcdiNUdyL7mKKEE=";
       };
+      cudaCache = {
+        url = "https://cuda-maintainers.cachix.org";
+        publicKey = "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E=";
+      };
 
       # Overlay that exposes the *other* channels as `pkgs.stable` / `pkgs.unstable`.
       # Both inherit allowUnfree so reaching across channels (e.g. `pkgs.stable.pcsx2`)
@@ -56,6 +60,7 @@
           stateNixpkgs ? nixpkgs-unstable,
           useHomeManager ? true,
           useBinaryCache ? true,
+          useCudaCache ? true,
           homeUser ? "david",
           hardwareModules ? [ ],
         }:
@@ -78,6 +83,12 @@
             nix.settings = {
               substituters = [ binaryCache.url ];
               trusted-public-keys = [ binaryCache.publicKey ];
+            };
+          }
+          ++ lib.optional useCudaCache {
+            nix.settings = {
+              substituters = [ cudaCache.url ];
+              trusted-public-keys = [ cudaCache.publicKey ];
             };
           }
           ++ hardwareModules
