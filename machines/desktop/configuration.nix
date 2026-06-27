@@ -122,5 +122,5 @@ in
   fileSystems."/media/Extra01" = ext4DataMount "8c36d5a0-4afc-4bea-95be-6da718b570f8";
   fileSystems."/media/Extra02" = ext4DataMount "c3c0b3cb-2f63-47aa-b388-362bac34c7fa";
 
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }
