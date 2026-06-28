@@ -10,6 +10,7 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     claude-code-nix.url = "github:ryoppippi/nix-claude-code";
+    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
   };
 
   outputs =
