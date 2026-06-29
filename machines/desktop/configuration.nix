@@ -22,7 +22,6 @@ in
     ./hardware-configuration.nix
     ./../../nixosModules
     ./../baseline.nix
-    inputs.chaotic.nixosModules.default
     #./steam-os.nix
   ];
 
@@ -78,20 +77,8 @@ in
   networking.hostName = "desktop";
 
   boot.kernelModules = [ "ntsync" ];
-  boot.kernelPackages = pkgs.linuxPackages_cachyos;
+  boot.kernelPackages = pkgs.linuxPackages_zen;
 
-  # Chaotic builds CachyOS against its own pinned nixpkgs, re-imported with an
-  # explicit platform triple. The prebuilt kernel comes from Chaotic's cache,
-  # but the triple-variant *build* tools (needed to compile this machine's
-  # out-of-tree modules) are not cached, so they build from source. gnugrep
-  # 3.12 fails its gnulib check under gcc 15, which blocks everything; skip that
-  # check so the local module builds can proceed.
-  chaotic.nyx.overlay.flakeNixpkgs.config = {
-    allowUnfree = true;
-    packageOverrides = super: {
-      gnugrep = super.gnugrep.overrideAttrs (_: { doCheck = false; });
-    };
-  };
 
   programs.kdeconnect.enable = true;
 
