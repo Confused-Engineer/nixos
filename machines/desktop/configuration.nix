@@ -28,7 +28,6 @@ in
   custom = {
     apps = {
       steam.enable = true;
-      steam.systemd.enable = false;
 
       flatpaks = {
         enable = true;
