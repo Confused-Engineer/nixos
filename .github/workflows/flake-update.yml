@@ -105,10 +105,10 @@ jobs:
           GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
         run: |
           git add flake.lock
-          git commit -m "flake.lock: weekly update
+          git commit -m "flake.lock: daily update
 
-          Automated weekly update.
-          ✅ desktop, laptop, and kodi all built successfully on x86_64-linux."
+          Automated daily update.
+          ✅ desktop, laptop, attic, and kodi all built successfully on x86_64-linux."
           git push origin HEAD:main
 
 
