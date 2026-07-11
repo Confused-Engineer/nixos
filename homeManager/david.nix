@@ -54,11 +54,11 @@
     # inputs.claude-code-nix.packages.${pkgs.system}.claude-code-fhs
     apps2samsung
 
-    (pkgs.kodi.withPackages (
-      kp: with kp; [
-        jellyfin
-        inputstream-adaptive
-      ]
-    ))
+    #(pkgs.kodi.withPackages (
+    #  kp: with kp; [
+    #    jellyfin
+    #    inputstream-adaptive
+    #  ]
+    #))
   ];
 }
