@@ -40,7 +40,7 @@
           inherit system;
           config = {
             allowUnfree = true;
-            permittedInsecurePackages = [ "mbedtls-2.28.10" ];
+            permittedInsecurePackages = [ "electron-40.10.5" ];
           };
         };
         unstable = import nixpkgs-unstable {
