@@ -69,14 +69,14 @@
   powerManagement.enable = true;
 
   # Battery/power optimizations for 11th-gen Tiger Lake (i5-1135G7)
-  services.thermald.enable = true;          # Intel thermal management daemon
-  powerManagement.powertop.enable = true;   # auto-tune USB/PCIe/SATA power at boot
+  services.thermald.enable = true; # Intel thermal management daemon
+  powerManagement.powertop.enable = true; # auto-tune USB/PCIe/SATA power at boot
 
   networking.networkmanager.wifi.powersave = true;
 
   boot.kernelParams = [
-    "i915.enable_psr=1"   # Panel Self Refresh — cuts display power draw
-    "i915.enable_fbc=1"   # Framebuffer Compression — reduces memory bandwidth
+    "i915.enable_psr=1" # Panel Self Refresh — cuts display power draw
+    "i915.enable_fbc=1" # Framebuffer Compression — reduces memory bandwidth
     "mem_sleep_default=deep" # Prefer S3 deep sleep over s2idle for suspend
   ];
 
