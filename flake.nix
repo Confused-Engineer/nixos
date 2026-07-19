@@ -73,7 +73,10 @@
           modules = [
             {
               nixpkgs = {
-                config.allowUnfree = true;
+                config = {
+                  allowUnfree = true;
+                  permittedInsecurePackages = [ "electron-40.10.5" ];
+                };
                 overlays = [
                   (channelsOverlay system)
                   customPkgs
