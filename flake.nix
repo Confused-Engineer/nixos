@@ -32,23 +32,13 @@
         publicKey = "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E=";
       };
 
-      # Overlay that exposes the *other* channels as `pkgs.stable` / `pkgs.unstable`.
-      # Both inherit allowUnfree so reaching across channels (e.g. `pkgs.stable.pcsx2`)
-      # works without surprises.
+      # Overlay that exposes the stable channel as `pkgs.stable` (the system
+      # pkgs is already unstable). Inherits allowUnfree so reaching across
+      # channels (e.g. `pkgs.stable.pcsx2`) works without surprises.
       channelsOverlay = system: final: prev: {
         stable = import nixpkgs {
           inherit system;
-          config = {
-            allowUnfree = true;
-            
-          };
-        };
-        unstable = import nixpkgs-unstable {
-          inherit system;
-          config = {
-            allowUnfree = true;
-            permittedInsecurePackages = [ "electron-40.10.5" ];
-          };
+          config.allowUnfree = true;
         };
       };
 
