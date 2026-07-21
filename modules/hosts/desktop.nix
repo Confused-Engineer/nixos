@@ -124,11 +124,6 @@ in
         }
       )
 
-      # SteamOS specialisation — disabled, exactly as before (was `#./steam-os.nix`).
-      # Preserved verbatim at ../../machines/desktop/steam-os.nix. It still uses
-      # the pre-dendritic `imports` style, so re-enabling it means porting those
-      # imports to the named modules above first.
-      # ../../machines/desktop/steam-os.nix
     ];
   };
 }

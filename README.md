@@ -33,7 +33,7 @@ nix flake lock
 │   │   ├── boot.nix              # custom.boot.*  (all custom.* option-modules
 │   │   ├── apps/ hardware/ os/   #  merge into one `flake.modules.nixos.custom`)
 │   │   └── systemd/
-│   ├── home/                     # Home-Manager modules → flake.modules.homeManager.custom
+│   ├── homeManager/              # Home-Manager modules → flake.modules.homeManager.*
 │   │   ├── bash.nix mangohud.nix steam.nix streamcontroller.nix
 │   │   └── david.nix             # the shared `david` profile
 │   └── hosts/                    # one file per host: builds flake.nixosConfigurations.<host>
