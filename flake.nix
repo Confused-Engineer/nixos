@@ -111,6 +111,7 @@
           hostname = "laptop";
           hardwareModules = [ nixos-hardware.nixosModules.dell-latitude-5520 ];
         };
+        g5-5587 = mkSystem { hostname = "g5-5587"; };
         kodi = mkSystem {
           hostname = "kodi";
           stateNixpkgs = nixpkgs;
