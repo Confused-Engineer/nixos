@@ -10,6 +10,7 @@
     ./../../nixosModules
     ./../baseline.nix
     ./steam-os.nix
+    ./data-mounts.nix
   ];
 
   custom = {
@@ -65,5 +66,5 @@
   ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }
