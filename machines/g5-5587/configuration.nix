@@ -64,7 +64,7 @@
     intel-vaapi-driver
     intel-media-driver
   ];
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_zen;
 
   system.stateVersion = "26.05";
 }
