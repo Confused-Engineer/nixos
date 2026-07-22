@@ -24,6 +24,16 @@ in
   config = lib.mkIf cfg.enable {
     services.flatpak.enable = true;
 
+    # Flatpak asserts on xdg.portal.enable. Normally a DE module turns portals
+    # on, but specialisations that drop the DE (e.g. steamos) still inherit
+    # flatpaks.enable, so own the requirement here instead. mkDefault leaves a
+    # DE free to override; the gtk backend is the generic fallback for sessions
+    # with no desktop-specific portal of their own.
+    xdg.portal = {
+      enable = lib.mkDefault true;
+      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    };
+
     # System-side install/remove runs once at activation as root, not per-user.
     # The per-user activation hook used previously fired on every login and
     # could remove flatpaks belonging to other users.

@@ -11,7 +11,7 @@
     ./../../nixosModules
     ./../baseline.nix
     ./data-mounts.nix
-    #./steam-os.nix
+    ./steam-os.nix
   ];
 
   custom = {
