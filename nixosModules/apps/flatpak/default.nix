@@ -32,6 +32,14 @@ in
     xdg.portal = {
       enable = lib.mkDefault true;
       extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+
+      # xdg-desktop-portal >= 1.17 warns unless a backend is named. DE modules
+      # supply this via configPackages (cosmic ships its own), so only fill in
+      # the gtk fallback when nothing else has — otherwise this would override
+      # the DE's preferred backend on the normal boot path.
+      config = lib.mkIf (config.xdg.portal.configPackages == [ ]) {
+        common.default = lib.mkDefault "gtk";
+      };
     };
 
     # System-side install/remove runs once at activation as root, not per-user.
