@@ -50,7 +50,11 @@ in
       powerManagement.finegrained = cfg.prime.enable;
       open = cfg.open;
       nvidiaSettings = true;
-      package = config.boot.kernelPackages.nvidiaPackages.latest;
+      package = 
+        if cfg.open then
+          config.boot.kernelPackages.nvidiaPackages.latest
+        else
+          config.boot.kernelPackages.nvidiaPackages.legacy_580;
 
       prime = lib.mkIf cfg.prime.enable {
         offload.enable = true;
