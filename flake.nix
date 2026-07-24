@@ -123,12 +123,6 @@
           useHomeManager = false;
           useBinaryCache = false;
         };
-        attic2 = mkSystem {
-          hostname = "attic2";
-          stateNixpkgs = nixpkgs;
-          useHomeManager = false;
-          useBinaryCache = false;
-        };
       };
     };
 }
