@@ -1,0 +1,26 @@
+name: Runner Cleanup
+
+on:
+  schedule:
+    - cron: '0 6 * * 0'    # weekly, Sunday at 06:00
+  workflow_dispatch:       # also allow manual runs
+
+permissions:
+  contents: read
+
+jobs:
+
+  gc:
+    name: Garbage-collect the Nix store
+    runs-on: [self-hosted, linux]
+    steps:
+
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          extra-conf: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+
+      - name: nix-store --gc
+        run: /nix/var/nix/profiles/default/bin/nix-store --gc
