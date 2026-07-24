@@ -26,7 +26,7 @@ in
     # Set static IP address and prefix
     interfaces.ens18.ipv4.addresses = [
       {
-        address = "10.87.6.56";
+        address = "10.87.6.55";
         prefixLength = 24;
       }
     ];
