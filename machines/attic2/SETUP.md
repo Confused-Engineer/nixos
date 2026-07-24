@@ -77,24 +77,17 @@ curl -sS http://localhost:8080/   # atticd responds
 
 ## 5. Create the `system` cache
 
-The fresh Postgres has **no caches yet**. Mint an admin token and create it
-(`atticd-atticadm` is provided by the module and reads the same signing key):
+The fresh Postgres has **no caches yet**. Mint an admin token (see §6), log in,
+and create the cache:
 
 ```bash
-sudo atticd-atticadm make-token \
-  --sub admin --validity '1y' \
-  --pull '*' --push '*' --delete '*' \
-  --create-cache '*' --configure-cache '*' \
-  --configure-cache-retention '*' --destroy-cache '*'
-# (flag names vary by version: `sudo atticd-atticadm make-token --help`)
-
-attic login attic2 http://localhost:8080 <token>
+attic login attic2 http://localhost:8080 <admin-token>
 attic cache create system
 attic cache configure system --retention-period '2 weeks'   # optional
 ```
 
 > If you still hold your old admin token, it already validates here (shared key)
-> — you can skip `make-token` and just `attic login` with it.
+> — skip `make-token` and just `attic login` with it.
 
 Smoke test:
 
@@ -122,9 +115,55 @@ attic push system $(which hello)
 > attic cache info system   # shows the public key
 > ```
 >
-> You'll need it at cutover (§6).
+> You'll need it at cutover (§7).
 
-## 6. Cutover (later, when replacing attic)
+## 6. Minting access tokens
+
+Tokens are JWTs signed by the server's RS256 key (shared with old `attic`, so
+tokens work on both). Mint them **on attic2** with `atticd-atticadm` (it reads
+the key from `/etc/atticd.env`). Permissions are per-cache; grant only what a
+consumer needs. Each `--<perm>` flag takes a cache-name pattern — prefer the
+exact name `system` over `*`.
+
+**Push-only** (CI / builders that upload but must not delete or reconfigure):
+
+```bash
+sudo atticd-atticadm make-token \
+  --sub "ci-push" --validity "1y" \
+  --push "system"
+```
+
+Only uploads to `system`. No `--pull` (can't read), no `--delete`,
+`--configure-cache*`, `--create-cache`, or `--destroy-cache` — push can only
+*add* paths, never remove or edit. Add `--pull "system"` if the same consumer
+also needs to use the cache as a substituter.
+
+**Pull-only** (a plain client that just consumes the cache):
+
+```bash
+sudo atticd-atticadm make-token \
+  --sub "reader" --validity "1y" \
+  --pull "system"
+```
+
+**Admin** (full control — keep this one safe; used to create/configure caches):
+
+```bash
+sudo atticd-atticadm make-token \
+  --sub "admin" --validity "1y" \
+  --pull "*" --push "*" --delete "*" \
+  --create-cache "*" --configure-cache "*" \
+  --configure-cache-retention "*" --destroy-cache "*"
+```
+
+Use any token with `attic login <name> https://attic.a5f.org <token>`.
+
+> ⚠ There is **no per-token revocation**. The only way to kill a leaked token
+> before its `--validity` expires is to rotate the server's RS256 key, which
+> invalidates **every** token at once. So keep validity periods sane and rotate
+> CI tokens rather than issuing 10-year ones.
+
+## 7. Cutover (later, when replacing attic)
 
 1. Repoint the external reverse proxy for `attic.a5f.org`: `10.87.6.55` → `10.87.6.56`.
 2. In `flake.nix`, set `binaryCache.publicKey` to attic2's `system` key from §5
