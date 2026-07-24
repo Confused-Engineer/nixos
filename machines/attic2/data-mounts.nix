@@ -1,6 +1,6 @@
-# Shared ext4 data disks for the desktop, used by both the default config and
-# the SteamOS specialisation. `nofail` so a missing/unplugged disk never blocks
-# boot.
+# Dedicated ext4 disk holding the atticd NAR/chunk store at /mnt/attic.
+# `nofail` so a missing/unplugged disk never blocks boot. `noatime` because
+# this is a read-heavy blob store — no reason to write access times on reads.
 let
   ext4DataMount = uuid: {
     device = "/dev/disk/by-uuid/${uuid}";
@@ -10,6 +10,7 @@ let
       "users"
       "nofail"
       "exec"
+      "noatime"
     ];
   };
 in

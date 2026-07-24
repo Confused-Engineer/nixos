@@ -5,6 +5,7 @@ in
 {
   imports = [
     ./hardware-configuration.nix
+    ./data-mounts.nix # mounts the dedicated /mnt/attic disk
     ./../../nixosModules
   ];
 
@@ -77,6 +78,15 @@ in
 
       jwt = { };
 
+      # Store NARs/chunks on the dedicated ext4 disk mounted at /mnt/attic
+      # (see data-mounts.nix). Postgres metadata stays on the root disk.
+      # The module auto-adds this path to the unit's ReadWritePaths because
+      # it lives outside /var/lib/atticd.
+      storage = {
+        type = "local";
+        path = "/mnt/attic";
+      };
+
       # Data chunking
       #
       # Warning: If you change any of the values here, it will be
@@ -129,6 +139,15 @@ in
   systemd.services.atticd = {
     after = [ "postgresql.service" ];
     requires = [ "postgresql.service" ];
+
+    # atticd runs under a systemd DynamicUser, so /mnt/attic (owned by root
+    # from the mount) isn't writable by it out of the box. The `+` prefix
+    # runs this as root outside the sandbox before the daemon starts; the
+    # transient `atticd` user resolves via nss-systemd, so `install` can hand
+    # the storage directory to it. Idempotent — re-applied on every start.
+    serviceConfig.ExecStartPre = [
+      "+${pkgs.coreutils}/bin/install -d -o atticd -g atticd -m 0750 /mnt/attic"
+    ];
   };
 
   users.users = {
@@ -164,5 +183,5 @@ in
     attic-client # `attic` CLI for managing the local server
   ];
 
-  system.stateVersion = "25.05";
+  system.stateVersion = "26.05";
 }
