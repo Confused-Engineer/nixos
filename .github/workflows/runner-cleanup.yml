@@ -12,7 +12,11 @@ jobs:
 
   gc:
     name: Garbage-collect the Nix store
-    runs-on: [self-hosted, linux]
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        # Replace these with the actual unique names or distinct labels of your runners
+        runner: [gitrunner-01, gitrunner-02, gitrunner-03] 
     steps:
 
       - uses: DeterminateSystems/nix-installer-action@main
