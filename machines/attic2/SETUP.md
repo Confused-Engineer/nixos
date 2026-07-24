@@ -102,6 +102,18 @@ Smoke test:
 attic push system $(which hello)
 ```
 
+> **Upstream filtering (already on by default).** A new cache defaults to
+> `--upstream-cache-key-name cache.nixos.org-1`, so `attic push` automatically
+> **skips any path signed by cache.nixos.org** — attic only ever stores what
+> upstream doesn't have. atticd is *not* a pull-through cache; this filtering is
+> a client-side push behavior, so:
+> - don't pass `--ignore-upstream-cache-filter` on push (it defeats the point);
+> - keep `cache.nixos.org` in clients' substituters (the flake already does —
+>   `binaryCache` adds attic *alongside* it). Upstream paths come from
+>   cache.nixos.org, your paths from attic.
+>
+> Verify the filter is set: `attic cache info system` (look for the upstream key).
+
 > ⚠ **Public-key note.** A freshly-created `system` cache generates a **new NAR
 > signing keypair**, so its public key is **not** the `system:OYIcW3…` currently
 > in `flake.nix`. Read the new one now:
