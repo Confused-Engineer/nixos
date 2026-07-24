@@ -25,7 +25,7 @@
       lib = nixpkgs-unstable.lib;
       binaryCache = {
         url = "https://attic.a5f.org/system";
-        publicKey = "system:OYIcW3XGdarzUi63x+H5mJ4FIhiYZcdiNUdyL7mKKEE=";
+        publicKey = "system:cvvHxSvPq60v169FIcPEHnbqPDdogIaGv10huIXEHBw=";
       };
       cudaCache = {
         url = "https://cuda-maintainers.cachix.org";
