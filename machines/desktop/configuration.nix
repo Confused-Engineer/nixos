@@ -14,8 +14,6 @@
   ];
 
   custom = {
-    os.settings-common.enable = true;
-    os.settings-baseline.enable = true;
 
     apps = {
       steam.enable = true;
@@ -45,17 +43,20 @@
     hardware.gpu-nvidia.enable = true;
     hardware.controller-xbox.enable = true;
 
-    os.boot = {
-      enable = true;
-      fancy.enable = true;
-      fancy.secureBoot = true;
-      systemd = false;
-    };
-
-    os.de-cosmic = {
-      enable = true;
-      strip.enable = true;
-      nvidiaFix.hibernate = false;
+    os = {
+      de-cosmic = {
+        enable = true;
+        strip.enable = true;
+        nvidiaFix.hibernate = false;
+      };
+      boot = {
+        enable = true;
+        fancy.enable = true;
+        fancy.secureBoot = true;
+        systemd = false;
+      };
+      settings-common.enable = true;
+      settings-baseline.enable = true;
     };
 
     systemd = {
