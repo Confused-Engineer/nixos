@@ -62,7 +62,7 @@ in
       "--no-write-lock-file"
     ];
     dates = "*-*-01 02:00:00";
-    operation = "switch";
+    operation = "boot";
     randomizedDelaySec = "30min";
     allowReboot = true;
   };

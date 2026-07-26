@@ -172,7 +172,7 @@ in
       "--refresh"
       "--no-write-lock-file"
     ];
-    dates = "*-*-* 04:00:00";
+    dates = "*-*-01 04:00:00";
     operation = "boot";
     randomizedDelaySec = "30min";
     allowReboot = true;
