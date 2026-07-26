@@ -34,7 +34,7 @@ in
   specialisation.steamos.configuration = {
     system.nixos.tags = [ "steamos" ];
 
-    custom.os.ui.cosmic.enable = lib.mkForce false;
+    custom.os.de-cosmic.enable = lib.mkForce false;
 
     programs.xwayland.enable = true;
     programs.gamescope = {

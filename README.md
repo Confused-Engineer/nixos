@@ -18,28 +18,35 @@ Multi-machine NixOS configuration. One flake, three hosts: `desktop`, `laptop`, 
 ├── users/
 │   └── keys.nix              # authorized SSH keys, single source
 ├── homeManager/
-│   └── david.nix             # shared HM config
+│   ├── modules/              # HM-side custom modules
+│   └── users/
+│       └── david.nix         # shared HM config
 ├── machines/
-│   ├── baseline.nix          # imported by every host
 │   ├── desktop/
 │   ├── laptop/
+│   ├── g5-5587/
 │   ├── attic/
 │   └── kodi/
 └── nixosModules/             # custom NixOS modules under `custom.*`
     ├── apps/
-    ├── boot/
     ├── hardware/
-    ├── home-manager/         # HM-side custom modules
-    ├── os/
-    ├── systemd/
-    └── templates/
+    ├── os/                   # boot, desktops (de-*), settings-*
+    └── systemd/
 ```
 
 ## Conventions
 
-- **Custom options live under `custom.*`.** Each module declares one
-  subtree (`custom.apps.steam`, `custom.os.ui.cosmic`, …) and one `cfg`
-  binding scoped to *that* subtree, not its parent.
+- **Custom options live under `custom.*`, mirroring the file path.** A
+  module at `nixosModules/<area>/<name>.nix` declares
+  `options.custom.<area>.<name>` and binds one `cfg` to *that* subtree,
+  not its parent — e.g. `nixosModules/os/settings-common.nix` owns
+  `custom.os.settings-common`, `nixosModules/os/de-cosmic.nix` owns
+  `custom.os.de-cosmic`.
+- **Every host enables its own baseline.** `custom.os.settings-common`
+  (locale, audio, keyboard) and `custom.os.settings-baseline` (the
+  `david` user, auto-upgrade, fonts, networking) are opt-in per host
+  rather than inherited by import. `kodi` takes only settings-common;
+  `attic` takes neither.
 - **`pkgs/` holds derivations, `nixosModules/` holds modules.** A file
   with `options` + `config` blocks is a module; a file with a build
   expression is a package. They go in different trees.
@@ -71,8 +78,8 @@ sudo nixos-rebuild switch --flake github:Confused-Engineer/nixos#desktop --refre
 
 ## Adding a new module
 
-1. `nixosModules/<area>/<name>/default.nix` declaring `options.custom.<area>.<name>`.
-2. Append `./<area>/<name>` to `nixosModules/default.nix`'s `imports` list.
+1. `nixosModules/<area>/<name>.nix` declaring `options.custom.<area>.<name>`.
+2. Append `./<area>/<name>.nix` to `nixosModules/default.nix`'s `imports` list.
 3. Set `custom.<area>.<name>.enable = true;` from the host that wants it.
 
 ## CI

@@ -14,18 +14,17 @@ in
     ./hardware-configuration.nix
     ./specialisation-default.nix
     ./../../nixosModules
-    ./../common.nix
   ];
 
   specialisation.desktop.configuration = {
     custom = {
-      apps.browsers.firefox = {
+      apps.firefox = {
         enable = true;
         privacy = "strict";
         homepage = "https://hp.int.a5f.org/";
       };
 
-      os.ui.cosmic = {
+      os.de-cosmic = {
         enable = true;
         strip.enable = true;
         nvidiaFix.hibernate = false;
@@ -36,7 +35,11 @@ in
     ];
   };
 
-  custom.boot = {
+  # Only the common settings — kodi defines its own user and auto-upgrade
+  # schedule below, so it deliberately skips settings-baseline.
+  custom.os.settings-common.enable = true;
+
+  custom.os.boot = {
     enable = true;
     fancy.enable = true;
     fancy.secureBoot = false;

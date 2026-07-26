@@ -5,8 +5,8 @@
   ...
 }:
 let
-  cfg = config.custom.os.ui.gnome;
-  helpers = import ./../../../../lib { inherit lib pkgs; };
+  cfg = config.custom.os.de-gnome;
+  helpers = import ./../../lib { inherit lib pkgs; };
 
   # Move the inline shell from a one-liner into a script so it's readable.
   copyMonitorsXml = pkgs.writeShellScript "copy-gdm-monitors-xml" ''
@@ -27,7 +27,7 @@ let
   '';
 in
 {
-  options.custom.os.ui.gnome = {
+  options.custom.os.de-gnome = {
     enable = lib.mkEnableOption "GNOME desktop";
     extensions.enable = lib.mkEnableOption "GNOME extensions (dash-to-dock, tray-icons)";
     strip.enable = lib.mkEnableOption "remove most default GNOME apps";

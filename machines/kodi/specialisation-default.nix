@@ -16,6 +16,6 @@
 }:
 {
   config = lib.mkIf (config.specialisation != { }) {
-    custom.os.ui.kodi.enable = true;
+    custom.os.de-kodi.enable = true;
   };
 }

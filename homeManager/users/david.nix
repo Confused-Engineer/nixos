@@ -12,7 +12,7 @@
   ];
 
   custom = {
-    shell.bash = {
+    bash = {
       enable = true;
       fancy = true;
       nixosAlias = true;

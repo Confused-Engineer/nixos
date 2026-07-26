@@ -5,11 +5,11 @@
   ...
 }:
 let
-  cfg = config.custom.os.ui.cosmic;
-  helpers = import ./../../../../lib { inherit lib pkgs; };
+  cfg = config.custom.os.de-cosmic;
+  helpers = import ./../../lib { inherit lib pkgs; };
 in
 {
-  options.custom.os.ui.cosmic = {
+  options.custom.os.de-cosmic = {
     enable = lib.mkEnableOption "COSMIC desktop";
     strip.enable = lib.mkEnableOption "remove the cosmic-store and other defaults";
     nvidiaFix.hibernate = lib.mkEnableOption "STOP/CONT cosmic-osd around suspend (NVIDIA hibernate fix)";

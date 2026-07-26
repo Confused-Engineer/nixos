@@ -5,14 +5,14 @@
   ...
 }:
 let
-  cfg = config.custom.apps.browsers.firefox;
+  cfg = config.custom.apps.firefox;
 
   isStrict = cfg.privacy == "strict";
   isPermissive = cfg.privacy == "permissive";
   notStrict = cfg.privacy != "strict";
 in
 {
-  options.custom.apps.browsers.firefox = {
+  options.custom.apps.firefox = {
     enable = lib.mkEnableOption "Firefox with hardened policies";
 
     # Renamed from `DisableFirefoxAccounts` to follow normal nix casing.

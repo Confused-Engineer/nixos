@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.custom.hardware.gpu.nvidia;
+  cfg = config.custom.hardware.gpu-nvidia;
 in
 {
-  options.custom.hardware.gpu.nvidia = {
+  options.custom.hardware.gpu-nvidia = {
     enable = lib.mkEnableOption "NVIDIA proprietary driver";
 
     open = lib.mkOption {

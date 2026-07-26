@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.custom.os.ui.kodi;
+  cfg = config.custom.os.de-kodi;
 in
 {
-  options.custom.os.ui.kodi = {
+  options.custom.os.de-kodi = {
     enable = lib.mkEnableOption "Kodi as the primary desktop session";
   };
 

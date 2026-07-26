@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.custom.boot;
+  cfg = config.custom.os.boot;
 in
 {
-  options.custom.boot = {
+  options.custom.os.boot = {
     enable = lib.mkEnableOption "custom boot settings";
 
     # Pick exactly one of these two via mkDefault. The previous version
@@ -29,7 +29,7 @@ in
         assertions = [
           {
             assertion = !(cfg.fancy.enable && cfg.systemd);
-            message = "custom.boot: pick either fancy.enable or systemd, not both.";
+            message = "custom.os.boot: pick either fancy.enable or systemd, not both.";
           }
         ];
 

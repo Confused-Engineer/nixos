@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.custom.shell.bash;
+  cfg = config.custom.bash;
 in
 {
-  options.custom.shell.bash = {
+  options.custom.bash = {
     enable = lib.mkEnableOption "managed bash configuration";
     fancy = lib.mkEnableOption "colorful PS1 + nitch on shell start";
     nixosAlias = lib.mkEnableOption "convenience aliases for nixos-rebuild";

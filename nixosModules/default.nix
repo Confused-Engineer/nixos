@@ -9,12 +9,12 @@
   imports = [
     ./apps/firefox.nix
     ./apps/flatpak.nix
-    ./apps/steam.nix
     ./apps/lact.nix
-    ./os/boot.nix
-    ./hardware/controllers-xbox.nix
+    ./apps/steam.nix
+    ./hardware/controller-xbox.nix
     ./hardware/gpu-nvidia.nix
-    ./os/de-cosmix.nix
+    ./os/boot.nix
+    ./os/de-cosmic.nix
     ./os/de-gnome.nix
     ./os/de-kde.nix
     ./os/de-kodi.nix

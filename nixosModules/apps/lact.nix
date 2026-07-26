@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.custom.hardware.gpu.lact;
+  cfg = config.custom.apps.lact;
 in
 {
-  options.custom.hardware.gpu.lact = {
+  options.custom.apps.lact = {
     enable = lib.mkEnableOption "LACT GPU control daemon";
   };
 

@@ -8,23 +8,25 @@
   imports = [
     ./hardware-configuration.nix
     ./../../nixosModules
-    ./../baseline.nix
     ./steam-os.nix
     ./data-mounts.nix
   ];
 
   custom = {
+    os.settings-common.enable = true;
+    os.settings-baseline.enable = true;
+
     apps = {
       steam.enable = true;
 
-      browsers.firefox = {
+      firefox = {
         enable = true;
         privacy = "strict";
         homepage = "https://hp.int.a5f.org/";
       };
     };
 
-    hardware.gpu.nvidia = {
+    hardware.gpu-nvidia = {
       enable = true;
       open = false; # Pascal (GTX 1060) — open modules unsupported
       prime.enable = true;
@@ -33,16 +35,16 @@
       # but confirm on the box before trusting them.
     };
 
-    hardware.controllers.xbox.enable = true;
+    hardware.controller-xbox.enable = true;
 
-    boot = {
+    os.boot = {
       enable = true;
       fancy.enable = true;
       fancy.secureBoot = false;
       systemd = false;
     };
 
-    os.ui.cosmic = {
+    os.de-cosmic = {
       enable = true;
       strip.enable = true;
       nvidiaFix.hibernate = false;

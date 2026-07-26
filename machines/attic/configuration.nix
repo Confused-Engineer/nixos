@@ -10,7 +10,7 @@ in
   ];
 
   custom = {
-    boot = {
+    os.boot = {
       enable = true;
       systemd = true; # plain systemd-boot is fine for a server
     };

@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.custom.os.ui.kde;
+  cfg = config.custom.os.de-kde;
 in
 {
-  options.custom.os.ui.kde = {
+  options.custom.os.de-kde = {
     enable = lib.mkEnableOption "KDE Plasma 6";
     strip.enable = lib.mkEnableOption "remove most default KDE apps";
   };

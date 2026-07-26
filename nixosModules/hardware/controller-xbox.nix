@@ -5,14 +5,14 @@
   ...
 }:
 let
-  cfg = config.custom.hardware.controllers;
+  cfg = config.custom.hardware.controller-xbox;
 in
 {
-  options.custom.hardware.controllers = {
-    xbox.enable = lib.mkEnableOption "Xbox controller (xpadneo + bluetooth tweaks for pairing)";
+  options.custom.hardware.controller-xbox = {
+    enable = lib.mkEnableOption "Xbox controller (xpadneo + bluetooth tweaks for pairing)";
   };
 
-  config = lib.mkIf cfg.xbox.enable {
+  config = lib.mkIf cfg.enable {
     hardware.bluetooth = {
       enable = true;
       powerOnBoot = true;

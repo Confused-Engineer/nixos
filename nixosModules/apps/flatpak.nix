@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.custom.apps.flatpaks;
+  cfg = config.custom.apps.flatpak;
 in
 {
-  options.custom.apps.flatpaks = {
+  options.custom.apps.flatpak = {
     enable = lib.mkEnableOption "Flatpak with declarative app management";
 
     desiredFlatpaks = lib.mkOption {
@@ -26,7 +26,7 @@ in
 
     # Flatpak asserts on xdg.portal.enable. Normally a DE module turns portals
     # on, but specialisations that drop the DE (e.g. steamos) still inherit
-    # flatpaks.enable, so own the requirement here instead. mkDefault leaves a
+    # flatpak.enable, so own the requirement here instead. mkDefault leaves a
     # DE free to override; the gtk backend is the generic fallback for sessions
     # with no desktop-specific portal of their own.
     xdg.portal = {

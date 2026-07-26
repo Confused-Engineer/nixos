@@ -3,14 +3,16 @@
   imports = [
     ./hardware-configuration.nix
     ./../../nixosModules
-    ./../baseline.nix
   ];
 
   custom = {
+    os.settings-common.enable = true;
+    os.settings-baseline.enable = true;
+
     apps = {
       steam.enable = true;
 
-      flatpaks = {
+      flatpak = {
         enable = true;
         update = true;
         desiredFlatpaks = [
@@ -20,23 +22,23 @@
         ];
       };
 
-      browsers.firefox = {
+      firefox = {
         enable = true;
         privacy = "strict";
         homepage = "https://hp.int.a5f.org/";
       };
     };
 
-    hardware.controllers.xbox.enable = true;
+    hardware.controller-xbox.enable = true;
 
-    boot = {
+    os.boot = {
       enable = true;
       fancy.enable = true;
       fancy.secureBoot = true;
       systemd = false;
     };
 
-    os.ui.cosmic = {
+    os.de-cosmic = {
       enable = true;
       strip.enable = true;
       nvidiaFix.hibernate = false;
