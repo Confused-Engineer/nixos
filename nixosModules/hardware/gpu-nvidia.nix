@@ -50,7 +50,7 @@ in
       powerManagement.finegrained = cfg.prime.enable;
       open = cfg.open;
       nvidiaSettings = true;
-      package = 
+      package =
         if cfg.open then
           config.boot.kernelPackages.nvidiaPackages.latest
         else

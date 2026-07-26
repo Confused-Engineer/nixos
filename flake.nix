@@ -95,7 +95,7 @@
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 backupFileExtension = "backup";
-                users.${homeUser} = import (./homeManager + "/${homeUser}.nix");
+                users.${homeUser} = import (./homeManager/users + "/${homeUser}.nix");
                 # Per-host extensions live in machines/<host>/home.nix and are
                 # imported by the user's home file when present.
                 extraSpecialArgs = { inherit inputs hostname; };

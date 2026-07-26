@@ -8,7 +8,7 @@
 }:
 {
   imports = [
-    ./../nixosModules/home-manager
+    ./../modules
   ];
 
   custom = {
