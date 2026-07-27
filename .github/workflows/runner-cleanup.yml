@@ -2,7 +2,7 @@ name: Runner Cleanup
 
 on:
   schedule:
-    - cron: '0 6 * * 0'    # weekly, Sunday at 06:00
+    - cron: '0 6 * * *'    # weekly, Sunday at 06:00
   workflow_dispatch:       # also allow manual runs
 
 permissions:
