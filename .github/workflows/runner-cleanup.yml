@@ -11,13 +11,22 @@ permissions:
 jobs:
 
   gc:
-    name: Garbage-collect the Nix store
-    runs-on: ${{ matrix.runner }}
+    name: GC ${{ matrix.runner }}
+    # NOTE: these are runner *labels*, not runner names. Each runner must carry
+    # its own gitrunner-0N label or the job will queue forever.
+    runs-on: [self-hosted, "${{ matrix.runner }}"]
+    timeout-minutes: 60
     strategy:
+      fail-fast: false     # one runner failing must not cancel the others
       matrix:
-        # Replace these with the actual unique names or distinct labels of your runners
-        runner: [gitrunner-01, gitrunner-02, gitrunner-03] 
+        runner: [gitrunner-01, gitrunner-02, gitrunner-03]
     steps:
+
+      - name: Identify runner
+        run: |
+          echo "matrix target : ${{ matrix.runner }}"
+          echo "actual host   : $(hostname)"
+          df -h /nix
 
       - uses: DeterminateSystems/nix-installer-action@main
         with:
@@ -26,5 +35,11 @@ jobs:
             experimental-features = nix-command flakes
             accept-flake-config = true
 
-      - name: nix-store --gc
-        run: /nix/var/nix/profiles/default/bin/nix-store --gc
+      - name: nix-collect-garbage
+        run: |
+          GC="$(command -v nix-collect-garbage \
+            || echo /nix/var/nix/profiles/default/bin/nix-collect-garbage)"
+          sudo "$GC" --delete-older-than 7d
+
+      - name: Report reclaimed space
+        run: df -h /nix
