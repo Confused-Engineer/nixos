@@ -17,7 +17,7 @@
 
     apps = {
       steam.enable = true;
-      lact.enable = true;
+      lact.enable = false;
 
       flatpak = {
         enable = true;
