@@ -64,7 +64,7 @@
   networking.hostName = "laptop";
 
   services.mullvad-vpn.enable = true;
-  services.mullvad-vpn.package = pkgs.mullvad-vpn;
+  services.mullvad-vpn.gui.enable = true;
   programs.kdeconnect.enable = true;
 
   services.logind.settings.Login.HandleLidSwitch = "hibernate";
