@@ -1,270 +1,221 @@
 {
   lib,
-  buildDotnetModule,
-  buildFHSEnv,
-  buildEnv,
-  writeShellScript,
-  dotnetCorePackages,
-  fetchFromGitHub,
+  stdenv,
   fetchurl,
-  stdenvNoCC,
-  cacert,
-  esbuild,
+  buildFHSEnv,
+  makeDesktopItem,
+  writeShellScript,
+  nix-update-script,
+
+  dejavu_fonts,
   fontconfig,
   freetype,
+  icu,
+  krb5,
   libGL,
-  libx11,
   libice,
   libsm,
-  libxext,
+  libx11,
+  libxcomposite,
   libxcursor,
+  libxdamage,
+  libxext,
+  libxfixes,
   libxi,
+  libxinerama,
   libxrandr,
   libxrender,
-  libxinerama,
-  libxcomposite,
-  libxdamage,
-  libxfixes,
   libxtst,
-  krb5,
+  nettools,
   openssl,
+  xdg-utils,
   zlib,
-  icu,
-  makeDesktopItem,
-  nix-update-script,
 }:
 
 let
   pname = "apps2samsung";
-  version = "2.5.5";
+  version = "2.7.1";
 
-  src = fetchFromGitHub {
-    owner = "Apps2Samsung";
-    repo = "Apps2Samsung";
-    rev = "v${version}";
-    hash = "sha256-0tRBId+suQUxUq3c9dFDqNIjNKNdooeqC5e351M6Gj0=";
+  sources = {
+    x86_64-linux = fetchurl {
+      url = "https://github.com/Apps2Samsung/Apps2Samsung/releases/download/v${version}/Apps2Samsung-v${version}-linux-x64.tar.gz";
+      hash = "sha256-Qzxx441m2rma5DkP2ehR9iIlxTCOC7VANvkvItW+MCM=";
+    };
+    aarch64-linux = fetchurl {
+      url = "https://github.com/Apps2Samsung/Apps2Samsung/releases/download/v${version}/Apps2Samsung-v${version}-linux-arm64.tar.gz";
+      hash = "sha256-yyVPt7jEeqinVjIY3QoKAhwnhNfyEW5lMCoID4xIFkI=";
+    };
   };
 
-  tizenSDB = fetchurl {
-    url = "https://github.com/PatrickSt1991/tizen-sdb/releases/download/v1.1.0/TizenSdb_v1.1.0_linux-x64";
-    hash = "sha256-E5nTGtHMw13IJYJrGNR31fE0OmtbZAKrdES1MV/I0fU=";
+  meta = {
+    description = "Sideload Jellyfin and other apps onto Samsung Tizen TVs, projectors and smart monitors";
+    longDescription = ''
+      Apps2Samsung (formerly Jellyfin2Samsung) side-loads applications onto Samsung
+      devices running Tizen OS. It handles device detection, Samsung developer
+      certificate provisioning and installation, so Tizen Studio or manual
+      sideloading is not needed. Jellyfin, Moonlight, Moonfin, Litefin, the
+      community package catalog and custom `.wgt` files are supported.
+
+      The target device must have Developer Mode enabled.
+    '';
+    homepage = "https://github.com/Apps2Samsung/Apps2Samsung";
+    changelog = "https://github.com/Apps2Samsung/Apps2Samsung/releases/tag/v${version}";
+    license = lib.licenses.mit;
+    sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
+    maintainers = with lib.maintainers; [ confused-engineer ];
+    platforms = lib.attrNames sources;
+    mainProgram = "apps2samsung";
   };
+
+  apps2samsung-unwrapped = stdenv.mkDerivation (finalAttrs: {
+    pname = "${pname}-unwrapped";
+    inherit version;
+
+    src =
+      sources.${stdenv.hostPlatform.system}
+        or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
+
+    # The release tarball has no top-level directory of its own.
+    unpackPhase = ''
+      runHook preUnpack
+
+      mkdir -p ${finalAttrs.sourceRoot}
+      tar --extract --file=$src --directory=${finalAttrs.sourceRoot}
+
+      runHook postUnpack
+    '';
+    sourceRoot = "source";
+
+    strictDeps = true;
+
+    dontConfigure = true;
+    dontBuild = true;
+
+    # A self-contained .NET single-file publish that is only ever run inside the
+    # FHS environment below, so it must keep its /lib64 interpreter.
+    dontPatchELF = true;
+    dontStrip = true;
+
+    installPhase = ''
+      runHook preInstall
+
+      mkdir -p $out/share/${pname}
+      cp -r . $out/share/${pname}
+
+      rm $out/share/${pname}/*.pdb
+
+      # esbuild ships without the executable bit. The application chmods it on
+      # first use, which cannot work from the read-only store.
+      chmod +x $out/share/${pname}/Assets/esbuild/linux-*/esbuild
+
+      # Mount points for the writable state bind-mounted in by the wrapper.
+      # bubblewrap cannot create them inside a read-only bind mount.
+      mkdir -p $out/share/${pname}/Logs $out/share/${pname}/Downloads
+      touch $out/share/${pname}/third-party-apps.cache.json
+
+      runHook postInstall
+    '';
+
+    meta = builtins.removeAttrs meta [ "mainProgram" ];
+  });
 
   desktopItem = makeDesktopItem {
     name = pname;
     desktopName = "Apps2Samsung";
     comment = "Install any app on Samsung TVs, projectors and smart monitors";
-    exec = "${pname} %U";
+    exec = pname;
     icon = pname;
+    terminal = false;
+    type = "Application";
     categories = [
       "Utility"
       "Network"
     ];
-    mimeTypes = [ "application/x-apps2samsung" ];
+    keywords = [
+      "jellyfin"
+      "samsung"
+      "sideload"
+      "tizen"
+      "tv"
+    ];
     startupNotify = true;
-  };
-
-  # Merged view of all NuGet packages bundled with the SDK.  Used in the
-  # FOD below to exclude them from the output so they don't collide with
-  # dotnet-sdk.packages in buildDotnetModule's buildInputs.
-  sdkPackages = buildEnv {
-    name = "${pname}-sdk-packages";
-    paths = dotnetCorePackages.sdk_8_0.packages;
-  };
-
-  # Fixed-output derivation: fetches the NuGet packages that are NOT
-  # bundled with the SDK.  To update the hash after a dep bump, set
-  # outputHash = lib.fakeHash; build once to get the real hash, then
-  # substitute it back.
-  nugetDeps = stdenvNoCC.mkDerivation {
-    name = "${pname}-nuget-deps";
-    nativeBuildInputs = [
-      dotnetCorePackages.sdk_8_0
-      cacert
-    ];
-    outputHashMode = "recursive";
-    outputHashAlgo = "sha256";
-    outputHash = "sha256-n1iSjHLYpjuSTCBLCVDxgCAYvxXy0vxicJyHSZc0FlM=";
-    buildCommand = ''
-      export HOME=$TMPDIR
-      export DOTNET_NOLOGO=1
-      export DOTNET_CLI_TELEMETRY_OPTOUT=1
-
-      # dotnet restore needs a writable project directory for obj/
-      cp -r ${src} $TMPDIR/src
-      chmod -R +w $TMPDIR/src
-
-      # Restore all NuGet packages to a temp cache
-      dotnet restore \
-        --packages $TMPDIR/nuget-packages \
-        $TMPDIR/src/Jellyfin2Samsung-CrossOS/Apps2Samsung.csproj
-
-      # Copy only non-SDK packages to the output.
-      # dotnet-sdk.packages are already in buildInputs of the main
-      # buildDotnetModule derivation; duplicating them here would cause
-      # symlink collisions in the SDK setup hook's _linkPackages function.
-      mkdir -p "$out/share/nuget/packages"
-      while IFS= read -r -d "" pkg_dir; do
-        pkgid=$(basename "$(dirname "$pkg_dir")")
-        ver=$(basename "$pkg_dir")
-        [ -d "${sdkPackages}/share/nuget/packages/$pkgid/$ver" ] && continue
-        mkdir -p "$out/share/nuget/packages/$pkgid"
-        cp -r "$pkg_dir" "$out/share/nuget/packages/$pkgid/"
-      done < <(find "$TMPDIR/nuget-packages" -mindepth 2 -maxdepth 2 -type d -print0)
-
-      # Build local NuGet feed (share/nuget/source) from our packages
-      while IFS= read -r -d "" nupkg; do
-        ver=$(basename "$(dirname "$nupkg")")
-        pkgid=$(basename "$(dirname "$(dirname "$nupkg")")")
-        dstdir="$out/share/nuget/source/$pkgid/$ver"
-        mkdir -p "$dstdir"
-        cp "$nupkg" "$dstdir/"
-      done < <(find "$out/share/nuget/packages" -name "*.nupkg" -print0)
-    '';
-  };
-
-  apps2samsung-unwrapped = buildDotnetModule {
-    pname = "${pname}-unwrapped";
-    inherit version src nugetDeps;
-
-    projectFile = "Jellyfin2Samsung-CrossOS/Apps2Samsung.csproj";
-
-    dotnet-sdk = dotnetCorePackages.sdk_8_0;
-    dotnet-runtime = dotnetCorePackages.aspnetcore_8_0;
-
-    executables = [ "Apps2Samsung" ];
-    dotnetInstallFlags = [ "-p:PublishSingleFile=false" ];
-
-    postPatch = ''
-      substituteInPlace Jellyfin2Samsung-CrossOS/Helpers/AppSettings.cs \
-        --replace-fail \
-          'Path.Combine(FolderPath, "Assets", "TizenSDB")' \
-          'Path.Combine(DataFolderPath, "TizenSDB")' \
-        --replace-fail \
-          'Path.Combine(FolderPath, "Downloads")' \
-          'Path.Combine(DataFolderPath, "Downloads")'
-
-      substituteInPlace Jellyfin2Samsung-CrossOS/Services/ProviderManifestService.cs \
-        --replace-fail \
-          'Path.Combine(AppSettings.FolderPath, "third-party-apps.cache.json")' \
-          'Path.Combine(AppSettings.DataFolderPath, "third-party-apps.cache.json")'
-
-      substituteInPlace Jellyfin2Samsung-CrossOS/Program.cs \
-        --replace-fail \
-          'var logDir = AppContext.BaseDirectory;' \
-          'var logDir = Apps2Samsung.Helpers.AppSettings.DataFolderPath;'
-
-      substituteInPlace Jellyfin2Samsung-CrossOS/Helpers/Core/ProcessHelper.cs \
-        --replace-fail \
-          'string exeDir = AppContext.BaseDirectory;' \
-          'string exeDir = Apps2Samsung.Helpers.AppSettings.DataFolderPath;'
-
-      substituteInPlace Jellyfin2Samsung-CrossOS/Helpers/API/TizenApiClient.cs \
-        --replace-fail \
-          'Path.Combine(AppContext.BaseDirectory, "Logs",' \
-          'Path.Combine(Apps2Samsung.Helpers.AppSettings.DataFolderPath, "Logs",'
-    '';
-
-    runtimeDeps = [
-      fontconfig
-      freetype
-      libGL
-      libx11
-      libice
-      libsm
-      libxext
-      libxcursor
-      libxi
-      libxrandr
-      libxrender
-      libxinerama
-      libxcomposite
-      libxdamage
-      libxfixes
-      libxtst
-      krb5
-      openssl
-      zlib
-      icu
-    ];
-
-    postInstall = ''
-      mkdir -p "$out/lib/${pname}-unwrapped/Assets/esbuild/linux-x64"
-      ln -sf "${esbuild}/bin/esbuild" \
-        "$out/lib/${pname}-unwrapped/Assets/esbuild/linux-x64/esbuild"
-      rm -rf \
-        "$out/lib/${pname}-unwrapped/Assets/esbuild/macos-x64" \
-        "$out/lib/${pname}-unwrapped/Assets/esbuild/macos-arm64" \
-        "$out/lib/${pname}-unwrapped/Assets/esbuild/win-x64"
-    '';
+    startupWMClass = "Apps2Samsung";
   };
 in
-
 buildFHSEnv {
-  name = pname;
+  inherit pname version meta;
 
-  targetPkgs =
-    pkgs: with pkgs; [
-      apps2samsung-unwrapped
-      fontconfig
-      freetype
-      libGL
-      libx11
-      libice
-      libsm
-      libxext
-      libxcursor
-      libxi
-      libxrandr
-      libxrender
-      libxinerama
-      libxcomposite
-      libxdamage
-      libxfixes
-      libxtst
-      krb5
-      openssl
-      zlib
-      icu
-    ];
+  targetPkgs = _: [
+    # .NET runtime: libstdc++/libgcc_s, globalization, TLS and GSSAPI, all of
+    # which the single-file bundle dlopens after unpacking itself
+    stdenv.cc.cc.lib
+    icu
+    krb5
+    openssl
+    zlib
+
+    # Skia / font rendering
+    dejavu_fonts
+    fontconfig
+    freetype
+    libGL
+
+    # Avalonia X11 backend
+    libice
+    libsm
+    libx11
+    libxcomposite
+    libxcursor
+    libxdamage
+    libxext
+    libxfixes
+    libxi
+    libxinerama
+    libxrandr
+    libxrender
+    libxtst
+
+    # `arp`, used to resolve the MAC vendor of discovered devices
+    nettools
+    # `xdg-open`, used by the "open logs folder" and release-page buttons
+    xdg-utils
+  ];
+
+  # The application keeps logs, downloaded packages and the Tizen SDB binary it
+  # fetches at runtime next to its own executable, so those paths get a writable
+  # bind mount. Everything else it writes (settings, generated signing
+  # certificates) already goes to $XDG_CONFIG_HOME/Apps2Samsung.
+  #
+  # Installing under /opt additionally makes the application report itself as
+  # package-manager managed and skip its built-in auto-updater, which would
+  # otherwise try to replace the store path.
+  extraPreBwrapCmds = ''
+    state="''${XDG_DATA_HOME:-$HOME/.local/share}/${pname}"
+    mkdir -p "$state"/Logs "$state"/Downloads "$state"/TizenSDB
+    [ -e "$state/third-party-apps.cache.json" ] || : > "$state/third-party-apps.cache.json"
+  '';
+
+  extraBwrapArgs = [
+    "--tmpfs /opt"
+    "--ro-bind ${apps2samsung-unwrapped}/share/${pname} /opt/apps2samsung"
+    ''--bind "$state/Logs" /opt/apps2samsung/Logs''
+    ''--bind "$state/Downloads" /opt/apps2samsung/Downloads''
+    ''--bind "$state/TizenSDB" /opt/apps2samsung/Assets/TizenSDB''
+    ''--bind "$state/third-party-apps.cache.json" /opt/apps2samsung/third-party-apps.cache.json''
+  ];
 
   runScript = writeShellScript "${pname}-run" ''
-    mkdir -p "''${XDG_CONFIG_HOME:-$HOME/.config}/Apps2Samsung/TizenSDB"
-    sdb="''${XDG_CONFIG_HOME:-$HOME/.config}/Apps2Samsung/TizenSDB/TizenSdb_v1.1.0_linux-x64"
-    if [ ! -f "$sdb" ]; then
-      cp ${tizenSDB} "$sdb"
-      chmod +x "$sdb"
-    fi
-    exec Apps2Samsung "$@"
+    exec /opt/apps2samsung/Apps2Samsung "$@"
   '';
 
   extraInstallCommands = ''
-    install -Dm644 ${src}/Jellyfin2Samsung-CrossOS/Assets/jelly2sams.png \
+    install -Dm444 ${desktopItem}/share/applications/${pname}.desktop -t $out/share/applications
+    install -Dm444 ${apps2samsung-unwrapped}/share/${pname}/Assets/jelly2sams.png \
       $out/share/icons/hicolor/256x256/apps/${pname}.png
-    install -Dm644 ${desktopItem}/share/applications/${pname}.desktop \
-      $out/share/applications/${pname}.desktop
   '';
 
-  passthru.updateScript = nix-update-script { };
-
-  meta = {
-    description = "One-click app installer for Samsung TVs, projectors and smart monitors";
-    longDescription = ''
-      Apps2Samsung is a cross-platform installation utility that enables users to
-      side-load any app onto Samsung devices running Tizen OS, including smart TVs,
-      projectors, and monitors. It handles device detection, certificate management,
-      and installation automatically, with support for Jellyfin, Moonlight, and
-      community packages without requiring manual certificate handling.
-    '';
-    homepage = "https://github.com/Apps2Samsung/Apps2Samsung";
-    downloadPage = "https://github.com/Apps2Samsung/Apps2Samsung/releases";
-    changelog = "https://github.com/Apps2Samsung/Apps2Samsung/releases/tag/v${version}";
-    license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [
-      confused-engineer
-      patrickst1991
-    ];
-    platforms = lib.platforms.linux;
-    mainProgram = pname;
+  passthru = {
+    unwrapped = apps2samsung-unwrapped;
+    updateScript = nix-update-script { };
   };
 }
