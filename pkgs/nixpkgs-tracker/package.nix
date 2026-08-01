@@ -17,13 +17,13 @@
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "nixpkgs-tracker";
-  version = "0.1";
+  version = "0.1.1";
 
   src = fetchFromGitHub {
     owner = "Confused-Engineer";
     repo = "nixpkgs-tracker";
     tag = finalAttrs.version;
-    hash = "sha256-VSIBevRsYs4CWWoShVW/qCPtHx4QUTg7yTwzmIdUo9E=";
+    hash = "sha256-Sr6GWkgIFJP9f2H7KL3CrRpqIIYw+f6PNAHcXfrAqx0=";
   };
 
   cargoHash = "sha256-AJPF+ocswUmErV0S9whgGSKFrmGEX9CHfMDwaO95Gi0=";
@@ -38,14 +38,23 @@ rustPlatform.buildRustPackage (finalAttrs: {
       name = "nixpkgs-tracker";
       desktopName = "nixpkgs Tracker";
       exec = "nixpkgs-tracker";
+      icon = "nixpkgs-tracker";
       comment = "Track nixpkgs package versions across stable, unstable and master";
       categories = [
         "Development"
         "Utility"
       ];
       terminal = false;
+      # Lets the desktop match the running window back to this entry, so the
+      # icon shows in the dock as well as the launcher.
+      startupWMClass = "nixpkgs-tracker";
     })
   ];
+
+  postInstall = ''
+    install -Dm444 assets/logo.png \
+      $out/share/icons/hicolor/256x256/apps/nixpkgs-tracker.png
+  '';
 
   # eframe loads its windowing and graphics libraries with dlopen rather than
   # linking them, so they have to be resolvable at runtime.
