@@ -69,6 +69,8 @@
 
   boot.kernelModules = [ "ntsync" ];
   boot.kernelPackages = pkgs.linuxPackages_zen;
+  # Disable auto suspend to prevent the momentary Xbox controller connection drops during play.
+  boot.kernelParams = [ "btusb.enable_autosuspend=0" ];
 
   programs.kdeconnect.enable = true;
 
