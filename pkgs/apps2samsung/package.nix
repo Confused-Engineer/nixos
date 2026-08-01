@@ -26,7 +26,7 @@
   libxrandr,
   libxrender,
   libxtst,
-  nettools,
+  net-tools,
   openssl,
   xdg-utils,
   zlib,
@@ -176,7 +176,7 @@ buildFHSEnv {
     libxtst
 
     # `arp`, used to resolve the MAC vendor of discovered devices
-    nettools
+    net-tools
     # `xdg-open`, used by the "open logs folder" and release-page buttons
     xdg-utils
   ];
