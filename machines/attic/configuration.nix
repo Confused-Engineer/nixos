@@ -98,7 +98,12 @@ in
         #
         # If 0, chunking is disabled entirely for newly-uploaded NARs.
         # If 1, all NARs are chunked.
-        nar-size-threshold = 0; # 64 * 1024; # 64 KiB
+        #
+        # Must stay non-zero. At 0, atticd takes the unchunked path and
+        # stores each NAR as one monolithic object with no dedup, so every
+        # nixpkgs bump re-uploads multi-GB NARs in full — which is what
+        # pushed single requests past Traefik's 60s entrypoint readTimeout.
+        nar-size-threshold = 64 * 1024; # 64 KiB
 
         # The preferred minimum size of a chunk, in bytes
         min-size = 16 * 1024; # 16 KiB
@@ -110,9 +115,12 @@ in
         max-size = 256 * 1024; # 256 KiB
       };
 
+      # zstd level 8 is well past the point of diminishing returns for NARs
+      # and costs real CPU on a 1-vCPU guest, holding each upload connection
+      # open longer. 3 compresses nix store paths nearly as well, much faster.
       compression = {
         type = "zstd";
-        level = 8;
+        level = 3;
       };
 
       # GC sweeps unreferenced chunks. Per-cache retention is set with
