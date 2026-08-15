@@ -37,7 +37,7 @@
     gimp
     jellyfin2samsung
     onlyoffice-desktopeditors
-    moonlight-qt
+    # moonlight-qt # temp disable until ffmpeg fix
     nixfmt
     nixfmt-tree
     obsidian
