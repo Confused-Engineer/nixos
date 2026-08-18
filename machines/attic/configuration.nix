@@ -14,7 +14,7 @@ in
       enable = true;
       systemd = true; # plain systemd-boot is fine for a server
     };
-
+    os.gc.enable = true;
   };
 
   networking.hostName = "attic";

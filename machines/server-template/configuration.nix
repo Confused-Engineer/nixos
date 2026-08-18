@@ -21,16 +21,10 @@ in
     systemd = true; # UEFI + systemd-boot — give the VM an OVMF/EFI disk in Proxmox
   };
 
-  # Keep only the current generation + 2 previous. systemd-boot prunes the
-  # older generation profile links on every switch/boot once the count is
-  # exceeded, which then makes their store paths collectible by nix.gc below
-  # — anything past that is "restore from backup" territory, not a rollback.
-  boot.loader.systemd-boot.configurationLimit = 3;
-
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-  };
+  # Keep only the current generation + 2 previous; anything past that is
+  # "restore from backup" territory, not a rollback. custom.os.gc defaults
+  # to 3 generations already — enabled here explicitly for clarity.
+  custom.os.gc.enable = true;
 
   networking.hostName = "server-template";
   # cloud-init renders networkd config from Proxmox-supplied metadata per

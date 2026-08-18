@@ -57,6 +57,7 @@
       };
       settings-common.enable = true;
       settings-baseline.enable = true;
+      gc.enable = true;
     };
 
     systemd = {

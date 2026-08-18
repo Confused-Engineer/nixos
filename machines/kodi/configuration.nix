@@ -38,6 +38,7 @@ in
   # Only the common settings — kodi defines its own user and auto-upgrade
   # schedule below, so it deliberately skips settings-baseline.
   custom.os.settings-common.enable = true;
+  custom.os.gc.enable = true;
 
   custom.os.boot = {
     enable = true;

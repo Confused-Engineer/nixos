@@ -18,6 +18,7 @@
     ./os/de-gnome.nix
     ./os/de-kde.nix
     ./os/de-kodi.nix
+    ./os/gc.nix
     ./os/settings-common.nix
     ./os/settings-baseline.nix
     ./systemd/shizuku-linux.nix
