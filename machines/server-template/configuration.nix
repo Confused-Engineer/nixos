@@ -57,6 +57,8 @@ in
   boot.growPartition = true;
   fileSystems."/".autoResize = true;
 
+  virtualisation.docker.enable = true;
+
   services.openssh = {
     enable = true;
     settings.PasswordAuthentication = false;
@@ -74,6 +76,7 @@ in
       extraGroups = [
         "networkmanager"
         "wheel"
+        "docker"
       ];
       openssh.authorizedKeys.keys = keys.david;
     };
