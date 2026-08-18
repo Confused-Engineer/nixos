@@ -10,6 +10,10 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     claude-code-nix.url = "github:ryoppippi/nix-claude-code";
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -54,6 +58,7 @@
           useHomeManager ? true,
           useBinaryCache ? true,
           useCudaCache ? true,
+          useDisko ? false,
           homeUser ? "david",
           hardwareModules ? [ ],
         }:
@@ -88,6 +93,7 @@
             };
           }
           ++ hardwareModules
+          ++ lib.optional useDisko inputs.disko.nixosModules.disko
           ++ lib.optionals useHomeManager [
             home-manager.nixosModules.home-manager
             {
@@ -122,6 +128,13 @@
           stateNixpkgs = nixpkgs;
           useHomeManager = false;
           useBinaryCache = false;
+        };
+        server-template = mkSystem {
+          hostname = "server-template";
+          stateNixpkgs = nixpkgs; # NixOS stable
+          useHomeManager = false;
+          useCudaCache = false;
+          useDisko = true;
         };
       };
     };

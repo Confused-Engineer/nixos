@@ -26,7 +26,8 @@ Multi-machine NixOS configuration. One flake, three hosts: `desktop`, `laptop`, 
 │   ├── laptop/
 │   ├── g5-5587/
 │   ├── attic/
-│   └── kodi/
+│   ├── kodi/
+│   └── server-template/      # disko-partitioned Proxmox VM template
 └── nixosModules/             # custom NixOS modules under `custom.*`
     ├── apps/
     ├── hardware/
