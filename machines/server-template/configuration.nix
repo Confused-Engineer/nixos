@@ -21,6 +21,17 @@ in
     systemd = true; # UEFI + systemd-boot — give the VM an OVMF/EFI disk in Proxmox
   };
 
+  # Keep only the current generation + 2 previous. systemd-boot prunes the
+  # older generation profile links on every switch/boot once the count is
+  # exceeded, which then makes their store paths collectible by nix.gc below
+  # — anything past that is "restore from backup" territory, not a rollback.
+  boot.loader.systemd-boot.configurationLimit = 3;
+
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+  };
+
   networking.hostName = "server-template";
   # cloud-init renders networkd config from Proxmox-supplied metadata per
   # clone, so networkd (not the scripted dhcpcd backend) has to own it.
