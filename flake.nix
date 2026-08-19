@@ -136,6 +136,13 @@
           useCudaCache = false;
           useDisko = true;
         };
+        controller = mkSystem {
+          hostname = "controller";
+          stateNixpkgs = nixpkgs; # NixOS stable
+          useHomeManager = false;
+          useCudaCache = false;
+          useDisko = true;
+        };
       };
     };
 }
