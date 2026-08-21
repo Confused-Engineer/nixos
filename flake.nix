@@ -143,6 +143,13 @@
           useCudaCache = false;
           useDisko = true;
         };
+        music-assist = mkSystem {
+          hostname = "music-assist";
+          stateNixpkgs = nixpkgs; # NixOS stable
+          useHomeManager = false;
+          useCudaCache = false;
+          useDisko = true;
+        };
       };
     };
 }
