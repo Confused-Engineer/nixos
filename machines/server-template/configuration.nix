@@ -13,6 +13,7 @@ in
   imports = [
     ./disko.nix
     ./hardware-configuration.nix
+    ./containers.nix
     ./../../nixosModules
   ];
 
@@ -61,8 +62,6 @@ in
   # alone leaves the filesystem the old size.
   boot.growPartition = true;
   fileSystems."/".autoResize = true;
-
-  virtualisation.docker.enable = true;
 
   services.openssh = {
     enable = true;
