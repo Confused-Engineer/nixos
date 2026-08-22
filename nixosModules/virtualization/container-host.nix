@@ -138,6 +138,12 @@ in
     };
     users.users.root.openssh.authorizedKeys.keys = keys.david;
 
+    # Forcibly reconcile /etc/passwd et al. to exactly what's declared here
+    # on every switch, instead of leaving removed accounts (and their old
+    # password hashes) lingering on disk indefinitely. No manual user
+    # management happens on these boxes anyway.
+    users.mutableUsers = false;
+
     # Monthly, unattended, restart if the new generation needs it — nobody's
     # watching a headless VM's console.
     system.autoUpgrade = lib.mkIf cfg.autoUpgrade.enable {
