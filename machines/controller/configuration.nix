@@ -27,6 +27,35 @@ in
   # to 3 generations already — enabled here explicitly for clarity.
   custom.os.gc.enable = true;
 
+  # Hardlink identical files across store paths — real disk savings on a
+  # small VM disk, at the cost of a little extra CPU during GC.
+  nix.settings.auto-optimise-store = true;
+  # Belt-and-suspenders: trigger GC automatically the moment free space
+  # drops below 1GB, not just on the weekly timer. Stops once 3GB is free.
+  nix.settings.min-free = 1 * 1024 * 1024 * 1024;
+  nix.settings.max-free = 3 * 1024 * 1024 * 1024;
+
+  # Weekly `podman system prune`, so image/layer churn from updating
+  # portainer/dockerproxy/etc. doesn't accumulate forever.
+  virtualisation.podman.autoPrune.enable = true;
+
+  # systemd-nspawn/machinectl containers — a separate subsystem from the
+  # podman containers this host actually runs; nothing here uses it.
+  boot.enableContainers = false;
+
+  # Weekly TRIM so blocks freed by nix GC / podman prune actually get
+  # returned to Proxmox's (thin-provisioned) storage, not just freed inside
+  # the VM's own filesystem.
+  services.fstrim.enable = true;
+
+  # Unattended VM, nobody's rotating logs by hand — bound the journal.
+  # SystemMaxUse caps persistent storage, RuntimeMaxUse caps the in-memory
+  # journal used whenever persistent storage isn't set up.
+  services.journald.extraConfig = ''
+    SystemMaxUse=200M
+    RuntimeMaxUse=100M
+  '';
+
   networking.hostName = "controller";
   # cloud-init renders networkd config from Proxmox-supplied metadata per
   # clone, so networkd (not the scripted dhcpcd backend) has to own it.
@@ -45,6 +74,14 @@ in
       "david"
     ];
   };
+
+  # Headless container host — skip building/installing man pages, the NixOS
+  # manual, and option docs; nothing here ever reads them.
+  documentation.enable = false;
+  documentation.nixos.enable = false;
+  documentation.man.enable = false;
+  documentation.doc.enable = false;
+  documentation.info.enable = false;
 
   # Proxmox metrics/actions (shutdown, status, IP reporting) go through the
   # guest agent; cloud-init applies the per-clone metadata Proxmox injects.
@@ -101,10 +138,6 @@ in
     randomizedDelaySec = "5h";
     allowReboot = true;
   };
-
-  environment.systemPackages = with pkgs; [
-    git
-  ];
 
   system.stateVersion = "26.05";
 }
