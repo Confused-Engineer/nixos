@@ -14,6 +14,7 @@
     ./hardware/controller-xbox.nix
     ./hardware/gpu-nvidia.nix
     ./os/boot.nix
+    ./os/container-host.nix
     ./os/de-cosmic.nix
     ./os/de-gnome.nix
     ./os/de-kde.nix

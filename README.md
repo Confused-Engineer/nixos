@@ -27,11 +27,15 @@ Multi-machine NixOS configuration. One flake, three hosts: `desktop`, `laptop`, 
 │   ├── g5-5587/
 │   ├── attic/
 │   ├── kodi/
-│   └── server-template/      # disko-partitioned Proxmox VM template
+│   ├── server-template/      # disko-partitioned Proxmox VM template
+│   ├── controller/            # container host cloned from server-template
+│   └── music-assist/          # container host cloned from server-template
 └── nixosModules/             # custom NixOS modules under `custom.*`
     ├── apps/
-    ├── hardware/
-    ├── os/                   # boot, desktops (de-*), settings-*
+    ├── hardware/             # includes proxmox-vm.nix (disko + VM hardware,
+    │                         # imported per-host, not registered centrally
+    │                         # — see the module's own header comment)
+    ├── os/                   # boot, container-host, desktops (de-*), settings-*
     └── systemd/
 ```
 
