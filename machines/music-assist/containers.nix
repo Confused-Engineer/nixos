@@ -50,7 +50,7 @@
       # that oci-containers has no dedicated option for.
       extraOptions = [
         "--network=host"
-        "--dns=10.87.10.39"
+        "--dns=10.87.6.10"
         "--security-opt=apparmor=unconfined"
       ];
     };
