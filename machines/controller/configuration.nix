@@ -85,6 +85,12 @@ in
   documentation.doc.enable = false;
   documentation.info.enable = false;
 
+  # perl/rsync/strace ship on every NixOS system by default even though
+  # nothing here uses them — switch-to-configuration-ng (Rust) doesn't need
+  # perl like the old activation script did, so there's no hidden dependency
+  # on it either. Explicitly documented as safe to drop for a minimal host.
+  environment.defaultPackages = [ ];
+
   # Proxmox metrics/actions (shutdown, status, IP reporting) go through the
   # guest agent; cloud-init applies the per-clone metadata Proxmox injects.
   services.qemuGuest.enable = true;
