@@ -22,10 +22,12 @@ in
     systemd = true; # UEFI + systemd-boot — give the VM an OVMF/EFI disk in Proxmox
   };
 
-  # Keep only the current generation + 2 previous; anything past that is
-  # "restore from backup" territory, not a rollback. custom.os.gc defaults
-  # to 3 generations already — enabled here explicitly for clarity.
-  custom.os.gc.enable = true;
+  # Keep only the current generation + 1 previous — this box is backed up,
+  # so anything further back is "restore from backup" territory anyway.
+  custom.os.gc = {
+    enable = true;
+    generations = 2;
+  };
 
   # Hardlink identical files across store paths — real disk savings on a
   # small VM disk, at the cost of a little extra CPU during GC.
