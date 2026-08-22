@@ -45,6 +45,18 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # networking.useNetworkd (set by custom.virtualization.container-host)
+    # defaults services.resolved.enable to true, whose stub listener sits on
+    # 127.0.0.53/127.0.0.54:53 — a specific-address bind that collides with
+    # Blocky's wildcard `:53` bind at the kernel level ("address already in
+    # use"), even though the addresses don't literally match. Keep resolved
+    # itself on (DHCP-learned upstream servers still flow through it), just
+    # turn off its stub listener, and repoint /etc/resolv.conf at resolved's
+    # non-stub file so this host's own outbound DNS (image pulls, flake
+    # fetches) keeps working without going through the now-disabled stub.
+    services.resolved.settings.Resolve.DNSStubListener = "no";
+    environment.etc."resolv.conf".source = lib.mkForce "/run/systemd/resolve/resolv.conf";
+
     virtualisation.oci-containers.containers.blocky = {
       autoStart = true;
       image = "ghcr.io/0xerr0r/blocky:latest";
