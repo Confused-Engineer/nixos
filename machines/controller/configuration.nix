@@ -71,10 +71,7 @@ in
       "nix-command"
       "flakes"
     ];
-    trusted-users = [
-      "root"
-      "david"
-    ];
+    trusted-users = [ "root" ];
   };
 
   # Headless container host — skip building/installing man pages, the NixOS
@@ -108,29 +105,18 @@ in
   boot.growPartition = true;
   fileSystems."/".autoResize = true;
 
+  # Root-only SSH: rootful podman means a container escape already lands at
+  # host root, so a separate wheel/sudo user buys no real privilege
+  # separation here — it only matters for a lateral pivot from another
+  # account, which isn't this host's threat model.
   services.openssh = {
     enable = true;
     settings.PasswordAuthentication = false;
-    settings.AllowUsers = [
-      "david"
-      "root"
-    ];
+    settings.AllowUsers = [ "root" ];
     settings.PermitRootLogin = "prohibit-password";
   };
 
-  users.users = {
-    david = {
-      isNormalUser = true;
-      description = "david";
-      extraGroups = [
-        "networkmanager"
-        "wheel"
-        "docker"
-      ];
-      openssh.authorizedKeys.keys = keys.david;
-    };
-    root.openssh.authorizedKeys.keys = keys.david;
-  };
+  users.users.root.openssh.authorizedKeys.keys = keys.david;
 
   # Monthly, unattended, restart if the new generation needs it — a template
   # clone has no one around to babysit a switch.
