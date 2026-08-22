@@ -1,8 +1,9 @@
 # Proxmox VM template — stable NixOS, disko-partitioned, no home-manager.
-# custom.hardware.proxmox-vm and custom.os.container-host carry all the
-# shared disk/OS boilerplate — see nixosModules/hardware/proxmox-vm.nix and
-# nixosModules/os/container-host.nix. This file only has what's actually
-# specific to this host.
+# custom.virtualization.proxmox-vm and custom.virtualization.container-host
+# carry all the shared disk/OS boilerplate — see
+# nixosModules/virtualization/proxmox-vm.nix and
+# nixosModules/virtualization/container-host.nix. This file only has what's
+# actually specific to this host.
 #
 # autoUpgrade stays off: this box gets shut down and converted to a Proxmox
 # template right after install, not run long-term unattended. Clones keep
@@ -13,11 +14,11 @@
   imports = [
     ./containers.nix
     ./../../nixosModules
-    ./../../nixosModules/hardware/proxmox-vm.nix
+    ./../../nixosModules/virtualization/proxmox-vm.nix
   ];
 
-  custom.hardware.proxmox-vm.enable = true;
-  custom.os.container-host = {
+  custom.virtualization.proxmox-vm.enable = true;
+  custom.virtualization.container-host = {
     enable = true;
     autoUpgrade.enable = false;
   };

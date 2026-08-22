@@ -1,18 +1,18 @@
 # Baseline for a headless, root-only, podman-container-only Proxmox VM:
-# controller, server-template, and music-assist all enable this instead of
-# repeating the same ~60 lines. Per-host files keep only what's actually
-# per-host: networking.hostName, this option, and containers.nix.
+# controller, server-template, music-assist, dns1, and dns2 all enable this
+# instead of repeating the same ~60 lines. Per-host files keep only what's
+# actually per-host: networking.hostName, this option, and containers.nix.
 {
   lib,
   config,
   ...
 }:
 let
-  cfg = config.custom.os.container-host;
+  cfg = config.custom.virtualization.container-host;
   keys = import ../../users/keys.nix;
 in
 {
-  options.custom.os.container-host = {
+  options.custom.virtualization.container-host = {
     enable = lib.mkEnableOption "baseline for a headless, root-only, podman-container-only Proxmox VM";
 
     autoUpgrade.enable = lib.mkOption {

@@ -150,6 +150,20 @@
           useCudaCache = false;
           useDisko = true;
         };
+        dns1 = mkSystem {
+          hostname = "dns1";
+          stateNixpkgs = nixpkgs; # NixOS stable
+          useHomeManager = false;
+          useCudaCache = false;
+          useDisko = true;
+        };
+        dns2 = mkSystem {
+          hostname = "dns2";
+          stateNixpkgs = nixpkgs; # NixOS stable
+          useHomeManager = false;
+          useCudaCache = false;
+          useDisko = true;
+        };
       };
     };
 }

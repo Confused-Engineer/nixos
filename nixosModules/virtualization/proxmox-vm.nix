@@ -6,10 +6,10 @@
 # option `disko.devices' does not exist", even under `lib.mkIf false`.
 { lib, config, ... }:
 let
-  cfg = config.custom.hardware.proxmox-vm;
+  cfg = config.custom.virtualization.proxmox-vm;
 in
 {
-  options.custom.hardware.proxmox-vm = {
+  options.custom.virtualization.proxmox-vm = {
     enable = lib.mkEnableOption "generic disko-partitioned Proxmox VM disk layout and hardware profile";
   };
 

@@ -14,7 +14,6 @@
     ./hardware/controller-xbox.nix
     ./hardware/gpu-nvidia.nix
     ./os/boot.nix
-    ./os/container-host.nix
     ./os/de-cosmic.nix
     ./os/de-gnome.nix
     ./os/de-kde.nix
@@ -24,5 +23,9 @@
     ./os/settings-baseline.nix
     ./systemd/shizuku-linux.nix
     ./systemd/system-api.nix
+    ./virtualization/blocky.nix
+    ./virtualization/container-host.nix
+    # virtualization/proxmox-vm.nix is deliberately not imported here — see
+    # that file's header comment.
   ];
 }

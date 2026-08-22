@@ -29,14 +29,18 @@ Multi-machine NixOS configuration. One flake, three hosts: `desktop`, `laptop`, 
 │   ├── kodi/
 │   ├── server-template/      # disko-partitioned Proxmox VM template
 │   ├── controller/            # container host cloned from server-template
-│   └── music-assist/          # container host cloned from server-template
+│   ├── music-assist/          # container host cloned from server-template
+│   ├── dns1/                  # Blocky DNS resolver, cloned from server-template
+│   └── dns2/                  # Blocky DNS resolver, cloned from server-template
 └── nixosModules/             # custom NixOS modules under `custom.*`
-    ├── apps/
-    ├── hardware/             # includes proxmox-vm.nix (disko + VM hardware,
-    │                         # imported per-host, not registered centrally
-    │                         # — see the module's own header comment)
-    ├── os/                   # boot, container-host, desktops (de-*), settings-*
-    └── systemd/
+    ├── apps/                 # desktop/user-facing apps (Firefox, Steam, ...)
+    ├── hardware/             # physical-hardware modules (GPU, controllers)
+    ├── os/                   # boot, desktops (de-*), gc, settings-*
+    ├── systemd/
+    └── virtualization/       # Proxmox/VM/container-only modules: proxmox-vm.nix
+                               # (disko + VM hardware, imported per-host, not
+                               # registered centrally — see its header comment),
+                               # container-host.nix, blocky.nix
 ```
 
 ## Conventions
