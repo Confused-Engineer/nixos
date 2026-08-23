@@ -1,4 +1,14 @@
 {
+  # NixOS's firewall defaults to dropping anything not explicitly allowed —
+  # container port-publishing/`--network=host` doesn't open a hole in it on
+  # its own. Ports confirmed from music-assistant-server's own startup log:
+  # setup/web UI, the streamserver players connect to, and Sendspin.
+  networking.firewall.allowedTCPPorts = [
+    8095
+    8097
+    8927
+  ];
+
   virtualisation.oci-containers.containers = {
     # Read-only view of the podman socket for homepage's Docker widget:
     # POST=0 keeps it read-only, CONTAINERS/SERVICES/TASKS gate which
