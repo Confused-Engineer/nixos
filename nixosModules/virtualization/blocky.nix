@@ -57,6 +57,12 @@ in
     services.resolved.settings.Resolve.DNSStubListener = "no";
     environment.etc."resolv.conf".source = lib.mkForce "/run/systemd/resolve/resolv.conf";
 
+    # NixOS's firewall defaults to dropping anything not explicitly
+    # allowed — publishing the container port doesn't open a hole in it on
+    # its own. Without this, Blocky only answers queries from localhost.
+    networking.firewall.allowedTCPPorts = [ 53 ];
+    networking.firewall.allowedUDPPorts = [ 53 ];
+
     virtualisation.oci-containers.containers.blocky = {
       autoStart = true;
       image = "ghcr.io/0xerr0r/blocky:latest";

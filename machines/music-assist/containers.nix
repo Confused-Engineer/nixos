@@ -1,12 +1,21 @@
 {
   # NixOS's firewall defaults to dropping anything not explicitly allowed —
   # container port-publishing/`--network=host` doesn't open a hole in it on
-  # its own. Ports confirmed from music-assistant-server's own startup log:
-  # setup/web UI, the streamserver players connect to, and Sendspin.
-  networking.firewall.allowedTCPPorts = [
-    8095
-    8097
-    8927
+  # its own. Music Assistant's confirmed ports (8095 web UI, 8097
+  # streamserver, 8927 Sendspin) all fall in this range; opened as one range
+  # rather than an exact list so new player providers/ports don't need a
+  # repo change to reach players on the LAN.
+  networking.firewall.allowedTCPPortRanges = [
+    {
+      from = 3000;
+      to = 10000;
+    }
+  ];
+  networking.firewall.allowedUDPPortRanges = [
+    {
+      from = 3000;
+      to = 10000;
+    }
   ];
 
   virtualisation.oci-containers.containers = {
