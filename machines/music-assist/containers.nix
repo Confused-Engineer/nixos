@@ -58,10 +58,9 @@
         "homepage.instance.private.group" = "Media";
         "homepage.instance.private.name" = "Music Assistant";
         "homepage.instance.private.icon" = "si-musicbrainz-#000000";
-        "homepage.instance.private.href" = "https://musicassist.a5f.org";
+        "homepage.instance.private.href" = "http://music-assist.internal:8095";
         "homepage.instance.private.description" = "Music Assistant Server";
         "homepage.instance.private.weight" = "4";
-        "com.centurylinklabs.watchtower.enable" = "true";
       };
       # network_mode: host is required for MA's discovery/streaming to work
       # correctly, so ports aren't published individually; --dns and
