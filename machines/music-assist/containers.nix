@@ -58,7 +58,7 @@
         "homepage.instance.private.group" = "Media";
         "homepage.instance.private.name" = "Music Assistant";
         "homepage.instance.private.icon" = "si-musicbrainz-#000000";
-        "homepage.instance.private.href" = "http://music-assist.internal:8095";
+        "homepage.instance.private.href" = "http://musicassist.a5f.org";
         "homepage.instance.private.description" = "Music Assistant Server";
         "homepage.instance.private.weight" = "4";
       };
