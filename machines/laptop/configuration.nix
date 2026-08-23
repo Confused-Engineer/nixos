@@ -23,7 +23,7 @@
       firefox = {
         enable = true;
         privacy = "strict";
-        homepage = "https://hp.int.a5f.org/";
+        homepage = "https://hp.a5f.org/";
       };
     };
 
