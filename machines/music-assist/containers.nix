@@ -30,7 +30,7 @@
         DAC_READ_SEARCH = true;
       };
       volumes = [
-        "/mnt/local/music-assistant/data:/data/"
+        "music-assistant-data:/data/"
       ];
       environment = {
         LOG_LEVEL = "info";
