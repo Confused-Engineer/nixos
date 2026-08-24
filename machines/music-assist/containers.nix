@@ -35,7 +35,7 @@
         "2375:2375"
       ];
       volumes = [
-        "/var/run/docker.sock:/var/run/docker.sock:ro"
+        "/run/podman/podman.sock:/var/run/docker.sock:ro"
       ];
     };
 
