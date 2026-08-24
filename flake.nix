@@ -164,6 +164,13 @@
           useCudaCache = false;
           useDisko = true;
         };
+        terraria = mkSystem {
+          hostname = "terraria";
+          stateNixpkgs = nixpkgs; # NixOS stable
+          useHomeManager = false;
+          useCudaCache = false;
+          useDisko = true;
+        };
       };
     };
 }
