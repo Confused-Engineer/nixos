@@ -16,6 +16,7 @@
     "d /srv/terraria-filebrowser/config 0755 1000 1000 -"
     "d /srv/terraria-filebrowser/database 0755 1000 1000 -"
     "d /srv/terraria/serverplugins 0755 1000 1000 -"
+    "d /srv/terraria/01 0755 1000 1000 -"
     "d /srv/terraria/logs 0755 1000 1000 -"
   ];
 
@@ -36,7 +37,7 @@
         "7878:7878" # TShock REST API
       ];
       volumes = [
-        "/srv/terraria/20260625:/root/.local/share/Terraria/Worlds"
+        "/srv/terraria/01:/root/.local/share/Terraria/Worlds"
         "/srv/terraria/serverplugins:/tshock/ServerPlugins"
         "/srv/terraria/logs:/tshock/logs"
       ];
@@ -71,8 +72,16 @@
     filebrowser = {
       autoStart = true;
       image = "filebrowser/filebrowser:latest";
+      # The image's baked-in USER is non-root, and its default settings.json
+      # listens on :80 — a privileged port that UID can't bind. Override to
+      # 8080 (the filebrowser binary's own --port default) via env var,
+      # which per its documented precedence (flags > env vars > config file)
+      # wins over the port baked into settings.json.
+      environment = {
+        FB_PORT = "8080";
+      };
       ports = [
-        "8080:80"
+        "8080:8080"
       ];
       volumes = [
         "/srv/terraria:/srv"
