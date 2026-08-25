@@ -32,6 +32,14 @@
       # copy and TShock's log writes would fail as UID 1000 without also
       # bind-mounting them here.
       user = "1000:1000";
+      # TShock.Server is a self-contained .NET single-file bundle — it needs
+      # a writable directory to extract itself into at startup, and its
+      # default target is /tshock (the image's WorkingDir), which is
+      # root-owned from the image build and not writable by UID 1000.
+      # Redirect extraction to /tmp, which is writable regardless of UID.
+      environment = {
+        DOTNET_BUNDLE_EXTRACT_BASE_DIR = "/tmp";
+      };
       ports = [
         "7777:7777" # Terraria server
         "7878:7878" # TShock REST API
