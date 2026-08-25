@@ -7,10 +7,10 @@
   # the container. If these host paths don't exist yet, podman auto-creates
   # them as root:root on first bind-mount, which that UID can't write to —
   # pre-create them owned by 1000:1000 so settings.json/the sqlite DB
-  # actually persist. (/srv/terraria itself is the pre-existing world-data
-  # directory, not managed here — if filebrowser can't save edits to files
-  # under it, its ownership/permissions need checking on the host
-  # separately.)
+  # actually persist. (terraria itself runs as root — see that container's
+  # comment — so it can write into /srv/terraria/01 regardless of this
+  # ownership; the parent /srv/terraria dir stays 1000:1000 so filebrowser
+  # can still edit/replace whatever terraria writes there.)
   systemd.tmpfiles.rules = [
     "d /srv/terraria-filebrowser 0755 root root -"
     "d /srv/terraria-filebrowser/config 0755 1000 1000 -"
@@ -24,22 +24,15 @@
     terraria = {
       autoStart = true;
       image = "ryshe/terraria:latest";
-      # The image has no USER directive (runs as root by default). Matching
-      # filebrowser's UID/GID keeps both containers' writes to /srv/terraria
-      # under one consistent ownership. /tshock/ServerPlugins and
-      # /tshock/logs are otherwise anonymous podman volumes that inherit
-      # root ownership from the image, so bootstrap.sh's first-run plugin
-      # copy and TShock's log writes would fail as UID 1000 without also
-      # bind-mounting them here.
-      user = "1000:1000";
-      # TShock.Server is a self-contained .NET single-file bundle — it needs
-      # a writable directory to extract itself into at startup, and its
-      # default target is /tshock (the image's WorkingDir), which is
-      # root-owned from the image build and not writable by UID 1000.
-      # Redirect extraction to /tmp, which is writable regardless of UID.
-      environment = {
-        DOTNET_BUNDLE_EXTRACT_BASE_DIR = "/tmp";
-      };
+      # Deliberately left running as the image's default (root), not UID
+      # 1000: this image is built assuming root throughout — the world path
+      # lives under /root (mode 0700, blocks non-root traversal entirely)
+      # and TShock's default ServerLog.txt is written straight into
+      # /tshock (the WorkingDir, root-owned from the image build), not into
+      # the /tshock/logs subdir. Forcing a non-root UID here fights the
+      # image's own layout for no real benefit — filebrowser can still
+      # edit whatever root writes into /srv/terraria, since that directory
+      # itself is 1000:1000 and writable regardless of file ownership.
       ports = [
         "7777:7777" # Terraria server
         "7878:7878" # TShock REST API
