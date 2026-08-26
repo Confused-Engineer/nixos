@@ -27,7 +27,7 @@ in
   # x-systemd.automount + nofail so a NAS reboot/network blip never blocks
   # this desktop's boot or hangs a shell that stats the mountpoint; it just
   # mounts on first access instead.
-  fileSystems."/mnt/truenas-david" = {
+  fileSystems."/mnt/truenas" = {
     device = "10.87.10.21:/mnt/Data/David";
     fsType = "nfs";
     options = [
