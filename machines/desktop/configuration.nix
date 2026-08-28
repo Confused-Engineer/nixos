@@ -28,7 +28,6 @@
           "com.bambulab.BambuStudio"
           "org.freecad.FreeCAD"
           "com.plexamp.Plexamp"
-          "com.core447.StreamController"
         ];
       };
 
@@ -105,6 +104,7 @@
     openrazer-daemon
     gnome-system-monitor
     easyeffects
+    streamcontroller
     vintagestory
     winboat
 
