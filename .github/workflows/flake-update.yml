@@ -3,6 +3,7 @@ name: Update Flake
 on:
   schedule:
     - cron: '0 2 * * *'   
+      timezone: 'America/New_York'
   workflow_dispatch:       # also allow manual runs
 
 permissions:
