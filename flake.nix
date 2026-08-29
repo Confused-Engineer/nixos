@@ -125,9 +125,11 @@
         };
         attic = mkSystem {
           hostname = "attic";
-          stateNixpkgs = nixpkgs;
+          stateNixpkgs = nixpkgs; # NixOS stable
           useHomeManager = false;
+          useCudaCache = false;
           useBinaryCache = false;
+          useDisko = true;
         };
         server-template = mkSystem {
           hostname = "server-template";

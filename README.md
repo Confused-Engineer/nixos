@@ -25,7 +25,7 @@ Multi-machine NixOS configuration. One flake, three hosts: `desktop`, `laptop`, 
 │   ├── desktop/
 │   ├── laptop/
 │   ├── g5-5587/
-│   ├── attic/
+│   ├── attic/                 # atticd binary cache, cloned from server-template
 │   ├── kodi/
 │   ├── server-template/      # disko-partitioned Proxmox VM template
 │   ├── controller/            # container host cloned from server-template
