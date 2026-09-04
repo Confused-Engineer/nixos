@@ -73,6 +73,7 @@
   boot.kernelParams = [ "btusb.enable_autosuspend=0" ];
 
   programs.kdeconnect.enable = true;
+  services.tailscale.enable = true;
 
   programs.gamemode = {
     enable = true;
