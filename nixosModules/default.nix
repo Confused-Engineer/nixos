@@ -21,6 +21,7 @@
     ./os/gc.nix
     ./os/settings-common.nix
     ./os/settings-baseline.nix
+    ./os/yubikey.nix
     ./systemd/shizuku-linux.nix
     ./systemd/system-api.nix
     ./virtualization/blocky.nix

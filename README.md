@@ -138,6 +138,76 @@ clone) or rebuilt onto their own flake host entry.
 2. Append `./<area>/<name>.nix` to `nixosModules/default.nix`'s `imports` list.
 3. Set `custom.<area>.<name>.enable = true;` from the host that wants it.
 
+## YubiKey U2F (login/sudo) on `desktop`
+
+`custom.os.yubikey.enable` (on by default for `desktop`, see
+`nixosModules/os/yubikey.nix`) lets a registered YubiKey satisfy
+`login`, `sudo`, the COSMIC greeter/lock screen, and polkit prompts
+(`pkexec`, GUI "authenticate" dialogs) by touching the key instead of
+typing a password.
+
+**Password is always a fallback, in every case.** `pam_u2f` is wired in
+as PAM `sufficient`, never `required`: touching the key logs you in
+immediately, but if the key is missing, unplugged, unregistered, or the
+touch fails/times out, PAM just falls through to the normal password
+prompt. There is no configuration here that can lock you out — worst
+case, you type your password like before.
+
+Enabling the module only wires up the PAM stack; it does **not**
+register a key. Nothing changes until you actually run the setup below
+on the desktop.
+
+### One-time setup (do this when you're ready)
+
+1. Rebuild so the module (and `ykman`/`pamu2fcfg`) are installed:
+
+   ```bash
+   sudo nixos-rebuild switch --flake .#desktop
+   ```
+
+2. Plug in the YubiKey and confirm it's detected:
+
+   ```bash
+   ykman info
+   ```
+
+3. Register it for your user. `pamu2fcfg` prompts you to touch the key,
+   then prints a line for `~/.config/Yubico/u2f_keys` (this file is
+   per-user and is what `pam_u2f` checks on every login/sudo/polkit
+   prompt system-wide):
+
+   ```bash
+   mkdir -p ~/.config/Yubico
+   pamu2fcfg > ~/.config/Yubico/u2f_keys
+   ```
+
+4. **Strongly recommended:** register a second, backup key in case the
+   first is lost or damaged. Swap keys, then append it to the *same*
+   line (the file format is one line per user, keys colon-separated):
+
+   ```bash
+   printf ':' >> ~/.config/Yubico/u2f_keys
+   pamu2fcfg -n | tr -d '\n' >> ~/.config/Yubico/u2f_keys
+   echo >> ~/.config/Yubico/u2f_keys
+   ```
+
+5. Test it without logging out — open a new terminal:
+
+   ```bash
+   sudo -k && sudo true
+   ```
+
+   You should see "Please touch the device" and a green blink; touching
+   it authorizes sudo with no password prompt. If you don't touch it
+   (or unplug the key), it falls back to asking for your password.
+
+6. Once sudo works, test login/lock-screen the same way (lock the
+   session or switch to a VT and back) before relying on it.
+
+Add more PAM service names to `custom.os.yubikey.pamServices` (e.g. a
+screen locker with its own PAM service) if something else should also
+accept the key.
+
 ## CI
 
 `.github/workflows/flake-update.yml` runs weekly: updates `flake.lock`,
