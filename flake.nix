@@ -173,6 +173,13 @@
           useCudaCache = false;
           useDisko = true;
         };
+        opencloud = mkSystem {
+          hostname = "opencloud";
+          stateNixpkgs = nixpkgs; # NixOS stable
+          useHomeManager = false;
+          useCudaCache = false;
+          useDisko = true;
+        };
       };
     };
 }

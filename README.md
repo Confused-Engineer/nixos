@@ -31,7 +31,8 @@ Multi-machine NixOS configuration. One flake, three hosts: `desktop`, `laptop`, 
 │   ├── controller/            # container host cloned from server-template
 │   ├── music-assist/          # container host cloned from server-template
 │   ├── dns1/                  # Blocky DNS resolver, cloned from server-template
-│   └── dns2/                  # Blocky DNS resolver, cloned from server-template
+│   ├── dns2/                  # Blocky DNS resolver, cloned from server-template
+│   └── opencloud/             # OpenCloud + OnlyOffice + lldap, cloned from server-template
 └── nixosModules/             # custom NixOS modules under `custom.*`
     ├── apps/                 # desktop/user-facing apps (Firefox, Steam, ...)
     ├── hardware/             # physical-hardware modules (GPU, controllers)
@@ -121,6 +122,66 @@ a template (right-click → **Convert to Template**).
 Clones made from the template keep the `server-template` hostname/config
 until either given Proxmox cloud-init metadata (Cloud-Init tab on the
 clone) or rebuilt onto their own flake host entry.
+
+## `opencloud` (OpenCloud + OnlyOffice)
+
+`machines/opencloud` is a `server-template` clone running two native NixOS
+services: **OnlyOffice DocumentServer** (nginx on `:80`) and **OpenCloud**
+(web UI on `:9200`, all user data on a dedicated second disk). Users and
+groups come from the **existing lldap on `10.87.6.10:3890`** (not part of
+this repo) — OpenCloud's built-in IDM is disabled and every login/lookup
+goes to that directory. Traefik terminates TLS for `cloud.a5f.org` /
+`office.a5f.org` outside this repo; the `*Url` / `ldapUri` / `ldapBaseDn`
+bindings at the top of `configuration.nix` are the only place those live.
+
+**In Proxmox:** same as `server-template`, plus a **second SCSI disk** on
+the same `VirtIO SCSI single` controller so it lands on `/dev/sdb` (disko
+formats it and mounts it at `/var/lib/opencloud`). Budget **4 GB RAM and
+2 vCPU minimum** — OnlyOffice alone (docservice + converter + rabbitmq +
+postgres) wants ~2 GB idle.
+
+Install with the standard `server-template` procedure above, substituting
+`#opencloud` in both the `disko` and `nixos-install` commands (disko will
+wipe **both** `sda` and `sdb`). On first boot both services crash-loop
+until their secrets exist — expected. Annotated templates for both secret
+files live in `machines/opencloud/` (`opencloud.env.example`,
+`onlyoffice-nonce.conf.example`). SSH in as root and:
+
+```bash
+# 1. OnlyOffice nginx secure-link nonce — must be readable by both nginx
+#    and the onlyoffice group; no `$` in the secret
+install -d -m 0750 -g onlyoffice /etc/onlyoffice
+printf 'set $secure_link_secret "%s";\n' "$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32)" \
+  > /etc/onlyoffice/nonce.conf
+chgrp onlyoffice /etc/onlyoffice/nonce.conf && chmod 0640 /etc/onlyoffice/nonce.conf
+systemctl restart onlyoffice-docservice nginx
+
+# 2. In the existing lldap's web UI:
+#    - create a user `opencloud` (the read-only bind account) and add it to
+#      the `lldap_strict_readonly` group
+#    - pick (or create) the user that should be the OpenCloud admin
+#    Then grab that user's entryUUID from here, binding as the new account:
+ldapsearch -x -H ldap://10.87.6.10:3890 \
+  -D "uid=opencloud,ou=people,dc=a5f,dc=org" -W \
+  -b "ou=people,dc=a5f,dc=org" "(uid=YOUR_USERNAME)" entryUUID
+
+# 3. OpenCloud secrets — start from the template and fill in the three values
+curl -fsSL https://raw.githubusercontent.com/Confused-Engineer/nixos/main/machines/opencloud/opencloud.env.example \
+  -o /etc/opencloud.env
+chmod 0600 /etc/opencloud.env
+nano /etc/opencloud.env  # OC_LDAP_BIND_PASSWORD, COLLABORATION_WOPI_SECRET, OC_ADMIN_USER_ID
+systemctl restart opencloud
+```
+
+`OC_ADMIN_USER_ID` is what grants the OpenCloud *Admin* role — every other
+lldap user lands as a regular *User* on first login. User/group management
+stays in lldap; OpenCloud's own admin UI is read-only against the
+directory (`OC_LDAP_SERVER_WRITE_ENABLED=false`).
+
+`opencloud init` runs once on first boot (via `opencloud-init-config`) and
+writes the internal service-to-service secrets to
+`/etc/opencloud/opencloud.yaml` — back that file up alongside the data
+disk; without it a rebuilt host can't read the existing storage.
 
 ## Adding a new custom package
 

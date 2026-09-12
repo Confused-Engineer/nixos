@@ -1,0 +1,9 @@
+# Example for /etc/onlyoffice/nonce.conf on the `opencloud` host. It's an
+# nginx snippet (services.onlyoffice.securityNonceFile) that OnlyOffice
+# also parses for the same secret, so it must be exactly one `set` line.
+# Must be readable by both nginx and the onlyoffice group, and the value
+# must not contain `$`. Install with:
+#   install -d -m 0750 -g onlyoffice /etc/onlyoffice
+#   install -m 0640 -g onlyoffice onlyoffice-nonce.conf.example /etc/onlyoffice/nonce.conf
+#   (then replace the placeholder and `systemctl restart onlyoffice-docservice nginx`)
+set $secure_link_secret "changeme";
