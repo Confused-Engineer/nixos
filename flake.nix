@@ -32,8 +32,8 @@
         publicKey = "system:JKldX37z2mGGfjceZeMLKpWdqwE08gE0ddVUwRJ2R3A=";
       };
       cudaCache = {
-        url = "https://cuda-maintainers.cachix.org";
-        publicKey = "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E=";
+        url = "https://nix-community.cachix.org";
+        publicKey = "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";
       };
 
       # Overlay that exposes the stable channel as `pkgs.stable` (the system
