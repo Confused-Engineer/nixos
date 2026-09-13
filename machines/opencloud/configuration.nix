@@ -24,8 +24,8 @@
 #   /etc/opencloud.env          <- opencloud.env.example
 { config, pkgs, ... }:
 let
-  cloudUrl = "https://cloud.a5f.org";
-  officeUrl = "https://office.a5f.org";
+  cloudUrl = "https://opencloud.a5f.org";
+  officeUrl = "https://onlyoffice.a5f.org";
 
   # The existing lldap host. Plain ldap:// (lldap's LDAP port is unencrypted
   # by default); it's LAN-only traffic between two VMs.
@@ -36,7 +36,7 @@ let
   # the `lldap_strict_readonly` group — OpenCloud never writes to LDAP
   # (OC_LDAP_SERVER_WRITE_ENABLED=false below), so it doesn't need the
   # admin account. Its password goes in /etc/opencloud.env.
-  ldapBindDn = "uid=opencloud,ou=people,${ldapBaseDn}";
+  ldapBindDn = "uid=read_only_admin,ou=people,${ldapBaseDn}";
 in
 {
   imports = [
@@ -184,23 +184,12 @@ in
       OC_LDAP_DISABLE_USER_MECHANISM = "none";
 
       OC_LDAP_USER_BASE_DN = "ou=people,${ldapBaseDn}";
-      OC_LDAP_USER_SCOPE = "sub";
-      OC_LDAP_USER_OBJECTCLASS = "inetOrgPerson";
       OC_LDAP_USER_SCHEMA_ID = "entryUUID";
-      OC_LDAP_USER_SCHEMA_ID_IS_OCTETSTRING = "false";
-      OC_LDAP_USER_SCHEMA_USERNAME = "uid";
-      OC_LDAP_USER_SCHEMA_MAIL = "mail";
-      OC_LDAP_USER_SCHEMA_DISPLAYNAME = "cn";
       # To restrict login to one lldap group instead of every user, set e.g.
-      # OC_LDAP_USER_FILTER = "(memberOf=cn=opencloud,ou=groups,${ldapBaseDn})";
+      OC_LDAP_USER_FILTER = "(memberOf=cn=nextcloud_users,ou=groups,${ldapBaseDn})";
 
-      OC_LDAP_GROUP_BASE_DN = "ou=groups,${ldapBaseDn}";
-      OC_LDAP_GROUP_SCOPE = "sub";
-      OC_LDAP_GROUP_OBJECTCLASS = "groupOfUniqueNames";
+      OC_LDAP_GROUP_BASE_DN = "ou=nextcloud_users,${ldapBaseDn}";
       OC_LDAP_GROUP_SCHEMA_ID = "entryUUID";
-      OC_LDAP_GROUP_SCHEMA_ID_IS_OCTETSTRING = "false";
-      OC_LDAP_GROUP_SCHEMA_GROUPNAME = "cn";
-      OC_LDAP_GROUP_SCHEMA_MEMBER = "member";
 
       # The built-in IdP authenticates against LDAP too; `uid` is what the
       # login form's username field is matched on.
