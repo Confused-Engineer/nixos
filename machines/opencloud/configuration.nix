@@ -140,36 +140,35 @@ in
     securityNonceFile = "/etc/onlyoffice/nonce.conf";
   };
 
-  # The module's own nginx vhost forwards `X-Forwarded-Proto: $scheme` to
-  # the docservice, but this vhost only ever `listen`s on plain :80 (TLS
-  # is terminated by Traefik in front, same as everything else on this
-  # host) — so `$scheme` is always "http", and the docservice's WOPI
-  # discovery XML advertises http:// action URLs even though every real
-  # client reaches it over https://onlyoffice.a5f.org. That trips a
-  # mixed-content warning in the browser when OpenCloud's editor tries to
-  # POST to those URLs. Since this vhost is never legitimately reached any
-  # other way, hardcode the header instead of deriving it from $scheme.
-  services.nginx.virtualHosts.${
-    builtins.replaceStrings [ "https://" ] [ "" ] officeUrl
-  }.extraConfig = ''
-    proxy_set_header X-Forwarded-Proto https;
-  '';
-
-  # That header fix above turned out not to be the actual cause: the
-  # docservice doesn't derive the WOPI action URLs' scheme from any
-  # request header at all. It's a static config value — `wopi.wopiZone` in
-  # its `default.json`, which the upstream package ships hardcoded to
-  # "external-http" (matching the discovery XML's `<net-zone
-  # name="external-http">`) regardless of how it's actually reached. The
-  # onlyoffice module's own `onlyoffice-prestart` ExecStartPre script
-  # rewrites that file with `jq`/`sponge` before the docservice starts but
-  # never touches `wopiZone`, and the module exposes no option for it,
-  # so append one more ExecStartPre patching it to "external-https" —
-  # `mkAfter` guarantees it runs after the module's own script has
-  # finished writing the file.
+  # OnlyOffice's docservice generates WOPI discovery XML (the URLs
+  # OpenCloud's editor POSTs to) using its OWN reverse-proxy detection —
+  # `getBaseUrlByRequest` in Common/sources/utils.js reads
+  # X-Forwarded-Proto off the request unless `wopi.host` is set, in which
+  # case it uses that directly (wopiClient.js: `tenWopiHost ||
+  # getBaseUrlByRequest(...)`). Tried fixing this by adding our own
+  # `proxy_set_header X-Forwarded-Proto https;` in this vhost (this vhost
+  # only ever `listen`s on plain :80 — TLS is terminated by Traefik in
+  # front — so nginx's own `$scheme` is always "http", which the module's
+  # default header setting then forwards verbatim). That backfired: nginx
+  # doesn't replace a same-context proxy_set_header, it sends both, so the
+  # docservice received "X-Forwarded-Proto: http, https" and its own
+  # parsing (RFC 7239-style, takes the first comma-separated value) kept
+  # picking "http" regardless. Bypass header-sniffing entirely instead by
+  # setting `wopi.host` to the real public URL — deterministic, no
+  # reliance on proxy header semantics.
+  #
+  # Same applies to `wopi.wopiZone`: it ships hardcoded to
+  # "external-http" in the package's default.json (matching the discovery
+  # XML's `<net-zone name="external-http">`), unrelated to any header,
+  # and the module exposes no option for either key. Its own
+  # `onlyoffice-prestart` ExecStartPre script rewrites default.json with
+  # `jq`/`sponge` before the docservice starts but never touches these, so
+  # append one more ExecStartPre patching both — `mkAfter` guarantees it
+  # runs after the module's own script has finished writing the file.
   systemd.services.onlyoffice-docservice.serviceConfig.ExecStartPre = lib.mkAfter [
-    (pkgs.writeShellScript "onlyoffice-wopi-zone-https" ''
-      ${pkgs.jq}/bin/jq '.wopi.wopiZone = "external-https"' /run/onlyoffice/config/default.json \
+    (pkgs.writeShellScript "onlyoffice-wopi-https" ''
+      ${pkgs.jq}/bin/jq '.wopi.wopiZone = "external-https" | .wopi.host = "${officeUrl}"' \
+        /run/onlyoffice/config/default.json \
         | ${pkgs.moreutils}/bin/sponge /run/onlyoffice/config/default.json
     '')
   ];
