@@ -26,6 +26,7 @@ in
         nix-test = "sudo nixos-rebuild test          --flake /etc/nixos";
         nix-vm = "sudo nixos-rebuild build-vm      --flake /etc/nixos";
         nix-clean = "sudo nix-collect-garbage; sudo nix-collect-garbage -d";
+        nix-repair = "sudo nix-store --verify --check-contents --repair";
         nix-remote = ''
           read -p "Target Hostname: " TargetHostname
           read -p "Target IP: " TargetIP
