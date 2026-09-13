@@ -55,7 +55,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        host: [desktop, laptop, kodi, attic, g5-5587, server-template, controller, music-assist, dns1, terraria]
+        host: [desktop, laptop, kodi, attic, g5-5587, server-template, controller, music-assist, dns1, terraria, opencloud]
     steps:
 
       - uses: actions/checkout@v5
