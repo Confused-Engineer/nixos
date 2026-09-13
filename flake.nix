@@ -31,11 +31,6 @@
         url = "https://attic.a5f.org/system";
         publicKey = "system:JKldX37z2mGGfjceZeMLKpWdqwE08gE0ddVUwRJ2R3A=";
       };
-      cudaCache = {
-        url = "https://nix-community.cachix.org";
-        publicKey = "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";
-      };
-
       # Overlay that exposes the stable channel as `pkgs.stable` (the system
       # pkgs is already unstable). Inherits allowUnfree so reaching across
       # channels (e.g. `pkgs.stable.pcsx2`) works without surprises.
@@ -57,7 +52,6 @@
           stateNixpkgs ? nixpkgs-unstable,
           useHomeManager ? true,
           useBinaryCache ? true,
-          useCudaCache ? true,
           useDisko ? false,
           homeUser ? "david",
           hardwareModules ? [ ],
@@ -84,12 +78,6 @@
             nix.settings = {
               substituters = [ binaryCache.url ];
               trusted-public-keys = [ binaryCache.publicKey ];
-            };
-          }
-          ++ lib.optional useCudaCache {
-            nix.settings = {
-              substituters = [ cudaCache.url ];
-              trusted-public-keys = [ cudaCache.publicKey ];
             };
           }
           ++ hardwareModules
@@ -127,7 +115,6 @@
           hostname = "attic";
           stateNixpkgs = nixpkgs; # NixOS stable
           useHomeManager = false;
-          useCudaCache = false;
           useBinaryCache = false;
           useDisko = true;
         };
@@ -135,49 +122,42 @@
           hostname = "server-template";
           stateNixpkgs = nixpkgs; # NixOS stable
           useHomeManager = false;
-          useCudaCache = false;
           useDisko = true;
         };
         controller = mkSystem {
           hostname = "controller";
           stateNixpkgs = nixpkgs; # NixOS stable
           useHomeManager = false;
-          useCudaCache = false;
           useDisko = true;
         };
         music-assist = mkSystem {
           hostname = "music-assist";
           stateNixpkgs = nixpkgs; # NixOS stable
           useHomeManager = false;
-          useCudaCache = false;
           useDisko = true;
         };
         dns1 = mkSystem {
           hostname = "dns1";
           stateNixpkgs = nixpkgs; # NixOS stable
           useHomeManager = false;
-          useCudaCache = false;
           useDisko = true;
         };
         dns2 = mkSystem {
           hostname = "dns2";
           stateNixpkgs = nixpkgs; # NixOS stable
           useHomeManager = false;
-          useCudaCache = false;
           useDisko = true;
         };
         terraria = mkSystem {
           hostname = "terraria";
           stateNixpkgs = nixpkgs; # NixOS stable
           useHomeManager = false;
-          useCudaCache = false;
           useDisko = true;
         };
         opencloud = mkSystem {
           hostname = "opencloud";
           stateNixpkgs = nixpkgs; # NixOS stable
           useHomeManager = false;
-          useCudaCache = false;
           useDisko = true;
         };
       };
