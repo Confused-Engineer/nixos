@@ -140,6 +140,21 @@ in
     securityNonceFile = "/etc/onlyoffice/nonce.conf";
   };
 
+  # The module's own nginx vhost forwards `X-Forwarded-Proto: $scheme` to
+  # the docservice, but this vhost only ever `listen`s on plain :80 (TLS
+  # is terminated by Traefik in front, same as everything else on this
+  # host) — so `$scheme` is always "http", and the docservice's WOPI
+  # discovery XML advertises http:// action URLs even though every real
+  # client reaches it over https://onlyoffice.a5f.org. That trips a
+  # mixed-content warning in the browser when OpenCloud's editor tries to
+  # POST to those URLs. Since this vhost is never legitimately reached any
+  # other way, hardcode the header instead of deriving it from $scheme.
+  services.nginx.virtualHosts.${
+    builtins.replaceStrings [ "https://" ] [ "" ] officeUrl
+  }.extraConfig = ''
+    proxy_set_header X-Forwarded-Proto https;
+  '';
+
   # ---------------------------------------------------------------------
   # OpenCloud, in the NixOS module's `fullstack` supervised mode (one
   # process, all microservices). The built-in IDM is excluded and every
