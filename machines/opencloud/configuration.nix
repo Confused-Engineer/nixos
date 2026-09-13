@@ -22,7 +22,7 @@
 # this file, and README.md "opencloud" has the exact steps:
 #   /etc/onlyoffice/nonce.conf  <- onlyoffice-nonce.conf.example
 #   /etc/opencloud.env          <- opencloud.env.example
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 let
   cloudUrl = "https://opencloud.a5f.org";
   officeUrl = "https://onlyoffice.a5f.org";
@@ -154,6 +154,25 @@ in
   }.extraConfig = ''
     proxy_set_header X-Forwarded-Proto https;
   '';
+
+  # That header fix above turned out not to be the actual cause: the
+  # docservice doesn't derive the WOPI action URLs' scheme from any
+  # request header at all. It's a static config value — `wopi.wopiZone` in
+  # its `default.json`, which the upstream package ships hardcoded to
+  # "external-http" (matching the discovery XML's `<net-zone
+  # name="external-http">`) regardless of how it's actually reached. The
+  # onlyoffice module's own `onlyoffice-prestart` ExecStartPre script
+  # rewrites that file with `jq`/`sponge` before the docservice starts but
+  # never touches `wopiZone`, and the module exposes no option for it,
+  # so append one more ExecStartPre patching it to "external-https" —
+  # `mkAfter` guarantees it runs after the module's own script has
+  # finished writing the file.
+  systemd.services.onlyoffice-docservice.serviceConfig.ExecStartPre = lib.mkAfter [
+    (pkgs.writeShellScript "onlyoffice-wopi-zone-https" ''
+      ${pkgs.jq}/bin/jq '.wopi.wopiZone = "external-https"' /run/onlyoffice/config/default.json \
+        | ${pkgs.moreutils}/bin/sponge /run/onlyoffice/config/default.json
+    '')
+  ];
 
   # ---------------------------------------------------------------------
   # OpenCloud, in the NixOS module's `fullstack` supervised mode (one
