@@ -1,6 +1,5 @@
 # Proxmox VM, cloned from server-template, running OpenCloud (file
-# sync/share) and OnlyOffice DocumentServer (in-browser office editing via
-# WOPI). Both are native NixOS services — no podman containers on this
+# sync/share) as a native NixOS service — no podman containers on this
 # host, same as attic. Users and groups come from the existing lldap
 # instance on 10.87.6.10 (a different host, outside this config); OpenCloud
 # logs in against it and reads its directory, nothing LDAP runs here.
@@ -8,24 +7,28 @@
 # still carry the shared disk/OS boilerplate (root-only SSH, disko root
 # disk, auto-upgrade, growPartition, journald limits, etc.). This file only
 # has what's actually specific to this host: the second data disk and the
-# two services.
+# service.
 #
-# TLS termination and the public hostnames are handled by Traefik outside
+# (An earlier version of this host also ran OnlyOffice DocumentServer,
+# integrated over WOPI for in-browser editing. Pulled back out — getting
+# WOPI's discovery URLs and OpenCloud's own frame-src CSP to cooperate
+# through Traefik's TLS termination turned out to be more plumbing than it
+# was worth here. OnlyOffice may come back on this host via Collabora
+# instead, or run standalone elsewhere.)
+#
+# TLS termination and the public hostname are handled by Traefik outside
 # this repo, the same as attic — this host only ever speaks plain HTTP on
 # the LAN:
-#   https://cloud.a5f.org   -> :9200  (OpenCloud proxy, the web UI)
-#   https://office.a5f.org  -> :80    (OnlyOffice, via nginx)
-# Change the two `*Url` bindings below if the hostnames differ.
+#   https://opencloud.a5f.org -> :9200  (OpenCloud proxy, the web UI)
+# Change `cloudUrl` below if the hostname differs.
 #
-# Secrets are NOT in this repo. Create these on the host before the
-# services can start — templates with every key documented sit next to
+# Secrets are NOT in this repo. Create this on the host before the
+# service can start — a template with every key documented sits next to
 # this file, and README.md "opencloud" has the exact steps:
-#   /etc/onlyoffice/nonce.conf  <- onlyoffice-nonce.conf.example
-#   /etc/opencloud.env          <- opencloud.env.example
-{ config, lib, pkgs, ... }:
+#   /etc/opencloud.env  <- opencloud.env.example
+{ config, pkgs, ... }:
 let
   cloudUrl = "https://opencloud.a5f.org";
-  officeUrl = "https://onlyoffice.a5f.org";
 
   # The existing lldap host. Plain ldap:// (lldap's LDAP port is unencrypted
   # by default); it's LAN-only traffic between two VMs.
@@ -49,7 +52,6 @@ in
 
   networking.hostName = "opencloud";
   networking.firewall.allowedTCPPorts = [
-    80 # OnlyOffice (nginx) — Traefik -> here
     9200 # OpenCloud proxy — Traefik -> here
   ];
 
@@ -122,62 +124,9 @@ in
   };
 
   # ---------------------------------------------------------------------
-  # OnlyOffice DocumentServer. The NixOS module brings its own nginx
-  # vhost, postgres DB, and rabbitmq. WOPI is how OpenCloud talks to it
-  # (OpenCloud's `collaboration` service is the WOPI host); OnlyOffice's
-  # own JWT is a separate mechanism only used by the non-WOPI API, so no
-  # jwtSecretFile here.
-  # ---------------------------------------------------------------------
-  services.onlyoffice = {
-    enable = true;
-    hostname = builtins.replaceStrings [ "https://" ] [ "" ] officeUrl; # nginx server_name
-    wopi = true;
-    # OnlyOffice refuses to fetch documents from private/loopback addresses
-    # by default. The WOPI source it has to call back into is the
-    # collaboration service on 127.0.0.1:9300 (COLLABORATION_WOPI_SRC
-    # below), so that guard has to come off.
-    allowLocalConnections = true;
-    securityNonceFile = "/etc/onlyoffice/nonce.conf";
-  };
-
-  # OnlyOffice's docservice generates WOPI discovery XML (the URLs
-  # OpenCloud's editor POSTs to) using its OWN reverse-proxy detection —
-  # `getBaseUrlByRequest` in Common/sources/utils.js reads
-  # X-Forwarded-Proto off the request unless `wopi.host` is set, in which
-  # case it uses that directly (wopiClient.js: `tenWopiHost ||
-  # getBaseUrlByRequest(...)`). Tried fixing this by adding our own
-  # `proxy_set_header X-Forwarded-Proto https;` in this vhost (this vhost
-  # only ever `listen`s on plain :80 — TLS is terminated by Traefik in
-  # front — so nginx's own `$scheme` is always "http", which the module's
-  # default header setting then forwards verbatim). That backfired: nginx
-  # doesn't replace a same-context proxy_set_header, it sends both, so the
-  # docservice received "X-Forwarded-Proto: http, https" and its own
-  # parsing (RFC 7239-style, takes the first comma-separated value) kept
-  # picking "http" regardless. Bypass header-sniffing entirely instead by
-  # setting `wopi.host` to the real public URL — deterministic, no
-  # reliance on proxy header semantics.
-  #
-  # Same applies to `wopi.wopiZone`: it ships hardcoded to
-  # "external-http" in the package's default.json (matching the discovery
-  # XML's `<net-zone name="external-http">`), unrelated to any header,
-  # and the module exposes no option for either key. Its own
-  # `onlyoffice-prestart` ExecStartPre script rewrites default.json with
-  # `jq`/`sponge` before the docservice starts but never touches these, so
-  # append one more ExecStartPre patching both — `mkAfter` guarantees it
-  # runs after the module's own script has finished writing the file.
-  systemd.services.onlyoffice-docservice.serviceConfig.ExecStartPre = lib.mkAfter [
-    (pkgs.writeShellScript "onlyoffice-wopi-https" ''
-      ${pkgs.jq}/bin/jq '.wopi.wopiZone = "external-https" | .wopi.host = "${officeUrl}"' \
-        /run/onlyoffice/config/default.json \
-        | ${pkgs.moreutils}/bin/sponge /run/onlyoffice/config/default.json
-    '')
-  ];
-
-  # ---------------------------------------------------------------------
   # OpenCloud, in the NixOS module's `fullstack` supervised mode (one
   # process, all microservices). The built-in IDM is excluded and every
-  # user/group/auth lookup points at the remote lldap instead; the
-  # `collaboration` service is added on top to drive OnlyOffice over WOPI.
+  # user/group/auth lookup points at the remote lldap instead.
   # ---------------------------------------------------------------------
   services.opencloud = {
     enable = true;
@@ -186,8 +135,8 @@ in
     # stateDir is left at its default, /var/lib/opencloud — that's the
     # mountpoint of the data disk above.
 
-    # OC_LDAP_BIND_PASSWORD, COLLABORATION_WOPI_SECRET, OC_ADMIN_USER_ID.
-    # Anything here overrides `environment` and `settings`.
+    # OC_LDAP_BIND_PASSWORD, OC_ADMIN_USER_ID. Anything here overrides
+    # `environment` and `settings`.
     environmentFile = "/etc/opencloud.env";
 
     environment = {
@@ -198,9 +147,8 @@ in
       PROXY_TLS = "false";
       OC_LOG_LEVEL = "warn";
 
-      # Drop the built-in IDM (lldap is the directory), add the WOPI host.
+      # Drop the built-in IDM (lldap is the directory).
       OC_EXCLUDE_RUN_SERVICES = "idm";
-      OC_ADD_RUN_SERVICES = "collaboration";
 
       # --- LDAP: the existing lldap on 10.87.6.10 ------------------------
       # The OC_LDAP_* vars fan out to every service that touches the
@@ -228,36 +176,14 @@ in
       # login form's username field is matched on.
       IDP_LDAP_LOGIN_ATTRIBUTE = "uid";
       IDP_LDAP_UUID_ATTRIBUTE_TYPE = "text";
-
-      # --- WOPI: OnlyOffice ----------------------------------------------
-      COLLABORATION_APP_NAME = "OnlyOffice";
-      COLLABORATION_APP_PRODUCT = "OnlyOffice";
-      COLLABORATION_APP_DESCRIPTION = "Open office documents with OnlyOffice";
-      # Where the *browser* loads the editor from — OnlyOffice's WOPI
-      # discovery is fetched from here too, so it has to be the public
-      # (Traefik) URL, not localhost.
-      COLLABORATION_APP_ADDR = officeUrl;
-      COLLABORATION_APP_INSECURE = "false";
-      # Where *OnlyOffice* calls back into OpenCloud to fetch/save the
-      # document. Server-to-server on the same box, so loopback is fine
-      # (and is why allowLocalConnections is on above); the collaboration
-      # service's HTTP listener defaults to 127.0.0.1:9300.
-      COLLABORATION_WOPI_SRC = "http://127.0.0.1:9300";
     };
   };
 
   systemd.services.opencloud = {
-    # The WOPI app registration needs OnlyOffice's discovery endpoint up;
     # lldap is on another host, so the network being online is all we can
     # order against for that (and Restart=always covers it being slow).
-    after = [
-      "network-online.target"
-      "onlyoffice-docservice.service"
-    ];
-    wants = [
-      "network-online.target"
-      "onlyoffice-docservice.service"
-    ];
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
 
     # Hard-fail startup instead of silently writing to the root disk if
     # /var/lib/opencloud (the data disk, `nofail`) didn't actually mount —
