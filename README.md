@@ -32,7 +32,8 @@ Multi-machine NixOS configuration. One flake, three hosts: `desktop`, `laptop`, 
 │   ├── music-assist/          # container host cloned from server-template
 │   ├── dns1/                  # Blocky DNS resolver, cloned from server-template
 │   ├── dns2/                  # Blocky DNS resolver, cloned from server-template
-│   └── opencloud/             # OpenCloud + OnlyOffice + lldap, cloned from server-template
+│   ├── opencloud/             # OpenCloud + OnlyOffice + lldap, cloned from server-template
+│   └── nixswarm-{1,2,3}/      # Docker Swarm nodes (NFS + keepalived VIP), cloned from server-template
 └── nixosModules/             # custom NixOS modules under `custom.*`
     ├── apps/                 # desktop/user-facing apps (Firefox, Steam, ...)
     ├── hardware/             # physical-hardware modules (GPU, controllers)
@@ -41,7 +42,7 @@ Multi-machine NixOS configuration. One flake, three hosts: `desktop`, `laptop`, 
     └── virtualization/       # Proxmox/VM/container-only modules: proxmox-vm.nix
                                # (disko + VM hardware, imported per-host, not
                                # registered centrally — see its header comment),
-                               # container-host.nix, blocky.nix
+                               # container-host.nix, blocky.nix, swarm-node.nix
 ```
 
 ## Conventions

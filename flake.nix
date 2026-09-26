@@ -160,6 +160,24 @@
           useHomeManager = false;
           useDisko = true;
         };
+        nixswarm-1 = mkSystem {
+          hostname = "nixswarm-1";
+          stateNixpkgs = nixpkgs; # NixOS stable
+          useHomeManager = false;
+          useDisko = true;
+        };
+        nixswarm-2 = mkSystem {
+          hostname = "nixswarm-2";
+          stateNixpkgs = nixpkgs; # NixOS stable
+          useHomeManager = false;
+          useDisko = true;
+        };
+        nixswarm-3 = mkSystem {
+          hostname = "nixswarm-3";
+          stateNixpkgs = nixpkgs; # NixOS stable
+          useHomeManager = false;
+          useDisko = true;
+        };
       };
     };
 }

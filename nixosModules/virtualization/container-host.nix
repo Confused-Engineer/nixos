@@ -15,6 +15,19 @@ in
   options.custom.virtualization.container-host = {
     enable = lib.mkEnableOption "baseline for a headless, root-only, podman-container-only Proxmox VM";
 
+    engine = lib.mkOption {
+      type = lib.types.enum [
+        "podman"
+        "docker"
+      ];
+      default = "podman";
+      description = ''
+        Container engine behind oci-containers. Podman everywhere except
+        where something needs the real Docker daemon — e.g. Docker Swarm
+        on the nixswarm-* hosts (see swarm-node.nix), which podman can't do.
+      '';
+    };
+
     autoUpgrade.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
@@ -62,11 +75,19 @@ in
     # /var/run/docker.sock. dockerSocket.enable symlinks the podman socket
     # to that path so Docker-oriented images (portainer, docker-socket-
     # proxy) keep working unmodified.
-    virtualisation.podman.dockerSocket.enable = true;
+    virtualisation.podman.dockerSocket.enable = cfg.engine == "podman";
 
     # Weekly `podman system prune`, so image/layer churn from updating
     # containers doesn't accumulate forever.
-    virtualisation.podman.autoPrune.enable = true;
+    virtualisation.podman.autoPrune.enable = cfg.engine == "podman";
+
+    # Docker variant of the above: the real daemon owns
+    # /var/run/docker.sock, weekly `docker system prune` for the same churn.
+    virtualisation.docker = lib.mkIf (cfg.engine == "docker") {
+      enable = true;
+      autoPrune.enable = true;
+    };
+    virtualisation.oci-containers.backend = cfg.engine;
 
     # systemd-nspawn/machinectl containers — a separate subsystem from the
     # podman containers these hosts actually run; nothing here uses it.

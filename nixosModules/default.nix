@@ -26,6 +26,7 @@
     ./systemd/system-api.nix
     ./virtualization/blocky.nix
     ./virtualization/container-host.nix
+    ./virtualization/swarm-node.nix
     # virtualization/proxmox-vm.nix is deliberately not imported here — see
     # that file's header comment.
   ];
