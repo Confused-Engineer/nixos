@@ -88,6 +88,7 @@
     # inputs.claude-code-nix.packages.${pkgs.system}.claude-code-fhs
     apps2samsung
     nixpkgs-tracker
+    feishin
 
     #(pkgs.kodi.withPackages (
     #  kp: with kp; [
