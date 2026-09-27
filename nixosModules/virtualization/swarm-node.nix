@@ -110,6 +110,9 @@ in
     services.keepalived = {
       enable = true;
       openFirewall = true; # VRRP (IP proto 112) between the nodes
+      # Silences the "script_security not enabled" warning; the check
+      # scripts live in the read-only /nix/store, so they already pass it.
+      enableScriptSecurity = true;
 
       # Give up the VIP if this node's Traefik or Blocky stops answering,
       # so the domain and DNS follow a node that can actually serve them.
