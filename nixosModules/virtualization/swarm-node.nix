@@ -29,7 +29,7 @@ in
     vip = {
       address = lib.mkOption {
         type = lib.types.str;
-        default = "10.87.6.30/24";
+        default = "10.87.6.10/24";
         description = "Floating IP (with prefix) shared by the swarm nodes.";
       };
 
