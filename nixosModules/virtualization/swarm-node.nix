@@ -111,17 +111,41 @@ in
       enable = true;
       openFirewall = true; # VRRP (IP proto 112) between the nodes
 
-      # Give up the VIP if this node's Docker daemon dies, so traffic
-      # doesn't land on a box that can't serve the routing mesh.
-      # is-active needs no privileges; the module doesn't create its default
-      # `keepalived_script` user, so run as nobody.
-      vrrpScripts.docker = {
-        script = "${pkgs.systemd}/bin/systemctl is-active --quiet docker.service";
-        interval = 2;
-        fall = 2;
-        rise = 2;
-        user = "nobody";
-        group = "nogroup";
+      # Give up the VIP if this node's Traefik or Blocky stops answering,
+      # so the domain and DNS follow a node that can actually serve them.
+      # Both are host-mode, so each node checks its own local task. A dead
+      # Docker daemon fails both checks, which covers the old docker check.
+      # The module doesn't create its default `keepalived_script` user, so
+      # run as nobody.
+      vrrpScripts = {
+        # Any HTTP response (even Traefik's 404 for a bare IP) counts as up;
+        # curl only fails on no connection or timeout.
+        traefik = {
+          script = "${pkgs.curl}/bin/curl -sk -o /dev/null --max-time 2 https://127.0.0.1/";
+          interval = 2;
+          timeout = 3;
+          fall = 2;
+          rise = 2;
+          user = "nobody";
+          group = "nogroup";
+        };
+
+        # a5f.org is a Blocky customDNS mapping, answered locally, so an
+        # upstream (8.8.8.8 etc.) outage doesn't bounce the VIP around.
+        # dig exits 0 on SERVFAIL, hence checking for a non-empty answer.
+        blocky = {
+          script = toString (
+            pkgs.writeShellScript "check-blocky" ''
+              [ -n "$(${pkgs.dnsutils}/bin/dig +short +time=1 +tries=1 @127.0.0.1 a5f.org)" ]
+            ''
+          );
+          interval = 2;
+          timeout = 3;
+          fall = 2;
+          rise = 2;
+          user = "nobody";
+          group = "nogroup";
+        };
       };
 
       vrrpInstances.swarm = {
@@ -133,7 +157,10 @@ in
         virtualRouterId = 30;
         priority = cfg.vip.priority;
         virtualIps = [ { addr = cfg.vip.address; } ];
-        trackScripts = [ "docker" ];
+        trackScripts = [
+          "traefik"
+          "blocky"
+        ];
       };
     };
   };
