@@ -53,18 +53,29 @@ in
 
     # Swarm control plane + overlay networking between nodes:
     # 2377 cluster management, 7946 node gossip, 4789 VXLAN data plane.
-    # Published service ports don't need opening here — Docker's ingress
+    # Ingress-published service ports don't need opening here — Docker's
     # routing mesh DNATs them in its own iptables chains ahead of nixos-fw.
+    # 53 is the exception: the swarm's Blocky publishes it in `mode: host`
+    # (bypassing the mesh, which stopped forwarding DNS after a swarm
+    # restart), and host-mode ports go through nixos-fw like any listener.
     networking.firewall = {
       allowedTCPPorts = [
+        53
         2377
         7946
       ];
       allowedUDPPorts = [
+        53
         7946
         4789
       ];
     };
+
+    # Same fix as blocky.nix on dns1/dns2: resolved's stub listener on
+    # 127.0.0.53:53 collides with Blocky's host-mode wildcard :53 bind.
+    # Keep resolved, drop the stub, point resolv.conf at its non-stub file.
+    services.resolved.settings.Resolve.DNSStubListener = "no";
+    environment.etc."resolv.conf".source = lib.mkForce "/run/systemd/resolve/resolv.conf";
 
     # Same options as the old nodes' fstab line. `hard` so a swarm-nfs blip
     # stalls I/O and resumes rather than handing containers EIO mid-write.
