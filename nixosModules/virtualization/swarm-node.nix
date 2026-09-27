@@ -55,12 +55,16 @@ in
     # 2377 cluster management, 7946 node gossip, 4789 VXLAN data plane.
     # Ingress-published service ports don't need opening here — Docker's
     # routing mesh DNATs them in its own iptables chains ahead of nixos-fw.
-    # 53 is the exception: the swarm's Blocky publishes it in `mode: host`
-    # (bypassing the mesh, which stopped forwarding DNS after a swarm
-    # restart), and host-mode ports go through nixos-fw like any listener.
+    # The exceptions are Traefik (80/443) and Blocky (53), published in
+    # `mode: host`, which go through nixos-fw like any local listener.
+    # Traefik is host-mode because containers on the VIP-holding node
+    # can't reach the ingress mesh through its own IP: the DNAT sends them
+    # back out docker_gwbridge, where Docker's icc=false rule drops them.
     networking.firewall = {
       allowedTCPPorts = [
         53
+        80
+        443
         2377
         7946
       ];
