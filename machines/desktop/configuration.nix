@@ -72,6 +72,8 @@
   boot.kernelPackages = pkgs.linuxPackages_zen;
   # Disable auto suspend to prevent the momentary Xbox controller connection drops during play.
   boot.kernelParams = [ "btusb.enable_autosuspend=0" ];
+  # Dont wait for network on boot, maybe boot faster? 
+  systemd.services.NetworkManager-wait-online.enable = false;
 
   programs.kdeconnect.enable = true;
   services.tailscale = {
