@@ -17,7 +17,7 @@
 
     apps = {
       steam.enable = true;
-      lact.enable = false;
+      lact.enable = true;
 
       flatpak = {
         enable = true;
@@ -103,6 +103,7 @@
   hardware.nvidia-container-toolkit.enable = true;
   virtualisation.docker = {
     enable = true;
+    enableOnBoot = false;
   };
 
   environment.systemPackages = with pkgs; [
