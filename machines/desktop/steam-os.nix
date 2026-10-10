@@ -19,7 +19,7 @@ let
     export STEAM_FORCE_DESKTOPUI_SCALING=1
 
     exec ${pkgs.gamescope}/bin/gamescope \
-      --prefer-output DP-3 \
+      --prefer-output DP-5 \
       --fullscreen \
       --steam \
       -- ${pkgs.steam}/bin/steam -tenfoot -pipewire-dmabuf
