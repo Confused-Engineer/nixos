@@ -23,7 +23,7 @@
     # Only enable the Stream Deck stack on the desktop. The previous shared
     # config silently autostarted StreamController on every machine.
     streamcontroller.enable = hostname == "desktop";
-    steam.steamShaderThreads = if hostname == "desktop" then 16 else null;
+    steam.steamShaderThreads = if hostname == "desktop" then 12 else null;
   };
 
   # The GA104 (desktop GPU) HDMI audio card reports all three HDMI ports as
