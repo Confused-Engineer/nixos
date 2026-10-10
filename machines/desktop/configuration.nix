@@ -11,6 +11,7 @@
     ./../../nixosModules
     ./data-mounts.nix
     ./steam-os.nix
+    ./docker-tools.nix
   ];
 
   custom = {
@@ -102,12 +103,6 @@
   };
   hardware.openrazer.enable = true;
 
-  hardware.nvidia-container-toolkit.enable = true;
-  virtualisation.docker = {
-    enable = true;
-    enableOnBoot = false;
-  };
-
   environment.systemPackages = with pkgs; [
     heroic
     protonup-qt
@@ -118,7 +113,6 @@
     easyeffects
     streamcontroller
     vintagestory
-    winboat
 
     stable.pcsx2
     stable.rpcs3
