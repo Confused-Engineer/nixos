@@ -11,12 +11,11 @@
       steam.enable = true;
 
       flatpak = {
-        enable = true;
+        enable = false;
         update = true;
         desiredFlatpaks = [
           "com.github.tchx84.Flatseal"
           "com.bambulab.BambuStudio"
-          "com.plexamp.Plexamp"
         ];
       };
 
