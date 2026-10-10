@@ -93,11 +93,11 @@
         inhibit_screensaver = 1;
       };
       cpu.governor = "performance";
-      gpu = {
-        apply_gpu_optimisations = "accept-responsibility";
-        gpu_device = 0;
-        nv_powermizer_mode = 1;
-      };
+      # gpu = {
+      #   apply_gpu_optimisations = "accept-responsibility";
+      #   gpu_device = 0;
+      #   nv_powermizer_mode = 1;
+      # };
     };
   };
   hardware.openrazer.enable = true;
