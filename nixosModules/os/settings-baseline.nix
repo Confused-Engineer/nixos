@@ -47,8 +47,6 @@ in
         "audio"
         "openrazer"
         "dialout"
-        "docker"
-        "podman"
       ];
     };
 
