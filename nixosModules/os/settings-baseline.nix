@@ -56,7 +56,6 @@ in
       git
       gparted
       sbctl
-      podman-compose
     ];
 
     fonts.packages = with pkgs; [
