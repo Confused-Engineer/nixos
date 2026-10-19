@@ -1,0 +1,54 @@
+# Managed bash (home-manager), with optional extras.
+{
+  flake.modules.homeManager.bash =
+    {
+      lib,
+      pkgs,
+      config,
+      ...
+    }:
+    let
+      cfg = config.custom.bash;
+    in
+    {
+      options.custom.bash = {
+        fancy = lib.mkEnableOption "colorful PS1 + nitch on shell start";
+        nixosAlias = lib.mkEnableOption "convenience aliases for nixos-rebuild";
+        startHyprland = lib.mkEnableOption "auto-start hyprland on tty1";
+      };
+
+      config = {
+        programs.bash = {
+          enable = true;
+
+          shellAliases = lib.mkIf cfg.nixosAlias {
+            nix-switch = "sudo nixos-rebuild switch        --flake github:Confused-Engineer/nixos --refresh";
+            nix-boot = "sudo nixos-rebuild boot          --flake github:Confused-Engineer/nixos --refresh";
+            nix-build = "sudo nixos-rebuild dry-activate  --flake /etc/nixos";
+            nix-test = "sudo nixos-rebuild test          --flake /etc/nixos";
+            nix-vm = "sudo nixos-rebuild build-vm      --flake /etc/nixos";
+            nix-clean = "sudo nix-collect-garbage; sudo nix-collect-garbage -d";
+            nix-repair = "sudo nix-store --verify --check-contents --repair";
+            nix-remote = ''
+              read -p "Target Hostname: " TargetHostname
+              read -p "Target IP: " TargetIP
+              nixos-rebuild boot --flake /etc/nixos#"''${TargetHostname}" --target-host root@"''${TargetIP}"
+            '';
+          };
+
+          initExtra = lib.mkIf cfg.fancy ''
+            export PS1='\[\e[38;5;76m\]\u\[\e[0m\] in \[\e[38;5;32m\]\w\[\e[0m\] \\$ '
+            nitch
+          '';
+
+          profileExtra = lib.mkIf cfg.startHyprland ''
+            if [ -z "$WAYLAND_DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
+              exec uwsm start hyprland-uwsm.desktop
+            fi
+          '';
+        };
+
+        home.packages = lib.mkIf cfg.fancy [ pkgs.nitch ];
+      };
+    };
+}

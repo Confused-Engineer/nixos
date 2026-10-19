@@ -1,69 +1,96 @@
 [![System Build](https://github.com/Confused-Engineer/nixos/actions/workflows/build.yml/badge.svg)](https://github.com/Confused-Engineer/nixos/actions/workflows/build.yml) [![Update Flake](https://github.com/Confused-Engineer/nixos/actions/workflows/flake-update.yml/badge.svg)](https://github.com/Confused-Engineer/nixos/actions/workflows/flake-update.yml)
 # nixos
 
-Multi-machine NixOS configuration. One flake, three hosts: `desktop`, `laptop`, `kodi`.
+Multi-machine NixOS configuration in the [dendritic
+pattern](https://github.com/mightyiam/dendritic): one flake, fifteen
+hosts, where **every `.nix` file under `modules/` is a
+[flake-parts](https://flake.parts) module** and is loaded automatically by
+[import-tree](https://github.com/vic/import-tree). No file is imported by
+path and there are no import lists to keep in sync. A file declares what it
+contributes, and hosts pick the features they want by name.
 
 ## Layout
 
 ```
 .
-├── flake.nix                 # entry point — defines hosts via mkSystem
-├── lib/                      # shared helpers (e.g. NVIDIA suspend fix)
-├── pkgs/                     # custom packages (overlay)
-│   ├── default.nix
-│   ├── jellyfin2samsung/
-│   ├── shizuku-linux/
-│   ├── system-api/
-│   └── vintagestory/
-├── users/
-│   └── keys.nix              # authorized SSH keys, single source
-├── homeManager/
-│   ├── modules/              # HM-side custom modules
-│   └── users/
-│       └── david.nix         # shared HM config
-├── machines/
-│   ├── desktop/
-│   ├── laptop/
-│   ├── g5-5587/
-│   ├── attic/                 # atticd binary cache, cloned from server-template
-│   ├── kodi/
-│   ├── server-template/      # disko-partitioned Proxmox VM template
-│   ├── controller/            # container host cloned from server-template
-│   ├── music-assist/          # container host cloned from server-template
-│   ├── dns1/                  # Blocky DNS resolver, cloned from server-template
-│   ├── dns2/                  # Blocky DNS resolver, cloned from server-template
-│   ├── opencloud/             # OpenCloud + OnlyOffice + lldap, cloned from server-template
-│   └── nixswarm-{1,2,3}/      # Docker Swarm nodes (NFS + keepalived VIP), cloned from server-template
-└── nixosModules/             # custom NixOS modules under `custom.*`
-    ├── apps/                 # desktop/user-facing apps (Firefox, Steam, ...)
-    ├── hardware/             # physical-hardware modules (GPU, controllers)
-    ├── os/                   # boot, desktops (de-*), gc, settings-*
-    ├── systemd/
-    └── virtualization/       # Proxmox/VM/container-only modules: proxmox-vm.nix
-                               # (disko + VM hardware, imported per-host, not
-                               # registered centrally — see its header comment),
-                               # container-host.nix, blocky.nix, swarm-node.nix
+├── flake.nix                 # inputs only — outputs = import-tree ./modules
+├── pkgs/<name>/package.nix   # custom packages (plain derivations, auto-discovered)
+└── modules/                  # every file here is a flake-parts module
+    ├── flake-parts.nix       # enables flake.modules, declares flake.lib, systems
+    ├── packages.nix          # overlay exposing pkgs/<name> as pkgs.<name>
+    ├── lib/                  # flake.lib helpers (mkNvidiaSuspendFix)
+    ├── base/                 # aspects nearly every host takes:
+    │                         #   nixpkgs, binary-cache, home-manager
+    ├── users/
+    │   ├── david.nix         # david's home-manager config (part of the home-manager aspect)
+    │   └── ssh-keys.nix      # authorized SSH keys, single source (`config.sshKeys`)
+    ├── apps/                 # firefox, flatpak, lact, steam, bash, mangohud, streamcontroller
+    ├── hardware/             # controller-xbox, gpu-nvidia
+    ├── os/                   # boot, gc, settings-common, settings-baseline, yubikey, de-*
+    ├── systemd/              # shizuku-linux, system-api
+    ├── virtualization/       # proxmox-vm (+ disko), container-host, blocky, swarm-node
+    └── hosts/<host>/         # one directory per machine (see below)
+        ├── desktop/  laptop/  g5-5587/  kodi/
+        ├── attic/            # atticd binary cache
+        ├── server-template/  # disko-partitioned Proxmox VM template
+        ├── controller/  music-assist/  terraria/   # container hosts
+        ├── dns1/  dns2/      # Blocky DNS resolvers
+        ├── opencloud/        # OpenCloud against an external lldap
+        └── nixswarm-{1,2,3}/ # Docker Swarm nodes (NFS + keepalived VIP)
 ```
 
-## Conventions
+## How it fits together
 
-- **Custom options live under `custom.*`, mirroring the file path.** A
-  module at `nixosModules/<area>/<name>.nix` declares
-  `options.custom.<area>.<name>` and binds one `cfg` to *that* subtree,
-  not its parent — e.g. `nixosModules/os/settings-common.nix` owns
-  `custom.os.settings-common`, `nixosModules/os/de-cosmic.nix` owns
-  `custom.os.de-cosmic`.
-- **Every host enables its own baseline.** `custom.os.settings-common`
-  (locale, audio, keyboard) and `custom.os.settings-baseline` (the
-  `david` user, auto-upgrade, fonts, networking) are opt-in per host
-  rather than inherited by import. `kodi` takes only settings-common;
-  `attic` takes neither.
-- **`pkgs/` holds derivations, `nixosModules/` holds modules.** A file
-  with `options` + `config` blocks is a module; a file with a build
-  expression is a package. They go in different trees.
-- **Anything duplicated across modules belongs in `lib/`.** Currently
-  that's only `mkNvidiaSuspendFix`, but the directory is the home for
-  any future helpers.
+- **Aspects.** A feature file publishes one or more modules into the
+  `flake.modules.<class>.<name>` registry, e.g. `modules/apps/steam.nix`
+  defines both `flake.modules.nixos.steam` and
+  `flake.modules.homeManager.steam`. One feature, one file, every class
+  it touches.
+- **Importing an aspect turns it on.** No `enable` flags. A host lists
+  what it wants:
+  ```nix
+  imports = with self.modules.nixos; [ nixpkgs binary-cache steam gpu-nvidia ... ];
+  ```
+  The one exception is desktop sessions (`de-cosmic`, `de-gnome`, `de-kde`,
+  `de-kodi`). They keep `custom.de-<name>.enable` (default on), because a
+  specialisation inherits all of its parent's imports and needs a way to
+  switch the session off (see the `steamos` and kodi `desktop`
+  specialisations).
+- **Options are named after the aspect.** Anything an aspect lets a host
+  tune lives under `custom.<aspect>.*`, e.g. `custom.firefox.privacy`,
+  `custom.gpu-nvidia.open`, `custom.container-host.engine`,
+  `custom.steam.shaderThreads`.
+- **A host is a directory.** `modules/hosts/<host>/configuration.nix`
+  declares `flake.nixosConfigurations.<host>` (choosing stable `nixpkgs` or
+  `nixpkgs-unstable`) and the host module `flake.modules.nixos.<host>`.
+  Every other file in that directory (`hardware.nix`, `data-mounts.nix`,
+  `steam-os.nix`, `containers.nix`, `home.nix`, …) adds to the same
+  `flake.modules.nixos.<host>`, and the module system merges them.
+- **Shared values without relative imports.** Inside a module, other
+  aspects are `self.modules.<class>.<name>`, helpers are
+  `self.lib.<name>`, and SSH keys are the top-level `config.sshKeys.<person>`.
+  Flake inputs are in scope as `inputs`, so NixOS and home-manager modules
+  need no `specialArgs`.
+- **Files import-tree skips.** Only `*.nix` files are loaded, and any path
+  containing `/_` is ignored. Use a `_`-prefixed name for a plain Nix file
+  that isn't a module. Non-Nix files (e.g. `opencloud.env.example`) can sit
+  anywhere.
+- **Module order is part of the output.** List options
+  (`environment.systemPackages`, `home.packages`, …) merge in module order,
+  which changes derivation hashes. The restructure kept every host's
+  `toplevel` bit-identical to the pre-dendritic layout. That's why host
+  import lists follow a fixed order (base, apps, hardware, os, systemd)
+  and why `users/david.nix` defines `home-manager.users.david` directly
+  instead of publishing a homeManager aspect. Reordering is harmless but
+  will show up as a rebuild.
+
+### Checking a refactor didn't change anything
+
+```bash
+# Compare a host's derivation against main; identical paths = identical system.
+nix eval --raw .#nixosConfigurations.desktop.config.system.build.toplevel.drvPath
+nix eval --raw 'git+file:///etc/nixos?ref=main#nixosConfigurations.desktop.config.system.build.toplevel.drvPath'
+```
 
 ## Building
 
@@ -126,7 +153,7 @@ clone) or rebuilt onto their own flake host entry.
 
 ## `opencloud` (OpenCloud)
 
-`machines/opencloud` is a `server-template` clone running **OpenCloud**
+`modules/hosts/opencloud` is a `server-template` clone running **OpenCloud**
 (file sync/share) as a native NixOS service, web UI on `:9200`, all user
 data on a dedicated second disk. Users and groups come from the
 **existing lldap on `10.87.6.10:3890`** (not part of this repo) —
@@ -148,7 +175,7 @@ Install with the standard `server-template` procedure above, substituting
 `#opencloud` in both the `disko` and `nixos-install` commands (disko will
 wipe **both** `sda` and `sdb`). On first boot the service crash-loops
 until its secrets exist — expected. An annotated template lives at
-`machines/opencloud/opencloud.env.example`. SSH in as root and:
+`modules/hosts/opencloud/opencloud.env.example`. SSH in as root and:
 
 ```bash
 # 1. In the existing lldap's web UI:
@@ -161,7 +188,7 @@ ldapsearch -x -H ldap://10.87.6.10:3890 \
   -b "ou=people,dc=a5f,dc=org" "(uid=YOUR_USERNAME)" entryUUID
 
 # 2. OpenCloud secrets — start from the template and fill in the two values
-curl -fsSL https://raw.githubusercontent.com/Confused-Engineer/nixos/main/machines/opencloud/opencloud.env.example \
+curl -fsSL https://raw.githubusercontent.com/Confused-Engineer/nixos/main/modules/hosts/opencloud/opencloud.env.example \
   -o /etc/opencloud.env
 chmod 0600 /etc/opencloud.env
 nano /etc/opencloud.env  # OC_LDAP_BIND_PASSWORD, OC_ADMIN_USER_ID
@@ -181,23 +208,46 @@ disk; without it a rebuilt host can't read the existing storage.
 ## Adding a new custom package
 
 1. Drop `pkgs/<name>/package.nix` with a `callPackage`-able derivation.
-2. Add one line to `pkgs/default.nix`:
+2. That's it. `modules/packages.nix` picks up every `pkgs/<name>/package.nix`
+   automatically, so reference it as `pkgs.<name>` from any module.
+
+## Adding a new aspect (feature)
+
+1. Create `modules/<area>/<name>.nix` (any directory works, since import-tree
+   loads it either way):
    ```nix
-   <name> = final.callPackage ./<name>/package.nix { };
+   {
+     flake.modules.nixos.<name> =
+       { lib, config, pkgs, ... }:
+       {
+         # Optional knobs for hosts to set:
+         options.custom.<name>.someSetting = lib.mkOption { ... };
+
+         config = { ... };
+       };
+   }
    ```
-3. Reference as `pkgs.<name>` from any module — no `packageOverrides`
-   needed.
+   Add `flake.modules.homeManager.<name>` in the same file if the feature
+   has a per-user side too.
+2. `git add` it. Flakes only see tracked files.
+3. Add `<name>` to the `imports` list of each host that wants it.
 
-## Adding a new module
+## Adding a new host
 
-1. `nixosModules/<area>/<name>.nix` declaring `options.custom.<area>.<name>`.
-2. Append `./<area>/<name>.nix` to `nixosModules/default.nix`'s `imports` list.
-3. Set `custom.<area>.<name>.enable = true;` from the host that wants it.
+1. Create `modules/hosts/<host>/configuration.nix`. Copy the closest
+   existing host. For a server that is usually `modules/hosts/controller/`.
+2. Optionally add more files to that directory, each defining
+   `flake.modules.nixos.<host> = { ... };`. For a machine with real hardware,
+   put the `nixos-generate-config --show-hardware-config` output in
+   `hardware.nix`.
+3. `git add` it, then `sudo nixos-rebuild switch --flake .#<host>`. Add the
+   host to the CI matrix in `.github/workflows/` if it should be built
+   daily.
 
 ## YubiKey U2F (login/sudo) on `desktop`
 
-`custom.os.yubikey.enable` (on by default for `desktop`, see
-`nixosModules/os/yubikey.nix`) lets a registered YubiKey satisfy
+The `yubikey` aspect (imported by `desktop`, see
+`modules/os/yubikey.nix`) lets a registered YubiKey satisfy
 `login`, `sudo`, the COSMIC greeter/lock screen, and polkit prompts
 (`pkexec`, GUI "authenticate" dialogs) by touching the key instead of
 typing a password.
@@ -209,7 +259,7 @@ touch fails/times out, PAM just falls through to the normal password
 prompt. There is no configuration here that can lock you out — worst
 case, you type your password like before.
 
-Enabling the module only wires up the PAM stack; it does **not**
+Importing the aspect only wires up the PAM stack; it does **not**
 register a key. Nothing changes until you actually run the setup below
 on the desktop.
 
@@ -260,7 +310,7 @@ on the desktop.
 6. Once sudo works, test login/lock-screen the same way (lock the
    session or switch to a VT and back) before relying on it.
 
-Add more PAM service names to `custom.os.yubikey.pamServices` (e.g. a
+Add more PAM service names to `custom.yubikey.pamServices` (e.g. a
 screen locker with its own PAM service) if something else should also
 accept the key.
 
