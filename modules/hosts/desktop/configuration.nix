@@ -71,7 +71,7 @@
       boot.kernelModules = [ "ntsync" ];
       boot.kernelPackages = pkgs.linuxPackages_zen;
       # Disable auto suspend to prevent the momentary Xbox controller connection drops during play.
-      boot.kernelParams = [ "btusb.enable_autosuspend=0" ];
+      # boot.kernelParams = [ "btusb.enable_autosuspend=0" ];
       # Dont wait for network on boot, maybe boot faster?
       systemd.services.NetworkManager-wait-online.enable = false;
 
@@ -93,14 +93,9 @@
             inhibit_screensaver = 1;
           };
           cpu.governor = "performance";
-          # gpu = {
-          #   apply_gpu_optimisations = "accept-responsibility";
-          #   gpu_device = 0;
-          #   nv_powermizer_mode = 1;
-          # };
         };
       };
-      hardware.openrazer.enable = true;
+      #hardware.openrazer.enable = true;
 
       environment.systemPackages = with pkgs; [
         heroic
