@@ -1,6 +1,6 @@
 # desktop-only home-manager additions for david, on top of the shared
 # modules/users/david.nix.
-{ self, ... }:
+{ inputs, self, ... }:
 {
   flake.modules.nixos.desktop.home-manager.users.david =
     { pkgs, ... }:
@@ -8,9 +8,19 @@
       imports = with self.modules.homeManager; [
         streamcontroller # the Stream Deck lives on this machine
         steam
+        inputs.hermes-agent.homeManagerModules.default
       ];
 
       custom.steam.shaderThreads = 12;
+
+      # Hermes agent: `hermes` CLI + the Hermes Desktop app (launcher entry).
+      # State lives in ~/.hermes; run `hermes setup` once to pick a provider.
+      # The gateway/backend service (services.hermes-agent) is left off until
+      # there's a secrets file for its API keys.
+      programs.hermes-agent = {
+        enable = true;
+        desktop.enable = true;
+      };
 
       # The GA104 (desktop GPU) HDMI audio card reports all three HDMI ports as
       # "available" at once, so WirePlumber's profile-restore is unreliable across
