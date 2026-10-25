@@ -61,7 +61,7 @@
               ];
             };
 
-            initrd.systemd.enable = true;
+            # initrd.systemd.enable = true;
             consoleLogLevel = 0;
             kernelParams = [
               "quiet"
