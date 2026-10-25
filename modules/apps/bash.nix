@@ -34,6 +34,11 @@
               read -p "Target IP: " TargetIP
               nixos-rebuild boot --flake /etc/nixos#"''${TargetHostname}" --target-host root@"''${TargetIP}"
             '';
+            git-clean = ''
+              git rm -r --cached .
+              git add .
+              git commit -m "Fix .gitignore and clear git cache"
+            '';
           };
 
           initExtra = lib.mkIf cfg.fancy ''
