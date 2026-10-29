@@ -87,22 +87,50 @@
 
       programs.gamemode = {
         enable = true;
-        settings = {
-          general = {
-            renice = 10;
-            inhibit_screensaver = 1;
-          };
-          cpu.governor = "performance";
+        settings.general = {
+          # gamemode negates this: games run at nice -10.
+          renice = 10;
+          inhibit_screensaver = 1;
+          # Valid key for the governor switch (the old `[cpu] governor` key
+          # was silently ignored). With amd-pstate-epp this also moves EPP to
+          # "performance" while a game runs.
+          desiredgov = "performance";
         };
       };
-      #hardware.openrazer.enable = true;
+      # gamemode's polkit rule (governor/split-lock helpers) only authorises
+      # members of this group; without it gamemoded logged "Not authorized".
+      users.users.david.extraGroups = [ "gamemode" ];
+
+      # Kernel module + user daemon for the Razer Basilisk V3 Pro / BlackWidow V3.
+      # Re-enabled now that openrazer builds against kernels with module
+      # signing (NixOS/nixpkgs#576293); the bare package's user unit failed
+      # with 203/EXEC.
+      hardware.openrazer = {
+        enable = true;
+        users = [ "david" ];
+      };
+
+      # Don't let the NVIDIA driver evict its shader cache (~/.cache/nvidia)
+      # when it passes the size cap, so Heroic/non-Steam games don't
+      # recompile shaders (stutter) after the cache rolls over. Trade-off: the
+      # cache grows unbounded; delete ~/.cache/nvidia to reclaim space.
+      environment.sessionVariables.__GL_SHADER_DISK_CACHE_SKIP_CLEANUP = "1";
+
+      # I/O schedulers: the zen kernel defaults to kyber (NVMe) / bfq (SATA).
+      # For SSDs, none/mq-deadline have lower per-request overhead than bfq;
+      # helps game/shader-cache loads off the SATA SSDs. Spinning disks (none
+      # present today) keep bfq.
+      services.udev.extraRules = ''
+        ACTION=="add|change", KERNEL=="nvme[0-9]n[0-9]", ATTR{queue/scheduler}="none"
+        ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="mq-deadline"
+        ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="bfq"
+      '';
 
       environment.systemPackages = with pkgs; [
         heroic
         protonup-qt
         r2modman
         polychromatic
-        openrazer-daemon
         gnome-system-monitor
         easyeffects
         streamcontroller

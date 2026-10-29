@@ -24,6 +24,7 @@
         exec ${pkgs.gamescope}/bin/gamescope \
           --prefer-output DP-5 \
           --fullscreen \
+          --adaptive-sync \
           --steam \
           -- ${pkgs.steam}/bin/steam -tenfoot -pipewire-dmabuf
       '';
