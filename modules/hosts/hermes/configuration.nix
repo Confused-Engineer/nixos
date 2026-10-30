@@ -1,7 +1,7 @@
-# hermes — Proxmox VM workstation for running the Hermes agent (Hermes
-# Desktop), reached over RustDesk. XFCE on X11 with autologin to david, so
-# RustDesk's system service always has a session to capture with nobody at
-# the console (see de-xfce.nix for why not Wayland).
+# hermes — headless Proxmox VM for running the Hermes agent CLI, reached
+# over SSH. No desktop session, display manager or remote-desktop server:
+# everything Hermes needs (the `hermes` CLI/TUI, the messaging gateway,
+# signal-cli for the Signal adapter) runs fine without a display.
 #
 # Unstable, like the other home-manager hosts: home-manager and the
 # hermes-agent HM module both track unstable.
@@ -11,12 +11,16 @@
 #
 # Deliberately NOT using the shared `home-manager` aspect: that aspect also
 # carries all of users/david.nix (discord, spotify, gimp, …). This VM gets a
-# lean home with just the Hermes app and dev tools instead.
+# lean home with just Hermes, signal-cli and dev tools instead.
+#
+# Not settings-common either: it brings PipeWire/xkb, which a headless VM
+# doesn't use. Locale and timezone are set inline below instead.
 #
 # Not in the repo (set once on the VM after install):
 #   - david's password: `passwd` (the initialPassword below is a placeholder)
-#   - RustDesk permanent password: RustDesk → Settings → Security
 #   - Hermes provider/API keys: `hermes setup` (state in ~/.hermes)
+#   - Signal: `signal-cli link -n hermes` (linked device; state in
+#     ~/.local/share/signal-cli), then `hermes gateway setup` → Signal
 {
   inputs,
   self,
@@ -34,12 +38,6 @@ in
 
   flake.modules.nixos.hermes =
     { config, pkgs, ... }:
-    let
-      # rustdesk-flutter, not `rustdesk`: the latter links the unfree
-      # libsciter, so Hydra never builds it and every update would be a
-      # local source build. Same 1.5.x client, Flutter UI.
-      rustdesk = pkgs.rustdesk-flutter;
-    in
     {
       imports = with self.modules.nixos; [
         nixpkgs
@@ -47,33 +45,22 @@ in
         inputs.home-manager.nixosModules.home-manager
 
         proxmox-vm
-        firefox
         boot
-        de-xfce
         gc
-        settings-common
       ];
 
-      custom = {
-        # UEFI + systemd-boot — give the VM an OVMF/EFI disk in Proxmox.
-        boot.systemd = true;
-
-        de-xfce.autoLogin.user = "david";
-
-        firefox = {
-          privacy = "strict";
-          homepage = "https://hp.a5f.org/";
-        };
-      };
+      # UEFI + systemd-boot — give the VM an OVMF/EFI disk in Proxmox.
+      custom.boot.systemd = true;
 
       networking.hostName = "hermes";
-      # DHCP; NetworkManager so XFCE's applet works.
-      networking.networkmanager.enable = true;
+      # Plain DHCP (NixOS default networking.useDHCP); no NetworkManager
+      # without a desktop applet to drive it.
 
-      # Proxmox integration: guest agent for IP reporting/shutdown, SPICE
-      # agent for clipboard and auto-resize in the Proxmox console.
+      time.timeZone = "America/New_York";
+      i18n.defaultLocale = "en_US.UTF-8";
+
+      # Proxmox guest agent for IP reporting / clean shutdown.
       services.qemuGuest.enable = true;
-      services.spice-vdagentd.enable = true;
 
       # Grow root to fill the virtual disk when it's enlarged in Proxmox, and
       # hand freed blocks back to thin storage — same as container-host.nix.
@@ -113,71 +100,14 @@ in
       users.users.david = {
         isNormalUser = true;
         description = "david";
-        # Provisioning password for sudo / the XFCE lock screen — change it
+        # Provisioning password for sudo / the Proxmox console — change it
         # with `passwd` after install. (Not `password`: that's permanent.)
         initialPassword = "vmtest";
-        extraGroups = [
-          "networkmanager"
-          "wheel"
-          "audio"
-        ];
+        extraGroups = [ "wheel" ];
         openssh.authorizedKeys.keys = sshKeys.david;
       };
 
-      # ---------------------------------------------------------------------
-      # RustDesk, as a root system service (upstream res/rustdesk.service).
-      # The service is what makes access unattended: it spawns the capture
-      # server inside david's X session, survives the GUI being closed, and
-      # comes back after a reboot. Public ID/relay servers (client default),
-      # so no inbound ports are needed; 21118/tcp is opened only so LAN
-      # peers can use "direct IP access" instead of going through a relay.
-      # ---------------------------------------------------------------------
-      environment.systemPackages = [
-        rustdesk
-        pkgs.git
-      ];
-
-      systemd.services.rustdesk = {
-        description = "RustDesk";
-        wants = [ "network-online.target" ];
-        after = [
-          "network-online.target"
-          "systemd-user-sessions.service"
-          "display-manager.service"
-        ];
-        wantedBy = [ "multi-user.target" ];
-        # --service shells out (ps, pkill, loginctl, awk, …) to find the
-        # active X session and its XAUTHORITY.
-        path = [
-          rustdesk
-          pkgs.procps
-          pkgs.gawk
-          pkgs.gnugrep
-          pkgs.findutils
-          pkgs.bash
-          pkgs.coreutils
-          "/run/wrappers"
-          "/run/current-system/sw"
-        ];
-        environment = {
-          PULSE_LATENCY_MSEC = "60";
-          PIPEWIRE_LATENCY = "1024/48000";
-        };
-        serviceConfig = {
-          Type = "simple";
-          ExecStart = "${rustdesk}/bin/rustdesk --service";
-          # Kills the --server/--tray children too (upstream's note: KillMode
-          # alone doesn't).
-          ExecStop = "${pkgs.procps}/bin/pkill -f \"rustdesk --\"";
-          Restart = "always";
-          RestartSec = 5;
-          KillMode = "mixed";
-          TimeoutStopSec = 30;
-          LimitNOFILE = 100000;
-        };
-      };
-
-      networking.firewall.allowedTCPPorts = [ 21118 ]; # RustDesk direct IP (LAN)
+      environment.systemPackages = [ pkgs.git ];
 
       # ---------------------------------------------------------------------
       # Lean home-manager for david (see header for why not the shared aspect).
@@ -192,15 +122,15 @@ in
           {
             imports = [ inputs.hermes-agent.homeManagerModules.default ];
 
-            # `hermes` CLI + Hermes Desktop (launcher entry). Gateway service
-            # left off, same as desktop, until there's a secrets file for it.
-            programs.hermes-agent = {
-              enable = true;
-              desktop.enable = true;
-            };
+            # `hermes` CLI only (no Hermes Desktop: nothing to display it
+            # on). Gateway service left off until Signal is linked and
+            # ~/.hermes/.env has its settings.
+            programs.hermes-agent.enable = true;
 
             home.packages = with pkgs; [
-              vscode
+              # Signal adapter backend: Hermes talks to
+              # `signal-cli daemon --http 127.0.0.1:8080`.
+              signal-cli
               nixd
               nixfmt
               inputs.claude-code-nix.packages.${pkgs.stdenv.hostPlatform.system}.default

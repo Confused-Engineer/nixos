@@ -36,7 +36,7 @@ contributes, and hosts pick the features they want by name.
         ├── controller/  music-assist/  terraria/   # container hosts
         ├── dns1/  dns2/      # Blocky DNS resolvers
         ├── opencloud/        # OpenCloud against an external lldap
-        ├── hermes/           # Hermes Desktop workstation VM (XFCE + RustDesk)
+        ├── hermes/           # headless Hermes agent VM (CLI + signal-cli)
         └── nixswarm-{1,2,3}/ # Docker Swarm nodes (NFS + keepalived VIP)
 ```
 
@@ -152,33 +152,29 @@ Clones made from the template keep the `server-template` hostname/config
 until either given Proxmox cloud-init metadata (Cloud-Init tab on the
 clone) or rebuilt onto their own flake host entry.
 
-## `hermes` (Hermes Desktop VM)
+## `hermes` (headless Hermes agent VM)
 
-`modules/hosts/hermes` is a Proxmox VM workstation for running Hermes
-Desktop, used remotely over **RustDesk** (public ID servers). XFCE on X11
-with autologin to `david`, so RustDesk's system service always has a
-session to capture — Wayland can't do unattended RustDesk. Unstable, lean
-home-manager (Hermes, vscode, claude-code; not the full `users/david.nix`).
+`modules/hosts/hermes` is a headless Proxmox VM for the Hermes agent
+**CLI**, reached over SSH. No desktop session, display manager or
+remote-desktop server. Unstable, lean home-manager (`hermes`,
+`signal-cli`, nixd/nixfmt, claude-code; not the full `users/david.nix`).
 SSH is key-only as `david`; root has no SSH.
 
-**In Proxmox:** same as `server-template`, but give it a real display device
-(Display = `Default`/`Standard VGA` or `VirtIO-GPU`, not `none`/serial —
-RustDesk captures the X screen, so its resolution is RustDesk's
-resolution), 4+ cores, 8GB+ RAM, 40GB+ disk. Install with the
-`server-template` procedure, substituting `#hermes` in both commands.
+**In Proxmox:** same as `server-template` (keep the default display for console access),
+2+ cores, 4GB+ RAM, 40GB+ disk. Install with the `server-template`
+procedure, substituting `#hermes` in both commands.
 
 After first boot (SSH in as `david`, or use the Proxmox console):
 
 ```bash
 passwd                          # replace the provisioning password (vmtest)
-systemctl status rustdesk       # the unattended-access service should be running
 hermes setup                    # pick a provider / API keys (~/.hermes)
+signal-cli link -n hermes       # link as a secondary device (scan the QR/URI on your phone)
+signal-cli -a +1XXXXXXXXXX daemon --http 127.0.0.1:8080   # Signal backend for Hermes
+hermes gateway setup            # choose Signal, URL http://127.0.0.1:8080
 ```
 
-Then in the RustDesk window on the VM (Proxmox console, or connect once
-with the temporary password): **Settings → Security → Set permanent
-password**, and note the VM's RustDesk ID. Neither password lives in this
-repo.
+No Signal or Hermes secrets live in this repo.
 
 ## `opencloud` (OpenCloud)
 
