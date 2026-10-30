@@ -2,7 +2,7 @@
 # nixos
 
 Multi-machine NixOS configuration in the [dendritic
-pattern](https://github.com/mightyiam/dendritic): one flake, fifteen
+pattern](https://github.com/mightyiam/dendritic): one flake, sixteen
 hosts, where **every `.nix` file under `modules/` is a
 [flake-parts](https://flake.parts) module** and is loaded automatically by
 [import-tree](https://github.com/vic/import-tree). No file is imported by
@@ -36,6 +36,7 @@ contributes, and hosts pick the features they want by name.
         ├── controller/  music-assist/  terraria/   # container hosts
         ├── dns1/  dns2/      # Blocky DNS resolvers
         ├── opencloud/        # OpenCloud against an external lldap
+        ├── hermes/           # Hermes Desktop workstation VM (XFCE + RustDesk)
         └── nixswarm-{1,2,3}/ # Docker Swarm nodes (NFS + keepalived VIP)
 ```
 
@@ -150,6 +151,34 @@ a template (right-click → **Convert to Template**).
 Clones made from the template keep the `server-template` hostname/config
 until either given Proxmox cloud-init metadata (Cloud-Init tab on the
 clone) or rebuilt onto their own flake host entry.
+
+## `hermes` (Hermes Desktop VM)
+
+`modules/hosts/hermes` is a Proxmox VM workstation for running Hermes
+Desktop, used remotely over **RustDesk** (public ID servers). XFCE on X11
+with autologin to `david`, so RustDesk's system service always has a
+session to capture — Wayland can't do unattended RustDesk. Unstable, lean
+home-manager (Hermes, vscode, claude-code; not the full `users/david.nix`).
+SSH is key-only as `david`; root has no SSH.
+
+**In Proxmox:** same as `server-template`, but give it a real display device
+(Display = `Default`/`Standard VGA` or `VirtIO-GPU`, not `none`/serial —
+RustDesk captures the X screen, so its resolution is RustDesk's
+resolution), 4+ cores, 8GB+ RAM, 40GB+ disk. Install with the
+`server-template` procedure, substituting `#hermes` in both commands.
+
+After first boot (SSH in as `david`, or use the Proxmox console):
+
+```bash
+passwd                          # replace the provisioning password (vmtest)
+systemctl status rustdesk       # the unattended-access service should be running
+hermes setup                    # pick a provider / API keys (~/.hermes)
+```
+
+Then in the RustDesk window on the VM (Proxmox console, or connect once
+with the temporary password): **Settings → Security → Set permanent
+password**, and note the VM's RustDesk ID. Neither password lives in this
+repo.
 
 ## `opencloud` (OpenCloud)
 
