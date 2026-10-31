@@ -105,6 +105,10 @@ in
         initialPassword = "vmtest";
         extraGroups = [ "wheel" ];
         openssh.authorizedKeys.keys = sshKeys.david;
+        # Start david's user services (signal-cli) at boot and keep them
+        # running with nobody logged in; without this the user manager only
+        # runs while an SSH session is open.
+        linger = true;
       };
 
       environment.systemPackages = [ pkgs.git ];
@@ -118,7 +122,7 @@ in
         backupFileExtension = "backup";
 
         users.david =
-          { pkgs, ... }:
+          { lib, pkgs, ... }:
           {
             imports = [ inputs.hermes-agent.homeManagerModules.default ];
 
@@ -144,6 +148,26 @@ in
                 # can't bill a Pro plan, and claude itself keeps using it.
                 auth.adopt_external_logins = false;
               };
+            };
+
+            # signal-cli daemon for the Hermes Signal adapter (replaces the
+            # hand-made ~/.config/systemd/user/signal-cli.service). The account
+            # number comes from SIGNAL_ACCOUNT in ~/.hermes/.env, the same file
+            # the gateway reads, so it stays out of the repo; systemd expands
+            # ${SIGNAL_ACCOUNT} from EnvironmentFile. --receive-mode
+            # on-connection: only fetch messages while Hermes is connected, so
+            # nothing is consumed (and lost) while the gateway is down.
+            # No network-online.target: that is a system target the user
+            # manager can't see; Restart covers a slow network at boot.
+            systemd.user.services.signal-cli = {
+              Unit.Description = "signal-cli JSON-RPC/HTTP daemon for Hermes";
+              Service = {
+                EnvironmentFile = "%h/.hermes/.env";
+                ExecStart = "${lib.getExe pkgs.signal-cli} -a \${SIGNAL_ACCOUNT} daemon --http 127.0.0.1:8080 --receive-mode on-connection";
+                Restart = "on-failure";
+                RestartSec = 10;
+              };
+              Install.WantedBy = [ "default.target" ];
             };
 
             home.packages = with pkgs; [
