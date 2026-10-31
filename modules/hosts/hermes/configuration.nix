@@ -127,6 +127,24 @@ in
             # ~/.hermes/.env has its settings.
             programs.hermes-agent.enable = true;
 
+            # Use the Claude subscription via Claude Code's login: log in once with
+            # `claude` → /login (writes ~/.claude/.credentials.json) and Hermes
+            # borrows + refreshes that token, so `hermes model` OAuth isn't needed.
+            # Only these keys are pinned in ~/.hermes/config.yaml (deep merge on
+            # activation); everything else stays editable at runtime. Note a
+            # `/model --global` change is reset on the next switch: change it here.
+            # Gateway stays off (services.hermes-agent.gateway.enable) for now.
+            services.hermes-agent = {
+              enable = true;
+              settings = {
+                model.provider = "anthropic";
+                model.default = "claude-sonnet-5";
+                # Default already, pinned so the borrowed login can't be
+                # switched off by accident.
+                auth.adopt_external_logins = true;
+              };
+            };
+
             home.packages = with pkgs; [
               # Signal adapter backend: Hermes talks to
               # `signal-cli daemon --http 127.0.0.1:8080`.
