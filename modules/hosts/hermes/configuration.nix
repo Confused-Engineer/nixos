@@ -73,6 +73,13 @@ in
         "nix-command"
         "flakes"
       ];
+      # Let david push unsigned, desktop-built paths (`nixos-rebuild
+      # --target-host david@hermes.internal`); same as kodi. Not a real
+      # privilege bump: david already has full sudo via wheel.
+      nix.settings.trusted-users = [
+        "root"
+        "david"
+      ];
 
       # Same weekly schedule as settings-baseline (not imported: it also brings
       # printing, fwupd, gparted/sbctl — nothing a VM uses).
