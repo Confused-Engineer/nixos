@@ -47,6 +47,46 @@ jobs:
           path: flake.lock
           retention-days: 1
 
+  # Cheap safety net for the hosts the build matrix skips: evaluating every
+  # nixosConfiguration catches renamed/removed options and broken modules on
+  # all hosts without building them.
+  eval:
+    name: Evaluate all hosts
+    needs: update
+    if: needs.update.outputs.changed == 'true'
+    runs-on: [self-hosted, linux]
+    steps:
+
+      - uses: actions/checkout@v5
+
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          extra-conf: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+
+      - uses: actions/download-artifact@v7
+        with:
+          name: flake-lock
+
+      - name: Evaluate every nixosConfiguration
+        run: |
+          sudo sed -i '/^access-tokens/d' /etc/nix/nix.conf
+          echo "access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}" | sudo tee -a /etc/nix/nix.conf
+          failed=""
+          for host in $(nix eval --raw .#nixosConfigurations \
+              --apply 'c: builtins.concatStringsSep " " (builtins.attrNames c)'); do
+            echo "::group::$host"
+            nix eval --raw ".#nixosConfigurations.$host.config.system.build.toplevel.drvPath" \
+              || failed="$failed $host"
+            echo "::endgroup::"
+          done
+          if [ -n "$failed" ]; then
+            echo "::error::Evaluation failed for:$failed"
+            exit 1
+          fi
+
   build:
     name: Build ${{ matrix.host }}
     needs: update
@@ -55,7 +95,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        host: [desktop, laptop, kodi, attic, g5-5587, server-template, controller, music-assist, dns1, terraria, opencloud, nixswarm-1]
+        # One host per distinct closure. The others (controller, dns1/2,
+        # music-assist, nixswarm-2/3, terraria) differ from these only in
+        # hostname, container units and small config files; the eval job in
+        # flake-update.yml covers them, and their packages are cached via these.
+        host: [desktop, laptop, g5-5587, kodi, hermes, attic, opencloud, server-template, nixswarm-1]
     steps:
 
       - uses: actions/checkout@v5
@@ -85,14 +129,20 @@ jobs:
 
   publish:
       name: Publish to main
-      needs: [update, build]
+      needs: [update, eval, build]
       if: needs.update.outputs.changed == 'true'
       runs-on: nix
+      # main is protected by a ruleset (PRs only). github-actions[bot] can't be
+      # on a bypass list, but deploy keys can: push with a write deploy key
+      # whose private half lives only in this environment, and the
+      # environment is limited to main, so a workflow run from another
+      # branch can't read it.
+      environment: flake-publish
       steps:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          ssh-key: ${{ secrets.FLAKE_PUBLISH_DEPLOY_KEY }}
 
       - uses: actions/download-artifact@v7
         with:
@@ -109,7 +159,7 @@ jobs:
           git commit -m "flake.lock: daily update
 
           Automated daily update.
-          ✅ desktop, laptop, attic, and kodi all built successfully on x86_64-linux."
+          ✅ All hosts evaluated; representative hosts built on x86_64-linux."
           git push origin HEAD:main
 
 

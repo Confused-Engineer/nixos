@@ -19,7 +19,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        host: [desktop, laptop, kodi, attic, g5-5587, server-template, controller, music-assist, dns1, terraria, opencloud, nixswarm-1, hermes]
+        # One host per distinct closure. The others (controller, dns1/2,
+        # music-assist, nixswarm-2/3, terraria) differ from these only in
+        # hostname, container units and small config files; the eval job in
+        # flake-update.yml covers them, and their packages are cached via these.
+        host: [desktop, laptop, g5-5587, kodi, hermes, attic, opencloud, server-template, nixswarm-1]
     steps:
 
       - uses: actions/checkout@v5
