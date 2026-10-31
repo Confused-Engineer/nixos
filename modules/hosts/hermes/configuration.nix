@@ -21,6 +21,7 @@
 #   - Hermes provider/API keys: `hermes setup` (state in ~/.hermes)
 #   - Signal: `signal-cli link -n hermes` (linked device; state in
 #     ~/.local/share/signal-cli), then `hermes gateway setup` → Signal
+#   - GitHub: `gh auth login` (fine-grained token, this repo only)
 {
   inputs,
   self,
@@ -122,13 +123,16 @@ in
         backupFileExtension = "backup";
 
         users.david =
-          { lib, pkgs, ... }:
+          {
+            lib,
+            pkgs,
+            osConfig,
+            ...
+          }:
           {
             imports = [ inputs.hermes-agent.homeManagerModules.default ];
 
-            # `hermes` CLI only (no Hermes Desktop: nothing to display it
-            # on). Gateway service left off until Signal is linked and
-            # ~/.hermes/.env has its settings.
+            # `hermes` CLI only (no Hermes Desktop: nothing to display it on).
             programs.hermes-agent.enable = true;
 
             # Anthropic via a pay-per-token API key (added on the VM with
@@ -138,7 +142,6 @@ in
             # ~/.hermes/config.yaml (deep merge on activation); everything else
             # stays editable at runtime, but a `/model --global` change is reset
             # on the next switch, so change the model here.
-            # Gateway stays off (services.hermes-agent.gateway.enable) for now.
             services.hermes-agent = {
               enable = true;
               settings = {
@@ -148,6 +151,28 @@ in
                 # can't bill a Pro plan, and claude itself keeps using it.
                 auth.adopt_external_logins = false;
               };
+
+              # Messaging gateway (Signal) as a user service; it also runs the
+              # cron scheduler (daily CI check). Needs SIGNAL_* in ~/.hermes/.env.
+              gateway.enable = true;
+
+              # The gateway unit's PATH is only hermes, bash, coreutils and git
+              # plus these (home.packages does NOT reach it); the module also
+              # adds them to home.packages for interactive use. Enough to read
+              # GitHub Actions failures, fix the flake and build-check a host.
+              extraPackages = with pkgs; [
+                gh # runs, failed-job logs, PRs (auth: `gh auth login`)
+                osConfig.nix.package # nix build/eval/flake from the service
+                nixfmt
+                nixd
+                gnugrep
+                gnused
+                gawk
+                findutils
+                diffutils
+                ripgrep
+                jq
+              ];
             };
 
             # signal-cli daemon for the Hermes Signal adapter (replaces the
@@ -170,12 +195,17 @@ in
               Install.WantedBy = [ "default.target" ];
             };
 
+            # Hermes talks to the signal-cli daemon over HTTP, so start it first
+            # (the adapter also reconnects on its own if signal-cli restarts).
+            systemd.user.services.hermes-agent.Unit = {
+              Wants = [ "signal-cli.service" ];
+              After = [ "signal-cli.service" ];
+            };
+
             home.packages = with pkgs; [
               # Signal adapter backend: Hermes talks to
               # `signal-cli daemon --http 127.0.0.1:8080`.
               signal-cli
-              nixd
-              nixfmt
               inputs.claude-code-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
             ];
 
