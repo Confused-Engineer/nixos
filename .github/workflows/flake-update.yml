@@ -115,16 +115,35 @@ jobs:
         with:
           name: flake-lock
 
+      # Push what this run built, even when another host fails, so a retry and
+      # the System Build that follows reuse it instead of recompiling (hermes-agent
+      # has no upstream cache). Unpublished locks only add paths to the cache;
+      # nothing points a host at them.
+      - name: Install attic client
+        run: nix profile install nixpkgs#attic-client
+
+      - name: Authenticate with attic
+        env:
+          ATTIC_AUTH_TOKEN: "${{ secrets.ATTIC_AUTH_TOKEN }}"
+        run: attic login default https://attic.a5f.org "$ATTIC_AUTH_TOKEN"
 
       - name: Build Toplevel
         run: |
           sudo sed -i '/^access-tokens/d' /etc/nix/nix.conf
           echo "access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}" | sudo tee -a /etc/nix/nix.conf
+          # Runners are 4 cores / 8 GB RAM (+4 GB swap). Up to 4 derivations at
+          # once, each limited to 1 core: at most ~4 compilers in memory. The
+          # default (one job per core, each using every core) ran the runners out
+          # of memory on the uncached hermes-agent / Electron builds, and they
+          # dropped off with "lost communication".
           TOPLEVEL=$(nix build \
             .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel \
             --print-build-logs \
+            --max-jobs 4 \
+            --cores 1 \
             --print-out-paths \
             --no-link)
+          attic push default:system "$TOPLEVEL"
 
 
   publish:
