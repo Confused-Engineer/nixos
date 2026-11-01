@@ -56,6 +56,11 @@ in
       networking.hostName = "hermes";
       # Plain DHCP (NixOS default networking.useDHCP); no NetworkManager
       # without a desktop applet to drive it.
+      # Pin DNS to the internal resolvers instead of whatever DHCP hands out.
+      networking.nameservers = [
+        "10.87.10.61"
+        "10.87.10.62"
+      ];
 
       time.timeZone = "America/New_York";
       i18n.defaultLocale = "en_US.UTF-8";
