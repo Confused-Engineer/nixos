@@ -214,6 +214,22 @@ in
               After = [ "signal-cli.service" ];
             };
 
+            # Force a restart on every activation, not just when the unit
+            # file text itself changes. The gateway's ExecStart wrapper
+            # resolves HERMES_BUNDLED_LOCALES etc. to the store paths that
+            # exist *at process start* and then caches them in os.environ;
+            # systemd's unit-diff restart logic won't fire for an unstable
+            # package update if nothing in the unit *file* changed. Without
+            # this, nix.gc can delete the old generation's store paths out
+            # from under a still-running gateway (it was never told to
+            # re-exec), which silently empties its locale catalog — users
+            # see raw i18n keys like "gateway.clarify.question" instead of
+            # real text. try-restart is a no-op if the unit isn't running
+            # yet (first install), so this is safe at every activation.
+            home.activation.restartHermesServices = lib.hm.dag.entryAfter [ "reloadSystemd" ] ''
+              $DRY_RUN_CMD ${pkgs.systemd}/bin/systemctl --user try-restart hermes-gateway.service signal-cli.service 2>&1 || true
+            '';
+
             home.packages = with pkgs; [
               # Signal adapter backend: Hermes talks to
               # `signal-cli daemon --http 127.0.0.1:8080`.
