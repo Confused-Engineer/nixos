@@ -54,8 +54,14 @@ in
             nvidiaFix.hibernate = false;
           };
         };
+        # vscode removed 2026-11-07: nixpkgs' vscode-1.144.0 patchPhase does
+        # `rm resources/app/node_modules/@vscode/ripgrep/bin/rg`, but that
+        # path doesn't exist in this release's tarball (upstream VS Code
+        # repackaged ripgrep). Breaks eval/build for this host alone.
+        # Upstream packaging bug, not a config issue here -- the
+        # 'vscode-nixpkgs-fix-check' cron watches for nixpkgs to fix it and
+        # will report when vscode can be added back.
         environment.systemPackages = with pkgs; [
-          vscode
         ];
       };
 

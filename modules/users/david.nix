@@ -28,7 +28,7 @@
       home.stateVersion = "25.11";
 
       home.packages = with pkgs; [
-        brave
+        ungoogled-chromium
         baobab
         discord
         gimp
