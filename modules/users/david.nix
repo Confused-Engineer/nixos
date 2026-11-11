@@ -40,7 +40,6 @@
         obsidian
         pavucontrol
         prismlauncher
-        spotify
         vlc
         vscode
         nixd
