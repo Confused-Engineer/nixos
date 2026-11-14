@@ -37,6 +37,11 @@ appimageTools.wrapType2 {
   # game's hookshot_version.txt as `builder=`; the in-game update offer runs
   # that with `--update`. Point it at the stable system wrapper instead.
   profile = ''
+    # With no GDK_SCALE/Xft.dpi (COSMIC sets neither) the builder scales its
+    # UI by XWayland's screen height / 1080, and that height spans every
+    # monitor (2560 px here, portrait side screens) -> a ~2.4x zoomed window.
+    # Default to 1x; set HOOKSHOT_UI_SCALE yourself to override.
+    export HOOKSHOT_UI_SCALE="''${HOOKSHOT_UI_SCALE:-1}"
     if [ -x /run/current-system/sw/bin/hookshot ]; then
       export APPIMAGE=/run/current-system/sw/bin/hookshot
     fi
