@@ -135,6 +135,7 @@
         easyeffects
         streamcontroller
         vintagestory
+        hookshot
 
         stable.pcsx2
         stable.rpcs3
