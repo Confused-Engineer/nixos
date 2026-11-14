@@ -136,6 +136,7 @@
         streamcontroller
         vintagestory
         hookshot
+        longshot
 
         stable.pcsx2
         stable.rpcs3
