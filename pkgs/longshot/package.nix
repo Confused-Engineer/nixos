@@ -45,6 +45,14 @@ appimageTools.wrapType2 {
       wayland
     ];
 
+  # The builder's bundled Python (run by the launcher) has OpenSSL looking for
+  # /etc/ssl/cert.pem or hashed /etc/ssl/certs/*.0, neither of which NixOS
+  # has, so its HTTPS downloads (DLSS/FSR SDKs, build tools) fail with
+  # CERTIFICATE_VERIFY_FAILED.
+  profile = ''
+    export SSL_CERT_FILE="''${SSL_CERT_FILE:-/etc/ssl/certs/ca-certificates.crt}"
+  '';
+
   extraInstallCommands = ''
     install -Dm444 ${appimageContents}/longshot-launcher.desktop \
       $out/share/applications/longshot.desktop

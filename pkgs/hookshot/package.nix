@@ -37,6 +37,10 @@ appimageTools.wrapType2 {
   # game's hookshot_version.txt as `builder=`; the in-game update offer runs
   # that with `--update`. Point it at the stable system wrapper instead.
   profile = ''
+    # The bundled Python's OpenSSL looks for /etc/ssl/cert.pem or hashed
+    # /etc/ssl/certs/*.0, neither of which NixOS has, so every HTTPS download
+    # (DLSS/FSR SDKs, updates) fails with CERTIFICATE_VERIFY_FAILED.
+    export SSL_CERT_FILE="''${SSL_CERT_FILE:-/etc/ssl/certs/ca-certificates.crt}"
     # With no GDK_SCALE/Xft.dpi (COSMIC sets neither) the builder scales its
     # UI by XWayland's screen height / 1080, and that height spans every
     # monitor (2560 px here, portrait side screens) -> a ~2.4x zoomed window.
