@@ -5,6 +5,7 @@
 #   data-mounts.nix  extra data disks + TrueNAS share
 #   steam-os.nix     `steamos` boot-menu specialisation
 #   docker.nix       `docker` boot-menu specialisation
+#   stable-kernel.nix `stable-kernel` boot-menu specialisation (mainline kernel)
 #   home.nix         desktop-only home-manager additions for david
 { inputs, self, ... }:
 {
