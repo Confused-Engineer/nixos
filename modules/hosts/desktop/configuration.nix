@@ -70,7 +70,7 @@
       networking.hostName = "desktop";
 
       boot.kernelModules = [ "ntsync" ];
-      boot.kernelPackages = pkgs.linuxPackages_zen;
+      boot.kernelPackages = pkgs.linuxPackages_latest;
       # Disable auto suspend to prevent the momentary Xbox controller connection drops during play.
       # boot.kernelParams = [ "btusb.enable_autosuspend=0" ];
       # Dont wait for network on boot, maybe boot faster?
