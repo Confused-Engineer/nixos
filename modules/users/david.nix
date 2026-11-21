@@ -32,7 +32,6 @@
         baobab
         discord
         gimp
-        jellyfin2samsung
         onlyoffice-desktopeditors
         # moonlight-qt # temp disable until ffmpeg fix
         nixfmt
