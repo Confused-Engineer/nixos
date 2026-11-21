@@ -49,8 +49,8 @@
         inputs.claude-code-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
         # inputs.claude-code-nix.packages.${pkgs.system}.claude-code-fhs
         apps2samsung
-        nixpkgs-tracker
         feishin
+        tigervnc
 
         #(pkgs.kodi.withPackages (
         #  kp: with kp; [
