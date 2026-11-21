@@ -6,6 +6,7 @@
 #   steam-os.nix     `steamos` boot-menu specialisation
 #   docker.nix       `docker` boot-menu specialisation
 #   stable-kernel.nix `stable-kernel` boot-menu specialisation (mainline kernel)
+#   zen-kernel.nix   `zen-kernel` boot-menu specialisation (latest zen kernel)
 #   home.nix         desktop-only home-manager additions for david
 { inputs, self, ... }:
 {
