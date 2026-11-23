@@ -9,9 +9,9 @@
   flake.modules.nixos.desktop =
     { pkgs, lib, ... }:
     {
-      specialisation.zen-kernel.configuration = {
-        system.nixos.tags = [ "zen-kernel" ];
-        boot.kernelPackages = lib.mkForce pkgs.linuxPackages_zen;
+      specialisation.latest-kernel.configuration = {
+        system.nixos.tags = [ "latest-kernel" ];
+        boot.kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
       };
     };
 }
