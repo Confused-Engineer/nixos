@@ -10,6 +10,8 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     claude-code-nix.url = "github:ryoppippi/nix-claude-code";
+    # CachyOS kernel + friends, for desktop's cachyos-kernel specialisation.
+    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     # Nous Research's Hermes agent. Not pinned to our nixpkgs on purpose:
     # upstream's modules use their own locked, tested build.
     hermes-agent.url = "github:NousResearch/hermes-agent";
