@@ -30,4 +30,22 @@
   };
 
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
+
+  # CI (nix-installer-action extra-conf) sets `accept-flake-config = true`,
+  # which makes these substituters/keys trusted automatically on the
+  # gitrunners -- without this, their own ambient nix.conf knows nothing
+  # about either cache (the nix.settings.substituters in binary-cache.nix /
+  # the chaotic-nyx module only take effect on a host once it switches to
+  # that config, not on whatever machine is doing the building), so CI
+  # falls back to compiling from source instead of substituting.
+  nixConfig = {
+    extra-substituters = [
+      "https://attic.a5f.org/system"
+      "https://nyx-cache.chaotic.cx/"
+    ];
+    extra-trusted-public-keys = [
+      "system:JKldX37z2mGGfjceZeMLKpWdqwE08gE0ddVUwRJ2R3A="
+      "nyx-cache.chaotic.cx:dJxTrgMC3V3cFfyIiBQDQorG6k1LsqurH/srpMSq7qk="
+    ];
+  };
 }
