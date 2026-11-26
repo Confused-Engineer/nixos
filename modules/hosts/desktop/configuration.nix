@@ -7,6 +7,7 @@
 #   docker.nix       `docker` boot-menu specialisation
 #   stable-kernel.nix `stable-kernel` boot-menu specialisation (mainline kernel)
 #   zen-kernel.nix   `zen-kernel` boot-menu specialisation (latest zen kernel)
+#   cachyos-kernel.nix `cachyos-kernel` boot-menu specialisation (CachyOS kernel, via chaotic-nyx)
 #   home.nix         desktop-only home-manager additions for david
 { inputs, self, ... }:
 {
@@ -36,6 +37,11 @@
         settings-baseline
         yubikey
         system-api
+      ] ++ [
+        # chaotic-nyx: provides pkgs.linuxPackages_cachyos for the
+        # cachyos-kernel specialisation (cachyos-kernel.nix). Only imported
+        # here, not globally, so other hosts don't pick up its overlay.
+        inputs.chaotic.nixosModules.default
       ];
 
       custom = {
@@ -71,7 +77,7 @@
       networking.hostName = "desktop";
 
       boot.kernelModules = [ "ntsync" ];
-      boot.kernelPackages = pkgs.linuxPackages_zen;
+      boot.kernelPackages = pkgs.linuxPackages_cachyos;
       # Disable auto suspend to prevent the momentary Xbox controller connection drops during play.
       # boot.kernelParams = [ "btusb.enable_autosuspend=0" ];
       # Dont wait for network on boot, maybe boot faster?
