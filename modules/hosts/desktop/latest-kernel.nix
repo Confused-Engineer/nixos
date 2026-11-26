@@ -17,7 +17,7 @@
     {
       specialisation.cachyos-kernel.configuration = {
         system.nixos.tags = [ "cachyos-kernel" ];
-        boot.kernelPackages = lib.mkForce pkgs.linuxPackages_cachyos;
+        boot.kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
       };
     };
 }
