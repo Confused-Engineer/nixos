@@ -15,12 +15,25 @@
       imports = with self.modules.homeManager; [
         bash
         mangohud
+      ] ++ [
+        inputs.hermes-agent.homeManagerModules.default
       ];
 
       custom.bash = {
         fancy = true;
         nixosAlias = true;
         startHyprland = false;
+      };
+
+      # Hermes agent: `hermes` CLI + the Hermes Desktop app (launcher entry),
+      # on every host sharing this aspect (desktop, laptop, g5-5587, kodi).
+      # State lives in ~/.hermes; run `hermes setup` once per host to pick a
+      # provider. The gateway/backend service (services.hermes-agent) stays
+      # off here -- that's unique to the dedicated `hermes` host so there's
+      # only one Signal session.
+      programs.hermes-agent = {
+        enable = true;
+        desktop.enable = true;
       };
 
       home.username = "david";
