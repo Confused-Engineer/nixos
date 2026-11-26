@@ -3,9 +3,9 @@
 # default -- try it from the limine menu first, see docker.nix/steam-os.nix
 # for the general pattern. The chaotic-nyx module is imported in
 # configuration.nix only for this host (provides pkgs.linuxPackages_cachyos
-# and its overlay). Pick the "cachyos-kernel" entry in the limine menu, or
+# and its overlay). Pick the "latest-kernel" entry in the limine menu, or
 # switch live with:
-#   sudo /run/current-system/specialisation/cachyos-kernel/bin/switch-to-configuration test
+#   sudo /run/current-system/specialisation/latest-kernel/bin/switch-to-configuration test
 #
 # Note: Chaotic-Nyx also ships linuxPackages_cachyos-lto, but doesn't
 # maintain its kernel modules (see their README) -- stick to the plain
@@ -15,8 +15,8 @@
   flake.modules.nixos.desktop =
     { pkgs, lib, ... }:
     {
-      specialisation.cachyos-kernel.configuration = {
-        system.nixos.tags = [ "cachyos-kernel" ];
+      specialisation.latest-kernel.configuration = {
+        system.nixos.tags = [ "latest-kernel" ];
         boot.kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
       };
     };
